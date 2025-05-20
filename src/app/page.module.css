@@ -31,6 +31,24 @@
   transition: background-color 0.2s ease, transform 0.1s ease;
   min-width: 100px;
 }
+
+.mainContainer.miniModeActive .presetButtons,
+.mainContainer.miniModeActive .customInputContainer,
+.mainContainer.miniModeActive .projectBranding, 
+.mainContainer.miniModeActive .instructionText {
+  display: none;
+}
+
+.mainContainer.miniModeActive .timerDisplay {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+}
+
+.mainContainer.miniModeActive {
+  padding-top: 20px;
+  justify-content: center;
+}
+
 .button:hover { background-color: #444; border-color: #777; }
 .button:active { background-color: #222; transform: translateY(1px); }
 .button:disabled { background-color: #252525; color: #666; cursor: not-allowed; border-color: #404040; }

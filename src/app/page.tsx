@@ -17,6 +17,7 @@ export default function HomePage() {
   const [initialTimeSet, setInitialTimeSet] = useState<number>(0);
   const [customHoursInput, setCustomHoursInput] = useState<string>('');
   const [customMinutesInput, setCustomMinutesInput] = useState<string>('');
+  const [isMiniMode, setIsMiniMode] = useState<boolean>(false);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -104,9 +105,11 @@ export default function HomePage() {
   };
 
   return (
-    <main className={styles.mainContainer}>
-      <ProjectBranding />
-      <TimerDisplay timeParts={timeParts} />
+    <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
+  {!isMiniMode && <ProjectBranding />}
+  <TimerDisplay timeParts={timeParts} />
+  {!isMiniMode && (
+    <>
       <PresetButtons
         onSetTime={startTimer}
         disabled={isActive && totalSeconds > 0}
@@ -120,7 +123,9 @@ export default function HomePage() {
         inputsDisabled={isActive && totalSeconds > 0}
         disabled={ (isActive && totalSeconds > 0) || (!customHoursInput && !customMinutesInput)}
       />
-      <TimerControls
+    </>
+  )}
+  <TimerControls
         isActive={isActive}
         initialTimeSet={initialTimeSet}
         totalSeconds={totalSeconds}
@@ -128,11 +133,18 @@ export default function HomePage() {
         onReset={resetTimer}
         onStop={stopTimer}
       />
-      {totalSeconds === 0 && !isActive && initialTimeSet === 0 && (
+          {totalSeconds === 0 && !isActive && initialTimeSet === 0 && (
         <p className={styles.instructionText}>
           Selecciona un tiempo predefinido o ingresa minutos personalizados para comenzar.
         </p>
       )}
-    </main>
+<button
+  onClick={() => setIsMiniMode(!isMiniMode)}
+  className={styles.button}
+>
+  {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
+</button>
+</main>
   );
 }
+
