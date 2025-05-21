@@ -3,3 +3,8 @@ export interface TimeParts {
   minutes: string;
   seconds: string;
 }
+export interface Task {
+  id: string;
+  text: string;
+  completed: boolean;
+}
