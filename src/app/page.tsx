@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './Page.module.css'; 
 import { formatTime } from './lib/time'; 
+import type { Task } from './types';
+import customTimeInputStyles from './components/CustomTimeInput/CustomTimeInput.module.css';
 
 // Componentes
 import ProjectBranding from './components/ProjectBranding/ProjectBranding';
@@ -10,6 +12,7 @@ import TimerDisplay from './components/TimerDisplay/TimerDisplay';
 import PresetButtons from './components/PresetButtons/PresetButtons';
 import CustomTimeInput from './components/CustomTimeInput/CustomTimeInput';
 import TimerControls from './components/TimerControls/TimerControls';
+import TaskList from './components/TaskList/TaskList';
 
 export default function HomePage() {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
@@ -18,7 +21,8 @@ export default function HomePage() {
   const [customHoursInput, setCustomHoursInput] = useState<string>('');
   const [customMinutesInput, setCustomMinutesInput] = useState<string>('');
   const [isMiniMode, setIsMiniMode] = useState<boolean>(false);
-
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [currentTaskInput, setCurrentTaskInput] = useState<string>('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -104,6 +108,30 @@ export default function HomePage() {
     startTimer(totalMinutesToStart);
   };
 
+  const handleAddTask = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (currentTaskInput.trim() === '') return;
+    const newTask: Task = {
+      id: Date.now().toString(),
+      text: currentTaskInput.trim(),
+      completed: false,
+    };
+    setTasks(prevTasks => [...prevTasks, newTask]);
+    setCurrentTaskInput('');
+  };
+
+  const handleToggleTask = (id: string) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+  };
+  
   return (
     <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
   {!isMiniMode && <ProjectBranding />}
@@ -138,13 +166,50 @@ export default function HomePage() {
           Selecciona un tiempo predefinido o ingresa minutos personalizados para comenzar.
         </p>
       )}
-<button
-  onClick={() => setIsMiniMode(!isMiniMode)}
-  className={styles.button}
->
-  {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
-</button>
-</main>
+      <div className={styles.miniModeButtonContainer}>
+        <button
+          onClick={() => setIsMiniMode(!isMiniMode)}
+          className={styles.button}
+        >
+          {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
+        </button>
+      </div>
+
+      {!isMiniMode && (
+        <div className={styles.taskSection}>
+          <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
+          <form onSubmit={handleAddTask} className={styles.taskForm}>
+            <input
+              type="text"
+              value={currentTaskInput}
+              onChange={(e) => setCurrentTaskInput(e.target.value)}
+              placeholder="Escribe una nueva tarea..."
+              className={`${styles.taskInput} ${customTimeInputStyles?.customInput || ''}`}
+              disabled={(isActive && totalSeconds > 0)}
+            />
+            <button
+              type="submit"
+              className={styles.button}
+              disabled={(isActive && totalSeconds > 0) || currentTaskInput.trim() === ''}
+            >
+              Añadir Tarea
+            </button>
+          </form>
+          <TaskList
+            tasks={tasks}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+            inputDisabled={(isActive && totalSeconds > 0)}
+          />
+        </div>
+      )}
+
+      {!isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0 && (
+        <p className={styles.instructionText}>
+          Selecciona un tiempo predefinido o ingresa minutos personalizados para comenzar.
+        </p>
+      )}
+    </main>
   );
 }
 

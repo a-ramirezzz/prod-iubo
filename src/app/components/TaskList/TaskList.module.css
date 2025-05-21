@@ -1,0 +1,60 @@
+.taskList {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.taskItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.taskItem:hover {
+  background-color: #333;
+}
+
+.taskText {
+  flex-grow: 1;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.taskItem.completed .taskText {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 10px;
+}
+
+.deleteButton:hover {
+  color: #ff6b6b;
+}
+
+.deleteButton:disabled {
+  color: #666;
+  cursor: not-allowed;
+}
+
+.noTasks {
+  color: #888;
+  font-style: italic;
+  margin-top: 15px;
+}

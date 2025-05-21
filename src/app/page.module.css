@@ -32,6 +32,56 @@
   min-width: 100px;
 }
 
+.taskSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 15px;
+}
+
+.taskSectionTitle {
+  font-size: 1.5rem;
+  color: #e0e0e0;
+  margin-bottom: 15px;
+}
+
+.taskForm {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.taskInput {
+  flex-grow: 1;
+  background-color: #282828;
+  color: #f0f0f0;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.taskInput::placeholder {
+  color: #888;
+  opacity: 0.7;
+}
+
+.taskInput:disabled {
+  background-color: #202020;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.miniModeButtonContainer {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 .mainContainer.miniModeActive .presetButtons,
 .mainContainer.miniModeActive .customInputContainer,
 .mainContainer.miniModeActive .projectBranding, 
