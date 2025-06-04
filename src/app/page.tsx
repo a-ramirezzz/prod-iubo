@@ -13,6 +13,8 @@ import PresetButtons from './components/PresetButtons/PresetButtons';
 import CustomTimeInput from './components/CustomTimeInput/CustomTimeInput';
 import TimerControls from './components/TimerControls/TimerControls';
 import TaskList from './components/TaskList/TaskList';
+import SettingsButton from './components/SettingsButton/SettingsButton';
+import SettingsPanel from './components/SettingsPanel/SettingsPanel';
 
 export default function HomePage() {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
@@ -24,6 +26,7 @@ export default function HomePage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTaskInput, setCurrentTaskInput] = useState<string>('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (isActive && totalSeconds > 0) {
@@ -41,6 +44,10 @@ export default function HomePage() {
       }
     };
   }, [isActive, totalSeconds]);
+
+  const toggleSettingsPanel = () => {
+    setIsSettingsPanelOpen(!isSettingsPanelOpen);
+  };
 
   const timeParts = formatTime(totalSeconds);
 
@@ -134,26 +141,26 @@ export default function HomePage() {
   
   return (
     <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
-  {!isMiniMode && <ProjectBranding />}
-  <TimerDisplay timeParts={timeParts} />
-  {!isMiniMode && (
-    <>
-      <PresetButtons
-        onSetTime={startTimer}
-        disabled={isActive && totalSeconds > 0}
-      />
-      <CustomTimeInput
-        hours={customHoursInput}
-        onHoursChange={setCustomHoursInput}
-        minutes={customMinutesInput}
-        onMinutesChange={setCustomMinutesInput}
-        onStart={handleCustomStart}
-        inputsDisabled={isActive && totalSeconds > 0}
-        disabled={ (isActive && totalSeconds > 0) || (!customHoursInput && !customMinutesInput)}
-      />
-    </>
-  )}
-  <TimerControls
+      {!isMiniMode && <ProjectBranding />}
+      <TimerDisplay timeParts={timeParts} />
+      {!isMiniMode && (
+        <>
+          <PresetButtons
+            onSetTime={startTimer}
+            disabled={isActive && totalSeconds > 0}
+          />
+          <CustomTimeInput
+            hours={customHoursInput}
+            onHoursChange={setCustomHoursInput}
+            minutes={customMinutesInput}
+            onMinutesChange={setCustomMinutesInput}
+            onStart={handleCustomStart}
+            inputsDisabled={isActive && totalSeconds > 0}
+            disabled={ (isActive && totalSeconds > 0) || (!customHoursInput && !customMinutesInput)}
+          />
+        </>
+      )}
+      <TimerControls
         isActive={isActive}
         initialTimeSet={initialTimeSet}
         totalSeconds={totalSeconds}
@@ -161,11 +168,8 @@ export default function HomePage() {
         onReset={resetTimer}
         onStop={stopTimer}
       />
-          {totalSeconds === 0 && !isActive && initialTimeSet === 0 && (
-        <p className={styles.instructionText}>
-          Selecciona un tiempo predefinido o ingresa minutos personalizados para comenzar.
-        </p>
-      )}
+
+      {/* Botón para Modo Mini */}
       <div className={styles.miniModeButtonContainer}>
         <button
           onClick={() => setIsMiniMode(!isMiniMode)}
@@ -175,6 +179,7 @@ export default function HomePage() {
         </button>
       </div>
 
+      {/* Sección de Tareas */}
       {!isMiniMode && (
         <div className={styles.taskSection}>
           <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
@@ -209,6 +214,12 @@ export default function HomePage() {
           Selecciona un tiempo predefinido o ingresa minutos personalizados para comenzar.
         </p>
       )}
+
+      {/* BOTÓN DE CONFIGURACIÓN (Flotante) */}
+      {!isMiniMode && <SettingsButton onClick={toggleSettingsPanel} />}
+      
+      {/* PANEL DE CONFIGURACIÓN (Deslizable) */}
+      <SettingsPanel isOpen={isSettingsPanelOpen} onClose={toggleSettingsPanel} />
     </main>
   );
 }
