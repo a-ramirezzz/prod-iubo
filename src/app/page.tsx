@@ -16,6 +16,9 @@ import TaskList from './components/TaskList/TaskList';
 import SettingsButton from './components/SettingsButton/SettingsButton';
 import SettingsPanel from './components/SettingsPanel/SettingsPanel';
 
+// Hooks
+import { useTimerAlert } from './hooks/useTimerAlert';
+
 export default function HomePage() {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [isActive, setIsActive] = useState<boolean>(false);
@@ -28,6 +31,16 @@ export default function HomePage() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState<boolean>(false);
 
+  const { triggerAlert } = useTimerAlert();
+
+  useEffect(() => {
+    if (!("Notification" in window)) {
+      console.log("Este navegador no soporta notificaciones de escritorio");
+    } else if (Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
   useEffect(() => {
     if (isActive && totalSeconds > 0) {
       intervalRef.current = setInterval(() => {
@@ -36,14 +49,14 @@ export default function HomePage() {
     } else if (totalSeconds === 0 && isActive) {
       clearInterval(intervalRef.current!);
       setIsActive(false);
-      alert("¡Tiempo completado!");
+      triggerAlert();
     }
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isActive, totalSeconds]);
+  }, [isActive, totalSeconds, triggerAlert]);
 
   const toggleSettingsPanel = () => {
     setIsSettingsPanelOpen(!isSettingsPanelOpen);
@@ -223,4 +236,3 @@ export default function HomePage() {
     </main>
   );
 }
-
