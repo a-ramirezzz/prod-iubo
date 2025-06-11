@@ -1,17 +1,39 @@
-/* Mueve aquí los estilos .timerDisplay, .secondsDigit, .secondTick y sus spans internos */
+/* src/app/components/TimerDisplay/TimerDisplay.module.css */
+
 .timerDisplay {
-  font-size: 6rem;
-  font-weight: 300;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 7rem;
+  font-weight: 400; /* Numeros más gruesos */
   margin-bottom: 40px;
   display: flex; 
   justify-content: center;
   align-items: center;
+  color: #ffffff;
+  user-select: none;
 }
-.timerDisplay > span {
-  padding: 0 2px;
-  display: inline-block;
-}
-.secondsDigit { /* ... */ }
-.secondTick { /* ... */ }
 
-/* ...media queries si son específicas ... */
+.timerDisplay > span:not([class]) {
+  padding: 0 5px;
+  margin-top: -10px;
+}
+
+/* Estilo para los números */
+.timeSegment {
+  display: inline-block;
+  position: relative;
+  
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+
+  animation: subtleFadeIn 0.4s ease-out;
+}
+
+@keyframes subtleFadeIn {
+  from {
+    transform: scale(0.98); /* Empieza casi a su tamaño normal */
+    opacity: 0.6; /* Empieza semitransparente */
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
