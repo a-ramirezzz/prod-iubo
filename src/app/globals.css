@@ -1,13 +1,43 @@
+/* app/globals.css */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  --brand-color-prod: #E53935;
+  --brand-color-uibo: #1E88E5;
+
+  /* Paleta de Colores para Tema Oscuro */
+  --bg-color: #1a1a1a;
+  --text-color-primary: #f0f0f0;
+  --text-color-secondary: #aaa;
+  --text-color-placeholder: #888;
+  --text-color-disabled: #666;
+
+  --border-color-primary: #555;
+  --border-color-hover: #777;
+  --border-color-disabled: #404040;
+
+  --button-primary-bg: #333;
+  --button-primary-bg-hover: #444;
+  --button-primary-bg-active: #222;
+
+  --button-reset-bg: #c08000;
+  --button-reset-bg-hover: #a06800;
+
+  --button-stop-bg: #d32f2f;
+  --button-stop-bg-hover: #b71c1c;
+
+  --button-disabled-bg: #252525;
+
+  --input-bg: #282828;
+  --input-bg-disabled: #202020;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 2. Reseteo y Estilos Base para el Body */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html,
@@ -17,17 +47,9 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color-primary);
+  font-family: var(--font-primary);
 }
 
 a {
@@ -35,8 +57,51 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* 3. Clase de Botón Global y sus Modificadores */
+/* Clase base para todos los botones */
+.button {
+  background-color: var(--button-primary-bg);
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-primary);
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+  min-width: 100px;
+  font-family: var(--font-primary);
+}
+
+.button:hover {
+  background-color: var(--button-primary-bg-hover);
+  border-color: var(--border-color-hover);
+}
+
+.button:active {
+  background-color: var(--button-primary-bg-active);
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  background-color: var(--button-disabled-bg);
+  color: var(--text-color-disabled);
+  border-color: var(--border-color-disabled);
+  cursor: not-allowed;
+}
+
+/* Modificadores de color */
+.button-reset {
+  background-color: var(--button-reset-bg);
+  border-color: var(--button-reset-bg-hover);
+}
+.button-reset:hover {
+  background-color: var(--button-reset-bg-hover);
+}
+
+.button-stop {
+  background-color: var(--button-stop-bg);
+  border-color: var(--button-stop-bg-hover);
+}
+.button-stop:hover {
+  background-color: var(--button-stop-bg-hover);
 }

@@ -1,37 +1,23 @@
+/* app/Page.module.css */
+
 .mainContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; 
   min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #f0f0f0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
-  padding-top: 70px; 
-  box-sizing: border-box;
+  padding: 70px 20px 20px 20px;
   text-align: center;
   position: relative;
 }
 
 .instructionText {
   margin-top: 20px;
-  color: #aaa;
+  color: var(--text-color-secondary); /* Usamos la variable global */
   font-style: italic;
 }
 
-.button {
-  background-color: #333;
-  color: #f0f0f0;
-  border: 1px solid #555;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  min-width: 100px;
-}
-
+/* --- SECCIÓN DE TAREAS --- */
 .taskSection {
   display: flex;
   flex-direction: column;
@@ -39,12 +25,10 @@
   margin-top: 30px;
   width: 100%;
   max-width: 500px;
-  padding: 0 15px;
 }
 
 .taskSectionTitle {
   font-size: 1.5rem;
-  color: #e0e0e0;
   margin-bottom: 15px;
 }
 
@@ -57,9 +41,9 @@
 
 .taskInput {
   flex-grow: 1;
-  background-color: #282828;
-  color: #f0f0f0;
-  border: 1px solid #555;
+  background-color: var(--input-bg);
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-primary);
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
@@ -67,51 +51,43 @@
 }
 
 .taskInput::placeholder {
-  color: #888;
+  color: var(--text-color-placeholder);
   opacity: 0.7;
 }
 
 .taskInput:disabled {
-  background-color: #202020;
+  background-color: var(--input-bg-disabled);
   cursor: not-allowed;
   opacity: 0.7;
 }
 
+/* --- MODO MINI --- */
 .miniModeButtonContainer {
   margin-top: 20px;
   margin-bottom: 10px;
 }
 
-.mainContainer.miniModeActive .presetButtons,
-.mainContainer.miniModeActive .customInputContainer,
-.mainContainer.miniModeActive .projectBranding, 
-.mainContainer.miniModeActive .instructionText {
+/* Ocultamos elementos en Modo Mini */
+.mainContainer.miniModeActive > :is(.presetButtons, .customInputContainer, .projectBranding, .instructionText, .taskSection, .settingsButton) {
   display: none;
 }
 
-.mainContainer.miniModeActive .timerDisplay {
-  font-size: 3.5rem;
-  margin-bottom: 15px;
-}
-
+/* Ajustamos el layout en Modo Mini */
 .mainContainer.miniModeActive {
   padding-top: 20px;
   justify-content: center;
 }
 
-.button:hover { background-color: #444; border-color: #777; }
-.button:active { background-color: #222; transform: translateY(1px); }
-.button:disabled { background-color: #252525; color: #666; cursor: not-allowed; border-color: #404040; }
+/* Específico: el display del timer se hace más pequeño en modo mini */
+.mainContainer.miniModeActive .timerDisplay {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+}
 
-.resetButton { background-color: #c08000; border-color: #a06800; }
-.resetButton:hover { background-color: #a06800; }
 
-.stopButton { background-color: #d32f2f; border-color: #b71c1c; }
-.stopButton:hover { background-color: #b71c1c; }
-
-/* Media queries para el layout principal */
+/* --- MEDIA QUERIES --- */
 @media (max-width: 480px) {
   .mainContainer {
-      padding-top: 60px;
+    padding-top: 60px;
   }
 }
