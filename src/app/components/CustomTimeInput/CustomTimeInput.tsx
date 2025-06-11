@@ -1,6 +1,6 @@
-import styles from './CustomTimeInput.module.css';
-import pageButtonStyles from '@/app/Page.module.css';
+// app/components/CustomTimeInput/CustomTimeInput.tsx
 
+import styles from './CustomTimeInput.module.css';
 interface CustomTimeInputProps {
   hours: string;
   onHoursChange: (value: string) => void;
@@ -41,7 +41,7 @@ export default function CustomTimeInput({
       />
       <button
         onClick={onStart}
-        className={pageButtonStyles.button} // Usar el estilo de botón global/de página
+        className="button"
         disabled={disabled}
       >
         Iniciar

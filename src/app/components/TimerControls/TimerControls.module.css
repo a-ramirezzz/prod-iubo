@@ -1,11 +1,10 @@
-/* Mueve .controls y estilos de botones específicos si no son globales */
-.controls {
-  margin-bottom: 25px;
+/* app/components/TimerControls/TimerControls.module.css */
+
+.controlsContainer {
   display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  gap: 15px; 
+  margin: 20px 0; 
   min-height: 45px;
 }
-/* ...media queries ... */

@@ -1,5 +1,6 @@
+// app/components/TimerControls/TimerControls.tsx
+
 import styles from './TimerControls.module.css';
-import pageButtonStyles from '@/app/Page.module.css'; 
 
 interface TimerControlsProps {
   isActive: boolean;
@@ -16,23 +17,23 @@ export default function TimerControls({
   if (initialTimeSet === 0) return null; 
 
   return (
-    <div className={styles.controls}>
+    <div className={styles.controlsContainer}> 
       <button
         onClick={onTogglePause}
-        className={pageButtonStyles.button}
+        className="button"
         disabled={totalSeconds === 0 && !isActive}
       >
         {isActive ? 'Pausar' : 'Reanudar'}
       </button>
       <button
         onClick={onReset}
-        className={`${pageButtonStyles.button} ${pageButtonStyles.resetButton}`}
+        className="button button-reset"
       >
         Reiniciar
       </button>
       <button
         onClick={onStop}
-        className={`${pageButtonStyles.button} ${pageButtonStyles.stopButton}`}
+        className="button button-stop"
       >
         Detener
       </button>

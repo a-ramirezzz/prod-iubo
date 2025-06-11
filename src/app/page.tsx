@@ -1,12 +1,14 @@
+// app/page.tsx
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+// Mantenemos este import para el layout de la página
 import styles from './Page.module.css'; 
 import { formatTime } from './lib/time'; 
 import type { Task } from './types';
-import customTimeInputStyles from './components/CustomTimeInput/CustomTimeInput.module.css';
 
-// Componentes
+// Importamos los componentes necesarios
 import ProjectBranding from './components/ProjectBranding/ProjectBranding';
 import TimerDisplay from './components/TimerDisplay/TimerDisplay';
 import PresetButtons from './components/PresetButtons/PresetButtons';
@@ -15,9 +17,8 @@ import TimerControls from './components/TimerControls/TimerControls';
 import TaskList from './components/TaskList/TaskList';
 import SettingsButton from './components/SettingsButton/SettingsButton';
 import SettingsPanel from './components/SettingsPanel/SettingsPanel';
-
-// Hooks
 import { useTimerAlert } from './hooks/useTimerAlert';
+
 
 export default function HomePage() {
   const [totalSeconds, setTotalSeconds] = useState<number>(0);
@@ -155,14 +156,14 @@ export default function HomePage() {
   return (
     <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
       {!isMiniMode && <ProjectBranding />}
-      <TimerDisplay timeParts={timeParts} />
+      <div className='timerDisplay'><TimerDisplay timeParts={timeParts} /></div>
       {!isMiniMode && (
         <>
-          <PresetButtons
+          <div className='presetButtons'><PresetButtons
             onSetTime={startTimer}
             disabled={isActive && totalSeconds > 0}
-          />
-          <CustomTimeInput
+          /></div>
+          <div className='customInputContainer'><CustomTimeInput
             hours={customHoursInput}
             onHoursChange={setCustomHoursInput}
             minutes={customMinutesInput}
@@ -170,7 +171,7 @@ export default function HomePage() {
             onStart={handleCustomStart}
             inputsDisabled={isActive && totalSeconds > 0}
             disabled={ (isActive && totalSeconds > 0) || (!customHoursInput && !customMinutesInput)}
-          />
+          /></div>
         </>
       )}
       <TimerControls
@@ -182,17 +183,15 @@ export default function HomePage() {
         onStop={stopTimer}
       />
 
-      {/* Botón para Modo Mini */}
       <div className={styles.miniModeButtonContainer}>
         <button
           onClick={() => setIsMiniMode(!isMiniMode)}
-          className={styles.button}
+          className="button"
         >
           {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
         </button>
       </div>
 
-      {/* Sección de Tareas */}
       {!isMiniMode && (
         <div className={styles.taskSection}>
           <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
@@ -202,12 +201,12 @@ export default function HomePage() {
               value={currentTaskInput}
               onChange={(e) => setCurrentTaskInput(e.target.value)}
               placeholder="Escribe una nueva tarea..."
-              className={`${styles.taskInput} ${customTimeInputStyles?.customInput || ''}`}
+              className={styles.taskInput}
               disabled={(isActive && totalSeconds > 0)}
             />
             <button
               type="submit"
-              className={styles.button}
+              className="button"
               disabled={(isActive && totalSeconds > 0) || currentTaskInput.trim() === ''}
             >
               Añadir Tarea
@@ -229,7 +228,7 @@ export default function HomePage() {
       )}
 
       {/* BOTÓN DE CONFIGURACIÓN (Flotante) */}
-      {!isMiniMode && <SettingsButton onClick={toggleSettingsPanel} />}
+      <div className='settingsButton'><SettingsButton onClick={toggleSettingsPanel} /></div>
       
       {/* PANEL DE CONFIGURACIÓN (Deslizable) */}
       <SettingsPanel isOpen={isSettingsPanelOpen} onClose={toggleSettingsPanel} />
