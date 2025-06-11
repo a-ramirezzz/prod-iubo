@@ -1,12 +1,12 @@
 // app/page.tsx
-
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-// Mantenemos este import para el layout de la página
-import styles from './Page.module.css'; 
-import { formatTime } from './lib/time'; 
-import type { Task } from './types';
+import { useState, useEffect } from 'react';
+import styles from './Page.module.css';
+
+// --- 1. Importamos nuestros nuevos hooks ---
+import { useTimer } from './hooks/useTimer';
+import { useTaskManager } from './hooks/useTaskManager';
 
 // Importamos los componentes necesarios
 import ProjectBranding from './components/ProjectBranding/ProjectBranding';
@@ -17,163 +17,83 @@ import TimerControls from './components/TimerControls/TimerControls';
 import TaskList from './components/TaskList/TaskList';
 import SettingsButton from './components/SettingsButton/SettingsButton';
 import SettingsPanel from './components/SettingsPanel/SettingsPanel';
-import { useTimerAlert } from './hooks/useTimerAlert';
-
 
 export default function HomePage() {
-  const [totalSeconds, setTotalSeconds] = useState<number>(0);
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [initialTimeSet, setInitialTimeSet] = useState<number>(0);
-  const [customHoursInput, setCustomHoursInput] = useState<string>('');
-  const [customMinutesInput, setCustomMinutesInput] = useState<string>('');
-  const [isMiniMode, setIsMiniMode] = useState<boolean>(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [currentTaskInput, setCurrentTaskInput] = useState<string>('');
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState<boolean>(false);
+  // --- 2. Usamos los hooks para obtener la lógica y el estado ---
+  const {
+    timeParts,
+    isActive,
+    totalSeconds,
+    initialTimeSet,
+    startTimer,
+    togglePause,
+    resetTimer,
+    stopTimer,
+  } = useTimer();
 
-  const { triggerAlert } = useTimerAlert();
+  const {
+    tasks,
+    currentTaskInput,
+    setCurrentTaskInput,
+    handleAddTask,
+    handleToggleTask,
+    handleDeleteTask,
+  } = useTaskManager();
 
+  // Estados que son puramente de la UI se quedan en el componente
+  const [customHoursInput, setCustomHoursInput] = useState('');
+  const [customMinutesInput, setCustomMinutesInput] = useState('');
+  const [isMiniMode, setIsMiniMode] = useState(false);
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+
+  // Pedir permiso para notificaciones al cargar
   useEffect(() => {
-    if (!("Notification" in window)) {
-      console.log("Este navegador no soporta notificaciones de escritorio");
-    } else if (Notification.permission === 'default') {
+    if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
   }, []);
 
-  useEffect(() => {
-    if (isActive && totalSeconds > 0) {
-      intervalRef.current = setInterval(() => {
-        setTotalSeconds((prevSeconds) => prevSeconds - 1);
-      }, 1000);
-    } else if (totalSeconds === 0 && isActive) {
-      clearInterval(intervalRef.current!);
-      setIsActive(false);
-      triggerAlert();
-    }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isActive, totalSeconds, triggerAlert]);
-
-  const toggleSettingsPanel = () => {
-    setIsSettingsPanelOpen(!isSettingsPanelOpen);
-  };
-
-  const timeParts = formatTime(totalSeconds);
-
-  const startTimer = (minutesTotal: number) => {
-    if (minutesTotal <= 0) return;
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    const seconds = minutesTotal * 60;
-    setTotalSeconds(seconds);
-    setInitialTimeSet(seconds);
-    setIsActive(true);
-    setCustomHoursInput('');
-    setCustomMinutesInput('');
-  };
-
-  const togglePause = () => setIsActive(!isActive);
-
-  const resetTimer = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setIsActive(false);
-    setTotalSeconds(initialTimeSet);
-  };
-
-  const stopTimer = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setIsActive(false); 
-    setTotalSeconds(0);
-    setInitialTimeSet(0);
-    setCustomHoursInput('');
-    setCustomMinutesInput('');
-  };
-
   const handleCustomStart = () => {
     const hours = parseInt(customHoursInput, 10);
     const minutes = parseInt(customMinutesInput, 10);
-    let totalMinutesToStart = 0;
-    let alertMessage = "";
+    const totalMinutesToStart = (isNaN(hours) ? 0 : hours * 60) + (isNaN(minutes) ? 0 : minutes);
 
-    if (customHoursInput) {
-        if (isNaN(hours) || hours < 0 || hours > 72) {
-            alertMessage += "Las horas deben ser un número entre 0 y 72.\n";
-        } else {
-            totalMinutesToStart += hours * 60;
-        }
-    } else if (!customMinutesInput) {
-        alertMessage += "Por favor, ingresa horas o minutos.\n";
+    if (totalMinutesToStart > 0) {
+      startTimer(totalMinutesToStart);
+      setCustomHoursInput('');
+      setCustomMinutesInput('');
+    } else {
+      alert('Por favor, ingresa un tiempo válido.');
     }
-
-    if (customMinutesInput) {
-        if (isNaN(minutes) || minutes < 0 || minutes > 59) {
-            alertMessage += "Los minutos deben ser un número entre 0 y 59.\n";
-        } else {
-            totalMinutesToStart += minutes;
-        }
-    } else if (!customHoursInput) {
-    }
-
-    if (alertMessage) {
-        alert(alertMessage.trim());
-        return;
-    }
-    if (totalMinutesToStart <= 0) {
-        alert("El tiempo total debe ser mayor a 0 minutos.");
-        return;
-    }
-    startTimer(totalMinutesToStart);
-  };
-
-  const handleAddTask = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (currentTaskInput.trim() === '') return;
-    const newTask: Task = {
-      id: Date.now().toString(),
-      text: currentTaskInput.trim(),
-      completed: false,
-    };
-    setTasks(prevTasks => [...prevTasks, newTask]);
-    setCurrentTaskInput('');
-  };
-
-  const handleToggleTask = (id: string) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const handleDeleteTask = (id: string) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
   };
   
   return (
     <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
       {!isMiniMode && <ProjectBranding />}
-      <div className='timerDisplay'><TimerDisplay timeParts={timeParts} /></div>
+      
+      <div className='timerDisplay'>
+        <TimerDisplay timeParts={timeParts} />
+      </div>
+
       {!isMiniMode && (
         <>
-          <div className='presetButtons'><PresetButtons
-            onSetTime={startTimer}
-            disabled={isActive && totalSeconds > 0}
-          /></div>
-          <div className='customInputContainer'><CustomTimeInput
-            hours={customHoursInput}
-            onHoursChange={setCustomHoursInput}
-            minutes={customMinutesInput}
-            onMinutesChange={setCustomMinutesInput}
-            onStart={handleCustomStart}
-            inputsDisabled={isActive && totalSeconds > 0}
-            disabled={ (isActive && totalSeconds > 0) || (!customHoursInput && !customMinutesInput)}
-          /></div>
+          <div className='presetButtons'>
+            <PresetButtons onSetTime={startTimer} disabled={isActive} />
+          </div>
+          <div className='customInputContainer'>
+            <CustomTimeInput
+              hours={customHoursInput}
+              onHoursChange={setCustomHoursInput}
+              minutes={customMinutesInput}
+              onMinutesChange={setCustomMinutesInput}
+              onStart={handleCustomStart}
+              inputsDisabled={isActive}
+              disabled={isActive || (!customHoursInput && !customMinutesInput)}
+            />
+          </div>
         </>
       )}
+
       <TimerControls
         isActive={isActive}
         initialTimeSet={initialTimeSet}
@@ -184,10 +104,7 @@ export default function HomePage() {
       />
 
       <div className={styles.miniModeButtonContainer}>
-        <button
-          onClick={() => setIsMiniMode(!isMiniMode)}
-          className="button"
-        >
+        <button onClick={() => setIsMiniMode(!isMiniMode)} className="button">
           {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
         </button>
       </div>
@@ -202,13 +119,9 @@ export default function HomePage() {
               onChange={(e) => setCurrentTaskInput(e.target.value)}
               placeholder="Escribe una nueva tarea..."
               className={styles.taskInput}
-              disabled={(isActive && totalSeconds > 0)}
+              disabled={isActive}
             />
-            <button
-              type="submit"
-              className="button"
-              disabled={(isActive && totalSeconds > 0) || currentTaskInput.trim() === ''}
-            >
+            <button type="submit" className="button" disabled={isActive || currentTaskInput.trim() === ''}>
               Añadir Tarea
             </button>
           </form>
@@ -216,22 +129,22 @@ export default function HomePage() {
             tasks={tasks}
             onToggleTask={handleToggleTask}
             onDeleteTask={handleDeleteTask}
-            inputDisabled={(isActive && totalSeconds > 0)}
+            inputDisabled={isActive}
           />
         </div>
       )}
 
       {!isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0 && (
         <p className={styles.instructionText}>
-          Selecciona un tiempo predefinido o ingresa minutos personalizados para comenzar.
+          Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar.
         </p>
       )}
 
-      {/* BOTÓN DE CONFIGURACIÓN (Flotante) */}
-      <div className='settingsButton'><SettingsButton onClick={toggleSettingsPanel} /></div>
+      <div className='settingsButton'>
+        <SettingsButton onClick={() => setIsSettingsPanelOpen(true)} />
+      </div>
       
-      {/* PANEL DE CONFIGURACIÓN (Deslizable) */}
-      <SettingsPanel isOpen={isSettingsPanelOpen} onClose={toggleSettingsPanel} />
+      <SettingsPanel isOpen={isSettingsPanelOpen} onClose={() => setIsSettingsPanelOpen(false)} />
     </main>
   );
 }
