@@ -1,6 +1,8 @@
+// src/app/components/SettingsPanel/SettingsPanel.tsx
 import { useState } from 'react';
 import styles from './SettingsPanel.module.css';
-import { useSettings } from '../../context/SettingsContext'; 
+import { useSettings } from '../../context/SettingsContext';
+import { themes } from '../../lib/themes'; 
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -27,7 +29,14 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   // Función para cambiar el tema
   const handleThemeChange = () => {
     const newThemeMode = settings.themeMode === 'light' ? 'dark' : 'light';
-    updateSettings({ themeMode: newThemeMode });
+    // Al cambiar de modo, también seleccionar el primer tema por defecto de ese modo
+    const defaultThemeForMode = themes.find(t => t.mode === newThemeMode);
+    
+    updateSettings({ 
+      themeMode: newThemeMode,
+      // Asegurarnos de que el ID del tema seleccionado corresponda con el nuevo modo
+      selectedThemeId: defaultThemeForMode ? defaultThemeForMode.id : settings.selectedThemeId 
+    });
   };
 
   return (
@@ -58,6 +67,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             {/* Sección de Ajustes Generales */}
             {activeSection === 'General' && (
               <div className={styles.settingsContainer}>
+                {/* ... (Contenido de la sección General como ya lo tenías) ... */}
                 <div className={styles.settingItem}>
                   <label htmlFor="start-mini">Iniciar en Modo Mini</label>
                   <label className={styles.toggleSwitch}>
@@ -70,7 +80,6 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <span className={styles.slider}></span>
                   </label>
                 </div>
-
                 <div className={styles.settingItem}>
                   <label htmlFor="confirm-stop">Confirmación al Detener</label>
                   <label className={styles.toggleSwitch}>
@@ -83,7 +92,6 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <span className={styles.slider}></span>
                   </label>
                 </div>
-
                 <div className={styles.settingItem}>
                   <label htmlFor="always-on-top" className={styles.disabledLabel}>Mantener Siempre Visible</label>
                   <label className={styles.toggleSwitch}>
@@ -91,7 +99,6 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <span className={styles.slider}></span>
                   </label>
                 </div>
-                
                 <div className={styles.settingItem}>
                   <label htmlFor="language">Idioma</label>
                   <select
@@ -104,7 +111,6 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <option value="en" disabled>English (Próximamente)</option>
                   </select>
                 </div>
-
                 <div className={styles.resetSection}>
                   <button onClick={handleResetClick} className={`${styles.resetButton} button button-stop`}>
                     Restablecer Ajustes
@@ -131,7 +137,23 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <span>Oscuro</span>
                   </div>
                 </div>
-                {/* Aquí irán los demás ajustes de tema más adelante */}
+
+                {/* Cuadrícula de Selección de Tema */}
+                <h3 className={styles.subSectionTitle}>Selector de Tema</h3>
+                <div className={styles.themeGrid}>
+                  {themes
+                    .filter(theme => theme.mode === settings.themeMode)
+                    .map(theme => (
+                      <div
+                        key={theme.id}
+                        className={`${styles.themeCard} ${settings.selectedThemeId === theme.id ? styles.activeTheme : ''}`}
+                        onClick={() => updateSettings({ selectedThemeId: theme.id })}
+                      >
+                        <img src={theme.previewImage} alt={theme.name} className={styles.themePreview} />
+                        <span className={styles.themeName}>{theme.name}</span>
+                      </div>
+                    ))}
+                </div>
               </div>
             )}
 

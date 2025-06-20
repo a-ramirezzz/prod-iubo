@@ -3,6 +3,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 import type { AppSettings } from '../types';
+import { themes } from '../lib/themes';
 
 // Valores por defecto para los ajustes
 const defaultSettings: AppSettings = {
@@ -11,6 +12,7 @@ const defaultSettings: AppSettings = {
   alwaysOnTop: false,
   language: 'es',
   themeMode: 'dark',
+  selectedThemeId: 'dark-default',
 };
 
 // Definir el tipo para el valor del contexto
@@ -27,17 +29,30 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
 
-  // Al cargar, intentar leer la configuración desde localStorage
+  // Al cargar, intentar leer la configuración
   useEffect(() => {
+    let initialSettings = { ...defaultSettings };
     try {
+      // 1. Detectar preferencia del sistema para establecer un valor inicial inteligente
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialMode = prefersDark ? 'dark' : 'light';
+      
+      // Usamos .find() para obtener el tema por defecto 
+      const defaultTheme = themes.find(theme => theme.mode === initialMode);
+
+      initialSettings.themeMode = initialMode;
+      // Asignamos el ID encontrado. Si no encuentra nada, se queda con el default.
+      initialSettings.selectedThemeId = defaultTheme ? defaultTheme.id : (prefersDark ? 'dark-default' : 'light-default');
+
+      // 2. Sobrescribir con lo guardado en localStorage si existe
       const storedSettings = localStorage.getItem('prod-uibo-settings');
       if (storedSettings) {
-        setSettings({ ...defaultSettings, ...JSON.parse(storedSettings) });
+        initialSettings = { ...initialSettings, ...JSON.parse(storedSettings) };
       }
     } catch (error) {
-      console.error("Failed to parse settings from localStorage", error);
-      setSettings(defaultSettings);
+      console.error("Failed to initialize settings", error);
     }
+    setSettings(initialSettings);
   }, []);
 
   // Cuando los ajustes cambien, guardarlos en localStorage
@@ -56,7 +71,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   // Función para restablecer a los valores por defecto
   const resetSettings = useCallback(() => {
-    setSettings(defaultSettings);
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const themeMode = prefersDark ? 'dark' : 'light';
+    
+    // También usamos .find() al resetear
+    const defaultTheme = themes.find(theme => theme.mode === themeMode);
+    const selectedThemeId = defaultTheme ? defaultTheme.id : (prefersDark ? 'dark-default' : 'light-default');
+
+    setSettings({ ...defaultSettings, themeMode, selectedThemeId });
   }, []);
 
   const value = { settings, updateSettings, resetSettings };

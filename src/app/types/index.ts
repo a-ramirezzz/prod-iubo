@@ -14,4 +14,5 @@ export interface AppSettings {
   alwaysOnTop: boolean; // Para futuras implementaciones de escritorio
   language: 'es' | 'en';
   themeMode: 'light' | 'dark';
+  selectedThemeId: string;
 }

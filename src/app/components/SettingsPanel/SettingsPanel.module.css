@@ -251,6 +251,58 @@ input:disabled + .slider {
   color: var(--text-color-secondary);
 }
 
+.subSectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  margin-top: 20px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color-primary);
+  width: 100%;
+}
+
+.themeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+.themeCard {
+  cursor: pointer;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  padding: 4px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.themeCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-color-hover);
+}
+
+.themeCard.activeTheme {
+  border-color: var(--brand-color-uibo);
+  transform: scale(1.05);
+}
+
+.themePreview {
+  width: 100%;
+  height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+.themeName {
+  font-size: 0.85rem;
+  margin-top: 8px;
+  display: block;
+  color: var(--text-color-primary);
+}
+
 /* Media query para pantallas más pequeñas donde el panel podría ocupar más */
 @media (max-width: 600px) {
   .settingsPanel {
