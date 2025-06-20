@@ -13,4 +13,5 @@ export interface AppSettings {
   confirmOnStop: boolean;
   alwaysOnTop: boolean; // Para futuras implementaciones de escritorio
   language: 'es' | 'en';
+  themeMode: 'light' | 'dark';
 }

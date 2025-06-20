@@ -1,39 +1,71 @@
 /* app/globals.css */
 
+/* 1. Variables Globales que NO cambian con el tema */
 :root {
   --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
   --brand-color-prod: #E53935;
   --brand-color-uibo: #1E88E5;
+}
 
-  /* Paleta de Colores para Tema Oscuro */
+/* 2. Paleta de Colores para el Tema Claro (CORREGIDA) */
+:root.light-mode {
+  /* Fondos */
+  --bg-color: #f8f9fa; /* Un blanco ligeramente más suave */
+  --panel-bg: #ffffff;
+  
+  /* Textos */
+  --text-color-primary: #212529; /* Gris oscuro para alto contraste (se usará en el timer) */
+  --text-color-secondary: #6c757d; /* Gris para texto secundario */
+  --text-color-placeholder: #adb5bd;
+  --text-color-disabled: #ced4da;
+
+  /* Bordes */
+  --border-color-primary: #dee2e6; /* Borde principal para inputs y botones */
+  --border-color-hover: #adb5bd;
+  --border-color-disabled: #e9ecef;
+
+  /* Botones e Inputs */
+  --button-primary-bg: #f8f9fa; /* Fondo del botón casi igual al fondo principal */
+  --button-primary-bg-hover: #e9ecef; /* Un poco más oscuro al pasar el ratón */
+  --button-primary-bg-active: #dee2e6;
+  --input-bg: #ffffff; /* Fondo blanco para los inputs */
+  
+  /* Botones de color */
+  --button-reset-bg: #ffc107;
+  --button-reset-bg-hover: #e0a800;
+  --button-stop-bg: #dc3545;
+  --button-stop-bg-hover: #c82333;
+
+  /* Deshabilitados */
+  --button-disabled-bg: #f8f9fa;
+  --input-bg-disabled: #e9ecef; /* Color para inputs deshabilitados */
+}
+
+/* 3. Paleta de Colores para el Tema Oscuro (Sin cambios) */
+:root.dark-mode {
   --bg-color: #1a1a1a;
+  --panel-bg: #242526;
   --text-color-primary: #f0f0f0;
   --text-color-secondary: #aaa;
   --text-color-placeholder: #888;
   --text-color-disabled: #666;
-
   --border-color-primary: #555;
   --border-color-hover: #777;
   --border-color-disabled: #404040;
-
   --button-primary-bg: #333;
   --button-primary-bg-hover: #444;
   --button-primary-bg-active: #222;
-
   --button-reset-bg: #c08000;
   --button-reset-bg-hover: #a06800;
-
   --button-stop-bg: #d32f2f;
   --button-stop-bg-hover: #b71c1c;
-
   --button-disabled-bg: #252525;
-
   --input-bg: #282828;
   --input-bg-disabled: #202020;
 }
 
-/* 2. Reseteo y Estilos Base para el Body */
+
+/* 4. Reseteo y Estilos Base (Sin cambios) */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -50,6 +82,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color-primary);
   font-family: var(--font-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -57,51 +90,53 @@ a {
   text-decoration: none;
 }
 
-/* 3. Clase de Botón Global y sus Modificadores */
-/* Clase base para todos los botones */
+/* 5. Estilos de Botones Globales (Sin cambios, usan las variables) */
 .button {
   background-color: var(--button-primary-bg);
-  color: var(--text-color-primary);
+  color: var(--text-color-primary); /* El texto del botón ahora usará el color principal */
   border: 1px solid var(--border-color-primary);
   padding: 10px 20px;
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease, color 0.2s ease;
   min-width: 100px;
   font-family: var(--font-primary);
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
   background-color: var(--button-primary-bg-hover);
   border-color: var(--border-color-hover);
 }
 
-.button:active {
+.button:active:not(:disabled) {
   background-color: var(--button-primary-bg-active);
   transform: translateY(1px);
 }
 
 .button:disabled {
   background-color: var(--button-disabled-bg);
-  color: var(--text-color-disabled);
+  color: var(--text-color-placeholder); /* Texto más claro para deshabilitado */
   border-color: var(--border-color-disabled);
   cursor: not-allowed;
 }
 
 /* Modificadores de color */
+.button-reset, .button-stop {
+  border-color: transparent;
+  color: #ffffff; /* Texto blanco para botones de color fuerte */
+}
+
 .button-reset {
   background-color: var(--button-reset-bg);
-  border-color: var(--button-reset-bg-hover);
 }
-.button-reset:hover {
+.button-reset:hover:not(:disabled) {
   background-color: var(--button-reset-bg-hover);
 }
 
 .button-stop {
   background-color: var(--button-stop-bg);
-  border-color: var(--button-stop-bg-hover);
 }
-.button-stop:hover {
+.button-stop:hover:not(:disabled) {
   background-color: var(--button-stop-bg-hover);
 }

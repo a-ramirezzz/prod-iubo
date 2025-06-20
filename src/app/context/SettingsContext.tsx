@@ -10,6 +10,7 @@ const defaultSettings: AppSettings = {
   confirmOnStop: true,
   alwaysOnTop: false,
   language: 'es',
+  themeMode: 'dark',
 };
 
 // Definir el tipo para el valor del contexto

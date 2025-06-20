@@ -8,8 +8,10 @@
   display: flex; 
   justify-content: center;
   align-items: center;
-  color: #ffffff;
+  /* El color ahora se hereda del body, que usa var(--text-color-primary) */
   user-select: none;
+  /* Transición suave para el cambio de color del texto */
+  transition: color 0.3s ease;
 }
 
 .timerDisplay > span:not([class]) {
@@ -22,15 +24,16 @@
   display: inline-block;
   position: relative;
   
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+  /* Sombra de texto sutil que funciona en ambos modos */
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 
   animation: subtleFadeIn 0.4s ease-out;
 }
 
 @keyframes subtleFadeIn {
   from {
-    transform: scale(0.98); /* Empieza casi a su tamaño normal */
-    opacity: 0.6; /* Empieza semitransparente */
+    transform: scale(0.98);
+    opacity: 0.6;
   }
   to {
     transform: scale(1);

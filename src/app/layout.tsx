@@ -1,7 +1,10 @@
+// app/layout.tsx
+
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import icon from './prod-iubo.png';
 import { SettingsProvider } from './context/SettingsContext';
+import ThemeWrapper from './components/ThemeWrapper/ThemeWrapper';
 
 export const metadata: Metadata = {
   title: 'Prod-UIBO - Reloj de Productividad Inteligente',
@@ -59,12 +62,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body>
-        <SettingsProvider>
-          {children}
-        </SettingsProvider>
-      </body>
-    </html>
+    <SettingsProvider>
+      <html lang="es">
+        <body>
+          <ThemeWrapper>
+            {children}
+          </ThemeWrapper>
+        </body>
+      </html>
+    </SettingsProvider>
   );
 }

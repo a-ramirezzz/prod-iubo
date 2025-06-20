@@ -240,6 +240,17 @@ input:disabled + .slider {
   min-width: 200px;
 }
 
+.themeSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.themeSwitcher span {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
 /* Media query para pantallas más pequeñas donde el panel podría ocupar más */
 @media (max-width: 600px) {
   .settingsPanel {

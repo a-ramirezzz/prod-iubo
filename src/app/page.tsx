@@ -121,7 +121,7 @@ export default function HomePage() {
         totalSeconds={totalSeconds}
         onTogglePause={togglePause}
         onReset={resetTimer}
-        onStop={handleStopWithConfirmation} // Usamos la nueva función con confirmación
+        onStop={handleStopWithConfirmation}
       />
 
       <div className={styles.miniModeButtonContainer}>

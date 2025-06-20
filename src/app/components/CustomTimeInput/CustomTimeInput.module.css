@@ -10,9 +10,10 @@
 }
 
 .customInput {
-  background-color: #282828;
-  color: #f0f0f0;
-  border: 1px solid #555;
+  /* Usamos las variables del tema */
+  background-color: var(--input-bg);
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-primary);
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
@@ -21,6 +22,7 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   -moz-appearance: textfield;
 }
+
 .customInput::-webkit-outer-spin-button,
 .customInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -33,24 +35,27 @@
 }
 
 .customInput:hover {
-  border-color: #777;
-  background-color: #303030;
+  border-color: var(--border-color-hover);
 }
 
 .customInput:focus {
-  border-color: #1E88E5;
+  border-color: var(--brand-color-uibo); /* Usamos el color de la marca para el foco */
   box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.3);
-  background-color: #222;
 }
 
 .customInput::placeholder {
-  color: #888;
+  color: var(--text-color-placeholder);
   opacity: 0.7;
+}
+
+.customInput:disabled {
+  background-color: var(--input-bg-disabled);
+  color: var(--text-color-disabled);
 }
 
 .customInputSeparator {
   font-size: 1.5rem;
-  color: #888;
+  color: var(--text-color-secondary); /* Usamos el color de texto secundario */
   padding: 0 5px;
   line-height: 1;
   user-select: none;
@@ -58,7 +63,7 @@
 }
 
 .customInputContainer:focus-within .customInputSeparator {
-  color: #1E88E5;
+  color: var(--brand-color-uibo); /* También cambia al color de la marca */
 }
 
 @media (max-width: 768px) {

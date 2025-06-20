@@ -1,3 +1,5 @@
+/* app/components/TaskList/TaskList.module.css */
+
 .taskList {
   list-style: none;
   padding: 0;
@@ -11,50 +13,59 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background-color: #2a2a2a;
-  border: 1px solid #444;
+  /* Usamos las variables del tema */
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color-primary);
   border-radius: 4px;
   margin-bottom: 8px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .taskItem:hover {
-  background-color: #333;
+  /* Usamos la variable de fondo para los botones */
+  background-color: var(--button-primary-bg-hover);
 }
 
 .taskText {
   flex-grow: 1;
   cursor: pointer;
   overflow-wrap: anywhere;
+  color: var(--text-color-primary); /* El texto de la tarea usa el color primario */
 }
 
 .taskItem.completed .taskText {
   text-decoration: line-through;
-  color: #888;
+  /* Usamos el color de texto secundario para tareas completadas */
+  color: var(--text-color-secondary);
 }
 
 .deleteButton {
   background: none;
   border: none;
-  color: #aaa;
+  /* Usamos el color de texto secundario para el botón */
+  color: var(--text-color-secondary);
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   padding: 5px;
   margin-left: 10px;
+  transition: color 0.2s ease;
 }
 
 .deleteButton:hover {
-  color: #ff6b6b;
+  /* Usamos el color del botón de detener para consistencia */
+  color: var(--button-stop-bg);
 }
 
 .deleteButton:disabled {
-  color: #666;
+  /* Usamos el color de texto para deshabilitados */
+  color: var(--text-color-disabled);
   cursor: not-allowed;
 }
 
 .noTasks {
-  color: #888;
+  /* Usamos el color de texto secundario para este mensaje */
+  color: var(--text-color-secondary);
   font-style: italic;
   margin-top: 15px;
 }

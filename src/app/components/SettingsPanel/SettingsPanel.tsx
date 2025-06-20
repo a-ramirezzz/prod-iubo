@@ -24,6 +24,12 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     }
   };
 
+  // Función para cambiar el tema
+  const handleThemeChange = () => {
+    const newThemeMode = settings.themeMode === 'light' ? 'dark' : 'light';
+    updateSettings({ themeMode: newThemeMode });
+  };
+
   return (
     <>
       <div className={styles.backdrop} onClick={onClose}></div>
@@ -49,6 +55,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           <main className={styles.mainContentArea}>
             <h2 className={styles.sectionTitle}>{activeSection}</h2>
             
+            {/* Sección de Ajustes Generales */}
             {activeSection === 'General' && (
               <div className={styles.settingsContainer}>
                 <div className={styles.settingItem}>
@@ -105,8 +112,31 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 </div>
               </div>
             )}
+            
+            {/* Sección de Temas */}
+            {activeSection === 'Temas' && (
+              <div className={styles.settingsContainer}>
+                <div className={styles.settingItem}>
+                  <label>Apariencia</label>
+                  <div className={styles.themeSwitcher}>
+                    <span>Claro</span>
+                    <label className={styles.toggleSwitch}>
+                      <input
+                        type="checkbox"
+                        checked={settings.themeMode === 'dark'}
+                        onChange={handleThemeChange}
+                      />
+                      <span className={styles.slider}></span>
+                    </label>
+                    <span>Oscuro</span>
+                  </div>
+                </div>
+                {/* Aquí irán los demás ajustes de tema más adelante */}
+              </div>
+            )}
 
-            {activeSection !== 'General' && (
+            {/* Marcador de posición para secciones futuras */}
+            {(activeSection === 'Sonidos' || activeSection === 'Focus') && (
               <div className={styles.comingSoon}>PRÓXIMAMENTE</div>
             )}
           </main>
