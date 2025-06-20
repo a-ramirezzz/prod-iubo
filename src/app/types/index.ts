@@ -8,3 +8,9 @@ export interface Task {
   text: string;
   completed: boolean;
 }
+export interface AppSettings {
+  startInMiniMode: boolean;
+  confirmOnStop: boolean;
+  alwaysOnTop: boolean; // Para futuras implementaciones de escritorio
+  language: 'es' | 'en';
+}

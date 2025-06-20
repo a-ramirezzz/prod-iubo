@@ -112,6 +112,134 @@
   text-align: center;
 }
 
+.mainContentArea {
+  flex-grow: 1;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Cambiado a flex-start */
+  justify-content: flex-start; /* Cambiado a flex-start */
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: #1E88E5;
+  width: 100%;
+}
+
+.comingSoon {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #777;
+  text-align: center;
+  align-self: center; /* Centrar solo este elemento */
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* --- NUEVOS ESTILOS PARA LOS AJUSTES --- */
+.settingsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.settingItem label {
+  color: #ddd;
+}
+
+.disabledLabel {
+  color: #777 !important;
+}
+
+/* Estilos para el interruptor (Toggle Switch) */
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #444;
+  transition: .4s;
+  border-radius: 28px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #1E88E5;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+input:disabled + .slider {
+  background-color: #333;
+  cursor: not-allowed;
+}
+
+/* Estilos para el desplegable de idioma */
+.select {
+  background-color: var(--input-bg);
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-primary);
+  border-radius: 5px;
+  padding: 8px 12px;
+  outline: none;
+}
+.select:disabled {
+  opacity: 0.5;
+}
+
+/* Estilos para la sección de restablecer */
+.resetSection {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.resetButton {
+  min-width: 200px;
+}
+
 /* Media query para pantallas más pequeñas donde el panel podría ocupar más */
 @media (max-width: 600px) {
   .settingsPanel {

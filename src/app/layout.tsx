@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import icon from './prod-iubo.png';
+import { SettingsProvider } from './context/SettingsContext';
 
 export const metadata: Metadata = {
   title: 'Prod-UIBO - Reloj de Productividad Inteligente',
@@ -60,7 +61,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body>
-        {children}
+        <SettingsProvider>
+          {children}
+        </SettingsProvider>
       </body>
     </html>
   );

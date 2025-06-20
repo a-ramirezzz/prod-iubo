@@ -4,9 +4,10 @@
 import { useState, useEffect } from 'react';
 import styles from './Page.module.css';
 
-// --- 1. Importamos nuestros nuevos hooks ---
+// --- 1. Importamos nuestros hooks, incluyendo el de ajustes ---
 import { useTimer } from './hooks/useTimer';
 import { useTaskManager } from './hooks/useTaskManager';
+import { useSettings } from './context/SettingsContext'; // Hook para acceder a los ajustes
 
 // Importamos los componentes necesarios
 import ProjectBranding from './components/ProjectBranding/ProjectBranding';
@@ -19,7 +20,10 @@ import SettingsButton from './components/SettingsButton/SettingsButton';
 import SettingsPanel from './components/SettingsPanel/SettingsPanel';
 
 export default function HomePage() {
-  // --- 2. Usamos los hooks para obtener la lógica y el estado ---
+  // --- Obtenemos la configuración global ---
+  const { settings } = useSettings();
+
+  // --- Usamos los hooks para obtener la lógica y el estado ---
   const {
     timeParts,
     isActive,
@@ -43,8 +47,14 @@ export default function HomePage() {
   // Estados que son puramente de la UI se quedan en el componente
   const [customHoursInput, setCustomHoursInput] = useState('');
   const [customMinutesInput, setCustomMinutesInput] = useState('');
-  const [isMiniMode, setIsMiniMode] = useState(false);
+  const [isMiniMode, setIsMiniMode] = useState(false); // El valor inicial será sobrescrito por el ajuste
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+
+  // --- APLICAR AJUSTES ---
+  // Efecto para establecer el modo mini según la configuración guardada
+  useEffect(() => {
+    setIsMiniMode(settings.startInMiniMode);
+  }, [settings.startInMiniMode]);
 
   // Pedir permiso para notificaciones al cargar
   useEffect(() => {
@@ -67,6 +77,17 @@ export default function HomePage() {
     }
   };
   
+  // Función que maneja el botón "Stop" considerando la configuración del usuario
+  const handleStopWithConfirmation = () => {
+    if (settings.confirmOnStop) {
+      if (window.confirm('¿Estás seguro de que quieres detener y reiniciar el temporizador?')) {
+        stopTimer();
+      }
+    } else {
+      stopTimer();
+    }
+  };
+
   return (
     <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
       {!isMiniMode && <ProjectBranding />}
@@ -100,7 +121,7 @@ export default function HomePage() {
         totalSeconds={totalSeconds}
         onTogglePause={togglePause}
         onReset={resetTimer}
-        onStop={stopTimer}
+        onStop={handleStopWithConfirmation} // Usamos la nueva función con confirmación
       />
 
       <div className={styles.miniModeButtonContainer}>
