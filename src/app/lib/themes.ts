@@ -32,6 +32,9 @@ export const themes: Theme[] = [
     styles: {
       '--bg-color': '#1a1a1a',
       '--panel-bg': '#242526',
+      '--text-highlight-color': '#f0f0f0', // Texto blanco/claro
+      '--text-shadow': 'none',
+      '--button-accent-bg': '#333', // Botones gris oscuro
     },
   },
   {
@@ -43,6 +46,9 @@ export const themes: Theme[] = [
     styles: {
       '--bg-color': '#f8f9fa',
       '--panel-bg': '#ffffff',
+      '--text-highlight-color': '#212529', // Texto oscuro
+      '--text-shadow': 'none',
+      '--button-accent-bg': '#f8f9fa', // Botones claros
     },
   },
   
