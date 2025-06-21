@@ -6,14 +6,14 @@
   align-items: center;
   justify-content: flex-start; 
   min-height: 100vh;
-  padding: 70px 20px 20px 20px;
+  padding: 100px 20px 20px 20px; /* Aumentamos el padding superior */
   text-align: center;
   position: relative;
 }
 
 .instructionText {
   margin-top: 20px;
-  color: var(--text-color-secondary); /* Usamos la variable global */
+  color: var(--text-color-secondary);
   font-style: italic;
 }
 
@@ -22,14 +22,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 20px; /* Reducimos el margen */
   width: 100%;
   max-width: 500px;
 }
 
 .taskSectionTitle {
   font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 15px;
+  text-align: center;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+
+  /* Usamos las mismas variables que en el contador para que coincidan */
+  color: var(--text-highlight-color, var(--text-color-primary));
+  text-shadow: var(--text-shadow, none);
 }
 
 .taskForm {
@@ -80,7 +87,7 @@
 
 /* Específico: el display del timer se hace más pequeño en modo mini */
 .mainContainer.miniModeActive .timerDisplay {
-  font-size: 3.5rem;
+  font-size: 4.5rem; /* Aumentamos el tamaño en modo mini */
   margin-bottom: 15px;
 }
 

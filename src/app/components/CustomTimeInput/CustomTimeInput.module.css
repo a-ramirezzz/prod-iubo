@@ -10,17 +10,19 @@
 }
 
 .customInput {
-  /* Usamos las variables del tema */
   background-color: var(--input-bg);
   color: var(--text-color-primary);
-  border: 1px solid var(--border-color-primary);
-  border-radius: 5px;
+  border: none;
+  border-radius: 8px;
   padding: 10px;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   text-align: center;
   outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: all 0.3s ease;
   -moz-appearance: textfield;
+  /* Efecto "hundido" o inset */
+  box-shadow: inset 3px 3px 6px var(--shadow-color), inset -3px -3px 6px var(--highlight-color);
 }
 
 .customInput::-webkit-outer-spin-button,
@@ -31,16 +33,7 @@
 
 .customInputHours,
 .customInputMinutes {
-  width: 70px;
-}
-
-.customInput:hover {
-  border-color: var(--border-color-hover);
-}
-
-.customInput:focus {
-  border-color: var(--brand-color-uibo); /* Usamos el color de la marca para el foco */
-  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.3);
+  width: 60px; /* Reducimos el ancho */
 }
 
 .customInput::placeholder {

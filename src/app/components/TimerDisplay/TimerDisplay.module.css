@@ -1,17 +1,20 @@
 /* src/app/components/TimerDisplay/TimerDisplay.module.css */
 
 .timerDisplay {
-  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
   font-size: 7rem;
   font-weight: 400; /* Numeros más gruesos */
   margin-bottom: 40px;
   display: flex; 
   justify-content: center;
   align-items: center;
-  /* El color ahora se hereda del body, que usa var(--text-color-primary) */
   user-select: none;
-  /* Transición suave para el cambio de color del texto */
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+
+  /* Usamos la nueva variable para el color, con fallback al color primario del tema */
+  color: var(--text-highlight-color, var(--text-color-primary));
+  
+  /* Usamos la nueva variable para la sombra/contorno, con fallback a 'none' */
+  text-shadow: var(--text-shadow, none);
 }
 
 .timerDisplay > span:not([class]) {
@@ -23,9 +26,6 @@
 .timeSegment {
   display: inline-block;
   position: relative;
-  
-  /* Sombra de texto sutil que funciona en ambos modos */
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 
   animation: subtleFadeIn 0.4s ease-out;
 }

@@ -5,6 +5,13 @@ import './globals.css';
 import icon from './prod-iubo.png';
 import { SettingsProvider } from './context/SettingsContext';
 import ThemeWrapper from './components/ThemeWrapper/ThemeWrapper';
+import { Anton } from 'next/font/google';
+
+export const anton = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-anton',
+});
 
 export const metadata: Metadata = {
   title: 'Prod-UIBO - Reloj de Productividad Inteligente',
@@ -56,14 +63,10 @@ export const viewport: Viewport = {
 };
 
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <SettingsProvider>
-      <html lang="es">
+      <html lang="es" className={anton.variable}>
         <body>
           <ThemeWrapper>
             {children}
