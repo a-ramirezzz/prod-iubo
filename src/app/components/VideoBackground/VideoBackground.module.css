@@ -12,12 +12,13 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;  /* Cambiado desde min-width */
+  height: 100%; /* Cambiado desde min-height */
   transform: translateX(-50%) translateY(-50%);
-  background-size: cover;
+  
+  /* --- LA LÍNEA CLAVE PARA MEJORAR LA CALIDAD DE LOS VIDEOS EN LOS TEMAS --- */
+  object-fit: cover;
+
   transition: opacity 0.5s ease-in-out;
   opacity: 1;
 }
