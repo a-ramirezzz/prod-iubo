@@ -1,33 +1,42 @@
+/* --- Contenedor Principal y Fondo --- */
 .backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1001; /* Detrás del panel, pero sobre el resto del contenido */
-  backdrop-filter: blur(5px); /* Efecto borroso */
-  -webkit-backdrop-filter: blur(5px); /* Para Safari */
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .settingsPanel {
   position: fixed;
-  top: 0;
-  right: -40vw; /* Inicialmente fuera de la pantalla (ajusta el ancho si es necesario) */
-  width: 40vw; /* Ancho del panel, aprox 1/4 de pantallas más grandes */
-  max-width: 90vw; /* Asegura que no sea demasiado grande en pantallas pequeñas */
-  height: 100%;
-  background-color: #1e1e1e; /* Color oscuro para el panel */
-  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-  z-index: 1002; /* Sobre el backdrop */
-  transition: right 0.3s ease-in-out;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  width: 90vw;
+  max-width: 800px;
+  height: 80vh;
+  max-height: 600px;
+  border-radius: 16px;
+  z-index: 1002;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  color: #f0f0f0;
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+
+  /* Efecto Glassmorphism */
+  background-color: var(--panel-bg-transparent, rgba(36, 37, 38, 0.75));
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--border-color-translucent, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .settingsPanel.open {
-  right: 0; /* Desliza hacia adentro */
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
 }
 
 .closeButton {
@@ -36,109 +45,109 @@
   right: 15px;
   background: none;
   border: none;
-  color: #aaa;
-  font-size: 1.5rem;
+  color: var(--text-color-secondary);
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 5px;
-}
-.closeButton:hover {
-  color: #fff;
+  z-index: 10;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
+.closeButton:hover {
+  color: var(--text-color-primary);
+  transform: rotate(90deg);
+}
+
+/* --- Contenido del Panel (Sidebar + Main) --- */
 .panelContent {
   display: flex;
   flex-grow: 1;
-  overflow-y: auto; /* Permite scroll si el contenido es largo */
-  padding-top: 50px; /* Espacio para el botón de cerrar */
+  height: 100%;
 }
 
+/* --- Barra Lateral de Navegación --- */
 .sidebar {
-  width: 120px; /* Ancho del menú lateral */
-  background-color: #2a2a2a; /* Un poco más claro que el panel principal */
-  padding: 20px 0;
-  border-right: 1px solid #333;
+  width: 220px;
+  flex-shrink: 0;
+  padding: 20px;
+  background-color: var(--sidebar-bg, rgba(0, 0, 0, 0.1));
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar ul {
+.sidebarTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-color-secondary);
+  padding: 0 12px 10px 12px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.sidebar nav, .sidebar ul {
+  width: 100%;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .menuButton {
-  display: block;
   width: 100%;
-  padding: 12px 15px;
-  background: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
   border: none;
-  color: #ccc;
-  text-align: left;
-  font-size: 0.95rem;
+  background-color: transparent;
+  color: var(--text-color-secondary);
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  text-align: left;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.menuButton svg {
+  stroke: var(--text-color-secondary);
+  transition: stroke 0.2s ease;
+}
+
 .menuButton:hover {
-  background-color: #383838;
-  color: #fff;
+  background-color: var(--button-hover-bg, rgba(255, 255, 255, 0.05));
+  color: var(--text-color-primary);
+}
+
+.menuButton:hover svg {
+  stroke: var(--text-color-primary);
 }
 
 .menuButton.active {
-  background-color: #1E88E5; /* Color de acento de tu marca */
-  color: #fff;
-  font-weight: bold;
+  background-color: var(--brand-color-uibo);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px -2px rgba(30, 136, 229, 0.4);
 }
 
+.menuButton.active svg {
+  stroke: #ffffff;
+}
+
+/* --- Área de Contenido Principal --- */
 .mainContentArea {
   flex-grow: 1;
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centra el "PRÓXIMAMENTE" */
-  justify-content: center; /* Centra el "PRÓXIMAMENTE" */
+  padding: 25px 30px;
+  overflow-y: auto;
 }
 
 .sectionTitle {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  color: #1E88E5;
-  align-self: flex-start; /* Alinea el título a la izquierda */
-}
-
-.comingSoon {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #777;
-  text-align: center;
-}
-
-.mainContentArea {
-  flex-grow: 1;
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Cambiado a flex-start */
-  justify-content: flex-start; /* Cambiado a flex-start */
-}
-
-.sectionTitle {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  color: #1E88E5;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--text-color-primary);
   width: 100%;
 }
 
-.comingSoon {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #777;
-  text-align: center;
-  align-self: center; /* Centrar solo este elemento */
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-/* --- NUEVOS ESTILOS PARA LOS AJUSTES --- */
 .settingsContainer {
   width: 100%;
   display: flex;
@@ -151,18 +160,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-color-primary, #333);
 }
 
 .settingItem label {
-  color: #ddd;
+  color: var(--text-color-primary);
 }
 
 .disabledLabel {
-  color: #777 !important;
+  color: var(--text-color-disabled, #777) !important;
 }
 
-/* Estilos para el interruptor (Toggle Switch) */
 .toggleSwitch {
   position: relative;
   display: inline-block;
@@ -183,7 +191,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #444;
+  background-color: var(--button-primary-bg, #444);
   transition: .4s;
   border-radius: 28px;
 }
@@ -201,7 +209,7 @@
 }
 
 input:checked + .slider {
-  background-color: #1E88E5;
+  background-color: var(--brand-color-uibo);
 }
 
 input:checked + .slider:before {
@@ -213,7 +221,6 @@ input:disabled + .slider {
   cursor: not-allowed;
 }
 
-/* Estilos para el desplegable de idioma */
 .select {
   background-color: var(--input-bg);
   color: var(--text-color-primary);
@@ -222,15 +229,15 @@ input:disabled + .slider {
   padding: 8px 12px;
   outline: none;
 }
+
 .select:disabled {
   opacity: 0.5;
 }
 
-/* Estilos para la sección de restablecer */
 .resetSection {
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-color-primary, #333);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -240,15 +247,12 @@ input:disabled + .slider {
   min-width: 200px;
 }
 
-.themeSwitcher {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.themeSwitcher span {
-  font-size: 0.9rem;
-  color: var(--text-color-secondary);
+.comingSoon {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--text-color-secondary, #777);
+  text-align: center;
+  margin: auto;
 }
 
 .subSectionTitle {
@@ -264,59 +268,52 @@ input:disabled + .slider {
 
 .themeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 15px;
   width: 100%;
 }
 
-.themeCard {
-  cursor: pointer;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  padding: 4px;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-  text-align: center;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.themeCard:hover {
-  transform: translateY(-3px);
-  border-color: var(--border-color-hover);
+@media (max-width: 768px) {
+  .sidebar {
+    width: 180px;
+  }
 }
 
-.themeCard.activeTheme {
-  border-color: var(--brand-color-uibo);
-  transform: scale(1.05);
-}
-
-.themePreview {
-  width: 100%;
-  height: 80px;
-  border-radius: 6px;
-  object-fit: cover;
-  display: block;
-}
-
-.themeName {
-  font-size: 0.85rem;
-  margin-top: 8px;
-  display: block;
-  color: var(--text-color-primary);
-}
-
-/* Media query para pantallas más pequeñas donde el panel podría ocupar más */
 @media (max-width: 600px) {
-  .settingsPanel {
-    width: 85vw; /* Ocupa más en móviles */
-    right: -85vw;
+  .panelContent {
+    flex-direction: column;
   }
   .sidebar {
-    width: 100px;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color-translucent, rgba(255, 255, 255, 0.1));
+    padding: 15px;
+  }
+  .sidebar ul {
+    display: flex;
+    justify-content: space-around;
+  }
+  .sidebarTitle {
+    text-align: center;
+    padding-bottom: 5px;
   }
   .menuButton {
-    padding: 10px;
-    font-size: 0.9rem;
+    justify-content: center;
+    padding: 8px;
   }
-  .comingSoon {
-    font-size: 2rem;
+  .menuButton span {
+    display: none;
+  }
+  .mainContentArea {
+    padding: 20px;
+  }
+  .sectionTitle {
+    font-size: 1.5rem;
   }
 }

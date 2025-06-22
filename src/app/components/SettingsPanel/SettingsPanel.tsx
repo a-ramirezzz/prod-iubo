@@ -10,6 +10,21 @@ interface SettingsPanelProps {
   onClose: () => void;
 }
 
+const ICONS = {
+  General: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" /><path d="M5 14H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1" /></svg>
+  ),
+  Temas: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" /></svg>
+  ),
+  Sonidos: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></svg>
+  ),
+  Focus: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
+  ),
+};
+
 type ActiveSectionType = 'General' | 'Temas' | 'Sonidos' | 'Focus';
 const MENU_ITEMS: ActiveSectionType[] = ['General', 'Temas', 'Sonidos', 'Focus'];
 
@@ -46,6 +61,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         <button className={styles.closeButton} onClick={onClose}>✕</button>
         <div className={styles.panelContent}>
           <aside className={styles.sidebar}>
+            <h3 className={styles.sidebarTitle}>CONFIGURACIÓN</h3>
             <nav>
               <ul>
                 {MENU_ITEMS.map((item) => (
@@ -54,7 +70,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       className={`${styles.menuButton} ${activeSection === item ? styles.active : ''}`}
                       onClick={() => setActiveSection(item)}
                     >
-                      {item}
+                      {ICONS[item]}
+                      <span>{item}</span>
                     </button>
                   </li>
                 ))}
