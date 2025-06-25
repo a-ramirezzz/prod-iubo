@@ -78,7 +78,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--text-color-secondary);
+  color: rgba(255, 255, 255, 0.6);
   padding: 0 12px 10px 12px;
   margin-bottom: 10px;
   text-transform: uppercase;
@@ -100,7 +100,7 @@
   border-radius: 8px;
   border: none;
   background-color: transparent;
-  color: var(--text-color-secondary);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -109,13 +109,13 @@
 }
 
 .menuButton svg {
-  stroke: var(--text-color-secondary);
+  stroke: rgba(255, 255, 255, 0.8);
   transition: stroke 0.2s ease;
 }
 
 .menuButton:hover {
   background-color: var(--button-hover-bg, rgba(255, 255, 255, 0.05));
-  color: var(--text-color-primary);
+  color: #ffffff;
 }
 
 .menuButton:hover svg {
@@ -144,7 +144,7 @@
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 25px;
-  color: var(--text-color-primary);
+  color: #e9e9e9;
   width: 100%;
 }
 
@@ -164,7 +164,7 @@
 }
 
 .settingItem label {
-  color: var(--text-color-primary);
+  color: #d1d1d1;
 }
 
 .disabledLabel {
@@ -250,7 +250,7 @@ input:disabled + .slider {
 .comingSoon {
   font-size: 2.5rem;
   font-weight: bold;
-  color: var(--text-color-secondary, #777);
+  color: #888;
   text-align: center;
   margin: auto;
 }
@@ -258,7 +258,7 @@ input:disabled + .slider {
 .subSectionTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-color-secondary);
+  color: #a0a0a0;
   margin-top: 20px;
   margin-bottom: 15px;
   padding-bottom: 10px;
@@ -271,6 +271,7 @@ input:disabled + .slider {
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 15px;
   width: 100%;
+  color: #d1d1d1;
 }
 
 /* --- Estilos para la Sección de Sonidos --- */
