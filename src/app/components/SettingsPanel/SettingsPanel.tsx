@@ -3,7 +3,8 @@ import { useState } from 'react';
 import styles from './SettingsPanel.module.css';
 import { useSettings } from '../../context/SettingsContext';
 import { themes } from '../../lib/themes';
-import ThemeCard from '../ThemeCard/ThemeCard'; // Importamos el nuevo componente
+import ThemeCard from '../ThemeCard/ThemeCard';
+import { sounds, noSound } from '../../lib/sounds';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -185,9 +186,43 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             )}
 
             {/* Marcador de posición para secciones futuras */}
-            {(activeSection === 'Sonidos' || activeSection === 'Focus') && (
-              <div className={styles.comingSoon}>PRÓXIMAMENTE</div>
+            {activeSection === 'Sonidos' && (
+              <div className={styles.settingsContainer}>
+                <h3 className={styles.subSectionTitle}>Sonido de fondo</h3>
+
+                <div className={styles.soundList}>
+                  {[noSound, ...sounds].map((sound) => (
+                    <button
+                      key={sound.id}
+                      className={`${styles.soundCard} ${settings.backgroundSound === sound.id ? styles.activeSound : ''}`}
+                      onClick={() => updateSettings({ backgroundSound: sound.id })}
+                    >
+                      <div className={styles.soundIcon}>{sound.icon}</div>
+                      <span>{sound.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <h3 className={styles.subSectionTitle}>Volumen</h3>
+                <div className={styles.volumeControl}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={settings.volume}
+                        className={styles.volumeSlider}
+                        onChange={(e) => updateSettings({ volume: parseFloat(e.target.value) })}
+                    />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </div>
+              </div>
             )}
+
+{activeSection === 'Focus' && (
+  <div className={styles.comingSoon}>PRÓXIMAMENTE</div>
+)}
           </main>
         </div>
       </div>

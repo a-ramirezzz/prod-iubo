@@ -6,6 +6,7 @@ import icon from './prod-iubo.png';
 import { SettingsProvider } from './context/SettingsContext';
 import ThemeWrapper from './components/ThemeWrapper/ThemeWrapper';
 import { Anton } from 'next/font/google';
+import AmbientSoundPlayer from './components/AmbientSoundPlayer/AmbientSoundPlayer';
 
 export const anton = Anton({
   subsets: ['latin'],
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ThemeWrapper>
             {children}
           </ThemeWrapper>
+          <AmbientSoundPlayer/>
         </body>
       </html>
     </SettingsProvider>

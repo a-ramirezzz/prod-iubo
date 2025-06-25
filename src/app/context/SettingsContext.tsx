@@ -10,8 +10,10 @@ const defaultSettings: AppSettings = {
   confirmOnStop: true,
   alwaysOnTop: false,
   language: 'es',
-  themeMode: 'dark', // Siempre 'dark' por defecto
-  selectedThemeId: 'dark-default', // El ID del tema oscuro básico por defecto
+  themeMode: 'dark',
+  selectedThemeId: 'dark-default',
+  backgroundSound: 'none',
+  volume: 0.5,
 };
 
 // Definir el tipo para el valor del contexto

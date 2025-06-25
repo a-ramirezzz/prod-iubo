@@ -52,7 +52,7 @@ export const themes: Theme[] = [
     },
   },
   
-  // --- TEMAS ANIMADOS CON ESTILOS CORREGIDOS ---
+  // --- TEMAS ANIMADOS CON ESTILOS ---
 
   // Atardecer (Claro): Texto blanco con sombra oscura y cálida.
   {
