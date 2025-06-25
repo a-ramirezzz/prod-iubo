@@ -1,11 +1,32 @@
-// src/app/context/SettingsContext.tsx
+/**
+ * =================================================================
+ * src/app/context/SettingsContext.tsx
+ * -----------------------------------------------------------------
+ * This file creates and manages the global state for all user-
+ * configurable settings. It uses React Context to provide settings
+ * data throughout the application and persists them to localStorage.
+ * =================================================================
+ */
+
+// =================================================================
+// SECTION: Imports
+// =================================================================
+
 'use client';
 
-import { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import type { AppSettings } from '../types';
 
-// Valores por defecto para los ajustes
-const defaultSettings: AppSettings = {
+// =================================================================
+// SECTION: Constants
+// =================================================================
+
+/**
+ * The default state for application settings.
+ * Used on the very first launch or after a settings reset.
+ * The app is configured to always start in dark mode by default.
+ */
+const DEFAULT_SETTINGS: AppSettings = {
   startInMiniMode: false,
   confirmOnStop: true,
   alwaysOnTop: false,
@@ -16,59 +37,94 @@ const defaultSettings: AppSettings = {
   volume: 0.5,
 };
 
-// Definir el tipo para el valor del contexto
+const SETTINGS_STORAGE_KEY = 'prod-uibo-settings';
+
+// =================================================================
+// SECTION: Context Definition
+// =================================================================
+
+/**
+ * Defines the shape of the data that the SettingsContext will provide.
+ */
 interface SettingsContextType {
   settings: AppSettings;
   updateSettings: (newSettings: Partial<AppSettings>) => void;
   resetSettings: () => void;
 }
 
-// Crear el contexto
+/**
+ * The React Context object for the application settings.
+ * Initialized with `undefined` and type-checked in the consumer hook.
+ */
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-// Crear el proveedor del contexto
-export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+// =================================================================
+// SECTION: Provider Component
+// =================================================================
 
-  // Al cargar, intentar leer la configuración desde localStorage
+/**
+ * The provider component that wraps the application and makes the
+ * settings state available to all child components.
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to render.
+ * @returns {JSX.Element} The context provider component.
+ */
+export function SettingsProvider({ children }: { children: ReactNode }) {
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+
+  /**
+   * Effect to load (hydrate) settings from localStorage on initial client-side render.
+   */
   useEffect(() => {
-    let initialSettings = { ...defaultSettings };
+    let initialSettings = { ...DEFAULT_SETTINGS };
     try {
-      // Se elimina la detección de la preferencia del sistema.
-      // La aplicación siempre intentará iniciar con la configuración por defecto (modo oscuro).
-      
-      const storedSettings = localStorage.getItem('prod-uibo-settings');
+      const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
       if (storedSettings) {
-        // Si hay ajustes guardados, se cargan, manteniendo el default oscuro como base.
+        // If settings exist in storage, merge them over the defaults.
         initialSettings = { ...initialSettings, ...JSON.parse(storedSettings) };
       }
     } catch (error) {
-      console.error("Failed to initialize settings", error);
+      console.error("Failed to parse settings from localStorage", error);
     }
     setSettings(initialSettings);
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount.
 
-  // Cuando los ajustes cambien, guardarlos en localStorage
+  /**
+   * Effect to persist settings to localStorage whenever they change.
+   */
   useEffect(() => {
     try {
-      localStorage.setItem('prod-uibo-settings', JSON.stringify(settings));
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
     } catch (error) {
       console.error("Failed to save settings to localStorage", error);
     }
   }, [settings]);
 
-  // Función para actualizar una o más configuraciones
+  /**
+   * Updates one or more settings and merges them into the current state.
+   * Memoized with useCallback to maintain a stable function reference.
+   */
   const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   }, []);
 
-  // Función para restablecer a los valores por defecto
+  /**
+   * Resets all settings back to their default values.
+   * Memoized with useCallback.
+   */
   const resetSettings = useCallback(() => {
-    // Ahora, al resetear, siempre vuelve a la configuración por defecto (modo oscuro).
-    setSettings(defaultSettings);
+    setSettings(DEFAULT_SETTINGS);
   }, []);
 
-  const value = { settings, updateSettings, resetSettings };
+  /**
+   * Memoize the context value to prevent unnecessary re-renders in consumers.
+   * The value object will only be recreated if settings or the updater functions change.
+   */
+  const value = useMemo(() => ({
+    settings,
+    updateSettings,
+    resetSettings
+  }), [settings, updateSettings, resetSettings]);
 
   return (
     <SettingsContext.Provider value={value}>
@@ -77,7 +133,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Hook personalizado para usar el contexto fácilmente
+// =================================================================
+// SECTION: Custom Hook
+// =================================================================
+
+/**
+ * A custom hook for consuming the SettingsContext easily and safely.
+ * Throws an error if used outside of a SettingsProvider.
+ * @returns {SettingsContextType} The settings context value.
+ */
 export const useSettings = (): SettingsContextType => {
   const context = useContext(SettingsContext);
   if (context === undefined) {

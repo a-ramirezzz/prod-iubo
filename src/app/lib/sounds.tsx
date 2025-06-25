@@ -1,15 +1,44 @@
-// src/app/lib/sounds.tsx
-import React, { JSX } from 'react'; // Buena práctica para archivos .tsx
+/**
+ * =================================================================
+ * src/app/lib/sounds.tsx
+ * -----------------------------------------------------------------
+ * This file defines the available ambient sounds for the application.
+ * It consolidates sound data, including sources and associated icons,
+ * into a single, easily manageable library.
+ *
+ * NOTE: This file uses the .tsx extension because it contains JSX
+ * (the SVG icons).
+ * =================================================================
+ */
 
-// Definimos la estructura de un objeto de Sonido
+// =================================================================
+// SECTION: Imports
+// =================================================================
+
+import type { JSX } from 'react';
+
+// =================================================================
+// SECTION: Type Definitions
+// =================================================================
+
+/**
+ * Represents the structure of a single ambient sound object.
+ */
 export interface Sound {
-  id: string; // Corresponderá al nombre del archivo sin extensión
-  name: string;
-  src: string;
-  icon: JSX.Element;
+  id: string;        // Unique identifier, corresponds to the audio file name (without extension).
+  name: string;      // Display name for the sound.
+  src: string;       // The path to the audio file in the /public directory.
+  icon: JSX.Element; // The JSX element for the icon representing the sound.
 }
 
-// Un objeto para acceder a los iconos fácilmente
+// =================================================================
+// SECTION: Icon Definitions
+// =================================================================
+
+/**
+ * A private collection of SVG icons used for the sounds.
+ * This keeps the main `sounds` array cleaner.
+ */
 const ICONS = {
   Leaf: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 4 13H2a10 10 0 0 0 10 10z" /><path d="M12 4a10 10 0 0 0-10 10h2A7 7 0 0 1 11 4z" /></svg>,
   Sun: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>,
@@ -19,7 +48,14 @@ const ICONS = {
   None: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="5" x2="19" y2="19" /></svg>
 };
 
-// Array con todos los sonidos disponibles
+
+// =================================================================
+// SECTION: Sound Library
+// =================================================================
+
+/**
+ * An array containing all available ambient sounds for the user to choose from.
+ */
 export const sounds: Sound[] = [
   { id: 'noche-campo', name: 'Noche en el Campo', src: '/noche-campo.mp3', icon: ICONS.Leaf },
   { id: 'nuevo-dia', name: 'Nuevo Día', src: '/nuevo-dia.mp3', icon: ICONS.Sun },
@@ -28,5 +64,7 @@ export const sounds: Sound[] = [
   { id: 'lluvia-relajante', name: 'Lluvia Relajante', src: '/lluvia-relajante.mp3', icon: ICONS.CloudRain },
 ];
 
-// Opción para no tener sonido
+/**
+ * A special 'Sound' object representing the option to have no sound playing.
+ */
 export const noSound: Sound = { id: 'none', name: 'Ninguno', src: '', icon: ICONS.None };

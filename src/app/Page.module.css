@@ -1,28 +1,61 @@
-/* app/Page.module.css */
+/*
+ * =================================================================
+ * Page.module.css
+ * -----------------------------------------------------------------
+ * Specific styles for the main layout and components of the 
+ * HomePage.
+ * =================================================================
+ */
 
+
+/*
+ * -----------------------------------------------------------------
+ * 1. Main Layout
+ * Styles for the main page container.
+ * -----------------------------------------------------------------
+ */
 .mainContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; 
   min-height: 100vh;
-  padding: 100px 20px 20px 20px; /* Aumentamos el padding superior */
+  padding: 100px 20px 20px 20px;
   text-align: center;
   position: relative;
 }
 
+
+/*
+ * -----------------------------------------------------------------
+ * 2. UI Components
+ * Styles for UI elements like instruction texts and the 
+ * mini-mode button.
+ * -----------------------------------------------------------------
+ */
 .instructionText {
   margin-top: 20px;
   color: var(--text-color-secondary);
   font-style: italic;
 }
 
-/* --- SECCIÓN DE TAREAS --- */
+.miniModeButtonContainer {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+
+/*
+ * -----------------------------------------------------------------
+ * 3. Task Section
+ * Styles dedicated to the task management section.
+ * -----------------------------------------------------------------
+ */
 .taskSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px; /* Reducimos el margen */
+  margin-top: 20px;
   width: 100%;
   max-width: 500px;
 }
@@ -34,7 +67,7 @@
   text-align: center;
   transition: color 0.3s ease, text-shadow 0.3s ease;
 
-  /* Usamos las mismas variables que en el contador para que coincidan */
+  /* Inherits color and shadow from the theme for consistency with the timer */
   color: var(--text-highlight-color, var(--text-color-primary));
   text-shadow: var(--text-shadow, none);
 }
@@ -68,31 +101,38 @@
   opacity: 0.7;
 }
 
-/* --- MODO MINI --- */
-.miniModeButtonContainer {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
 
-/* Ocultamos elementos en Modo Mini */
+/*
+ * -----------------------------------------------------------------
+ * 4. Mini Mode
+ * Styles that apply when mini mode is active.
+ * -----------------------------------------------------------------
+ */
+
+/* Hides multiple elements at once using :is() when mini mode is active. */
 .mainContainer.miniModeActive > :is(.presetButtons, .customInputContainer, .projectBranding, .instructionText, .taskSection, .settingsButton) {
   display: none;
 }
 
-/* Ajustamos el layout en Modo Mini */
+/* Adjusts the general layout in mini mode to center the content. */
 .mainContainer.miniModeActive {
   padding-top: 20px;
   justify-content: center;
 }
 
-/* Específico: el display del timer se hace más pequeño en modo mini */
+/* Reduces the timer's size in mini mode for a more compact look. */
 .mainContainer.miniModeActive .timerDisplay {
-  font-size: 4.5rem; /* Aumentamos el tamaño en modo mini */
+  font-size: 4.5rem;
   margin-bottom: 15px;
 }
 
 
-/* --- MEDIA QUERIES --- */
+/*
+ * -----------------------------------------------------------------
+ * 5. Responsive Design
+ * Adjustments for smaller screens.
+ * -----------------------------------------------------------------
+ */
 @media (max-width: 480px) {
   .mainContainer {
     padding-top: 60px;
