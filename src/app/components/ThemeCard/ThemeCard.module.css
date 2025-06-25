@@ -1,42 +1,80 @@
+/* app/components/ThemeCard/ThemeCard.module.css */
+
+/**
+ * Main styles for the theme card, which is a <button> element
+ * We reset default button styles to make it look like a custom card
+ */
 .themeCard {
-  cursor: pointer;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  padding: 4px;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-  text-align: center;
+  /* Resetting default button styles */
+  background: none;
+  font: inherit;
+  border: 2px solid transparent; /* Start with a transparent border for smooth transitions */
+  
+  /* Layout and appearance */
   display: flex;
   flex-direction: column;
+  text-align: center;
+  padding: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  
+  /* Smooth transitions for interaction states */
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
+
+/* --- Interaction States --- */
 
 .themeCard:hover {
   transform: translateY(-3px);
   border-color: var(--border-color-hover);
 }
 
+/* Accessibility improvement: Shows a clear outline only for keyboard users */
+.themeCard:focus-visible {
+  outline: 2px solid var(--brand-color-uibo);
+  outline-offset: 2px;
+}
+
+/* Styles for when the theme is selected (active) */
 .themeCard.activeTheme {
   border-color: var(--brand-color-uibo);
   transform: scale(1.05);
 }
 
+/* --- Card Content --- */
+
+/**
+ * Container for the image or video preview
+ */
 .previewContainer {
   width: 100%;
-  height: 90px; /* Altura de la vista previa */
+  height: 90px;
   border-radius: 6px;
-  overflow: hidden; /* Muy importante para que el video no se salga */
+  overflow: hidden; /* Crucial for keeping the preview media within the rounded corners */
   position: relative;
-  background-color: var(--button-primary-bg); /* Color de fondo mientras carga */
+  background-color: var(--button-primary-bg); /* Placeholder color while content loads */
 }
 
-/* Estilo común para imagen y video para que ocupen el mismo espacio */
+/**
+ * Shared styles for the preview image and video to ensure they fill the container
+ */
 .themePreviewImage,
 .themePreviewVideo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Ensures the media covers the area without distortion */
   display: block;
   position: absolute;
   top: 0;
   left: 0;
   transition: opacity 0.3s ease;
+}
+
+/**
+ * Styles for the theme name text below the preview
+ */
+.themeName {
+  padding-top: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
 }

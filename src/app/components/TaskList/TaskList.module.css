@@ -1,5 +1,8 @@
 /* app/components/TaskList/TaskList.module.css */
 
+/**
+ * Main container for the list of tasks
+ */
 .taskList {
   list-style: none;
   padding: 0;
@@ -8,63 +11,110 @@
   width: 100%;
 }
 
+/**
+ * Styles for each individual task item (<li>) in the list
+ */
 .taskItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  /* Usamos las variables del tema */
+  margin-bottom: 8px;
+  
+  /* Theming using global CSS variables */
   background-color: var(--panel-bg);
   border: 1px solid var(--border-color-primary);
   border-radius: 4px;
-  margin-bottom: 8px;
+
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .taskItem:hover {
-  /* Usamos la variable de fondo para los botones */
   background-color: var(--button-primary-bg-hover);
 }
 
-.taskText {
-  flex-grow: 1;
-  cursor: pointer;
-  overflow-wrap: anywhere;
-  color: var(--text-color-primary); /* El texto de la tarea usa el color primario */
+/* --- Task Content & Checkbox --- */
+
+/**
+ * Container for the checkbox and the task text (label)
+ * Uses flexbox to align them neatly
+ */
+.taskContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-grow: 1; /* Allows it to take up available space */
 }
 
+/**
+ * Custom styles for the task checkbox
+ */
+.checkbox {
+  cursor: pointer;
+  /* Basic styling for the checkbox */
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand-color-uibo); /* Colors the checkmark with the brand color */
+}
+
+.checkbox:focus-visible {
+  outline: 2px solid var(--brand-color-uibo);
+  outline-offset: 2px;
+}
+
+/**
+ * Styles for the task text, which is now a <label>
+ */
+.taskText {
+  cursor: pointer;
+  overflow-wrap: anywhere; /* Prevents long words from breaking the layout */
+  color: var(--text-color-primary);
+  transition: color 0.2s ease;
+}
+
+/**
+ * Styles for a task item when it is marked as completed
+ * The text gets a line-through and its color changes
+ */
 .taskItem.completed .taskText {
   text-decoration: line-through;
-  /* Usamos el color de texto secundario para tareas completadas */
   color: var(--text-color-secondary);
 }
+
+/* --- Delete Button --- */
 
 .deleteButton {
   background: none;
   border: none;
-  /* Usamos el color de texto secundario para el botón */
   color: var(--text-color-secondary);
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   padding: 5px;
   margin-left: 10px;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.1s ease;
 }
 
 .deleteButton:hover {
-  /* Usamos el color del botón de detener para consistencia */
   color: var(--button-stop-bg);
+  transform: scale(1.1);
+}
+
+.deleteButton:focus-visible {
+  outline: 2px solid var(--button-stop-bg);
+  outline-offset: 2px;
 }
 
 .deleteButton:disabled {
-  /* Usamos el color de texto para deshabilitados */
   color: var(--text-color-disabled);
   cursor: not-allowed;
+  transform: none;
 }
 
+/**
+ * Styles for the "no tasks" message
+ */
 .noTasks {
-  /* Usamos el color de texto secundario para este mensaje */
   color: var(--text-color-secondary);
   font-style: italic;
   margin-top: 15px;
