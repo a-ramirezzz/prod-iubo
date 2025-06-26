@@ -1,35 +1,51 @@
 /* src/app/components/TimerDisplay/TimerDisplay.module.css */
 
+/**
+ * Main container for the timer display (<time> element)
+ */
 .timerDisplay {
-  font-size: 7rem;
-  font-weight: 400; /* Numeros más gruesos */
-  margin-bottom: 40px;
   display: flex; 
   justify-content: center;
   align-items: center;
-  user-select: none;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-
-  /* Usamos la nueva variable para el color, con fallback al color primario del tema */
-  color: var(--text-highlight-color, var(--text-color-primary));
   
-  /* Usamos la nueva variable para la sombra/contorno, con fallback a 'none' */
+  font-size: 7rem;
+  font-weight: 400; /* Defines the font weight for the numbers */
+  margin-bottom: 40px;
+  user-select: none;
+  
+  /* Theming using CSS variables with fallbacks */
+  color: var(--text-highlight-color, var(--text-color-primary));
   text-shadow: var(--text-shadow, none);
+
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
+/**
+ * Styles for the ":" separators
+ * This selector cleverly targets the <span> elements that do not have a class attribute
+ */
 .timerDisplay > span:not([class]) {
   padding: 0 5px;
-  margin-top: -10px;
+  margin-top: -10px; /* Adjusts vertical alignment */
 }
 
-/* Estilo para los números */
+/**
+ * Styles for the individual time segments (hours, minutes, seconds)
+ * Each segment has its own fade-in animation
+ */
 .timeSegment {
   display: inline-block;
   position: relative;
-
   animation: subtleFadeIn 0.4s ease-out;
 }
 
+
+/* --- Animations --- */
+
+/**
+ * Keyframe animation for a subtle fade-in and scale effect
+ * This is triggered each time a time segment's key changes
+ */
 @keyframes subtleFadeIn {
   from {
     transform: scale(0.98);

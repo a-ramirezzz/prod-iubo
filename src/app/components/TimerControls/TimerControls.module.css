@@ -1,10 +1,15 @@
 /* app/components/TimerControls/TimerControls.module.css */
 
+/**
+ * Main container for the timer control buttons (Pause, Reset, Stop)
+ * Uses flexbox for easy alignment and spacing
+ */
 .controlsContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 15px; 
-  margin: 20px 0; 
+  margin: 20px 0;
+  /* Setting a min-height prevents layout shifts when the controls appear */
   min-height: 45px;
 }

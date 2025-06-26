@@ -1,42 +1,37 @@
 // src/app/components/VideoBackground/VideoBackground.tsx
-'use client';
+'use client'
 
-import { useEffect, useRef } from 'react';
-import styles from './VideoBackground.module.css';
+import styles from './VideoBackground.module.css'
 
+/**
+ * Defines the props for the VideoBackground component
+ */
 interface VideoBackgroundProps {
-  src: string;
+  // The source URL of the video to be played
+  src: string
 }
 
+/**
+ * A component that renders a looping, muted video as a full-screen background
+ * It automatically re-renders and plays when the video source changes
+ */
 export default function VideoBackground({ src }: VideoBackgroundProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Este efecto se asegura de que el video se cargue y reproduzca
-  // cuando la fuente (src) cambia.
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.src = src;
-      videoRef.current.load();
-      videoRef.current.play().catch(error => {
-        // El autoplay puede fallar si el navegador lo bloquea,
-        // pero al estar en 'muted', usualmente funciona.
-        console.error("Video play failed:", error);
-      });
-    }
-  }, [src]);
-
   return (
     <div className={styles.videoContainer}>
       <video
-        ref={videoRef}
+        // Using the 'src' as a 'key' is a React pattern to force a re-mount
+        // This ensures the new video loads and plays correctly when the src changes
+        key={src}
         className={styles.videoBackground}
         autoPlay
         loop
-        muted // Requisito: sin sonido
-        playsInline // Esencial para compatibilidad en iOS
+        muted // Muting is often required for autoplay to work
+        playsInline // Essential for video playback on iOS devices
+        src={src} // Set the source directly
       >
-        {/* La fuente se establece dinámicamente con el useEffect */}
+        {/* Providing different sources for different formats can be done here */}
+        {/* <source src={src} type="video/webm" /> */}
       </video>
     </div>
-  );
+  )
 }
