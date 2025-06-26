@@ -2,8 +2,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useSettings } from '../../context/SettingsContext'
-import { sounds, noSound } from '../../lib/sounds'
+import { useSettings } from '@/context/SettingsContext'
+import { sounds, noSound } from '@/lib/sounds'
 
 /**
  * A component that plays ambient sounds in the background based on user settings

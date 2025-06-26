@@ -1,6 +1,6 @@
 // app/components/TaskList/TaskList.tsx
-import type { Task } from '../../types'
-import styles from '../TaskList/TaskList.module.css'
+import type { Task } from '@/app/types'
+import styles from '@/app/components/TaskList/TaskList.module.css'
 
 /**
  * Defines the props for the TaskList component

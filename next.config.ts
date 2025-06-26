@@ -9,6 +9,7 @@
  */
 
 import { NextConfig } from "next";
+import path from "path";
 
 /**
  * @type {import('next').NextConfig}
@@ -35,6 +36,17 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  /**
+   * Webpack configuration for path aliases
+   * This ensures that the @ alias works correctly in both development and production
+   */
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+    };
+    return config;
   },
 };
 

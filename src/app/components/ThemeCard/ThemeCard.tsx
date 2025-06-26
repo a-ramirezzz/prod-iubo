@@ -1,8 +1,8 @@
 // src/app/components/ThemeCard/ThemeCard.tsx
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import type { Theme } from '../../lib/themes'
-import styles from './ThemeCard.module.css'
+import type { Theme } from '@/app/lib/themes'
+import styles from '@/app/components/ThemeCard/ThemeCard.module.css'
 
 /**
  * Defines the props for the ThemeCard component

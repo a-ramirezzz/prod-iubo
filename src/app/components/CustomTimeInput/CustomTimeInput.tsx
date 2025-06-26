@@ -1,5 +1,5 @@
 // app/components/CustomTimeInput/CustomTimeInput.tsx
-import styles from './CustomTimeInput.module.css'
+import styles from '@/app/components/CustomTimeInput/CustomTimeInput.module.css'
 
 /**
  * Interface for the CustomTimeInput component's props

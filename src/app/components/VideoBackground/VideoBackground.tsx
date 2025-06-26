@@ -1,7 +1,7 @@
 // src/app/components/VideoBackground/VideoBackground.tsx
 'use client'
 
-import styles from './VideoBackground.module.css'
+import styles from '@/app/components/VideoBackground/VideoBackground.module.css'
 
 /**
  * Defines the props for the VideoBackground component

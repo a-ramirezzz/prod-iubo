@@ -1,10 +1,10 @@
 // src/app/components/ThemeWrapper.tsx
 'use client'
 
-import { useSettings } from '../../context/SettingsContext'
+import { useSettings } from '@/context/SettingsContext'
 import { useEffect, useMemo, useRef } from 'react'
-import { themes } from '../../lib/themes'
-import VideoBackground from '../VideoBackground/VideoBackground'
+import { themes } from '@/app/lib/themes'
+import VideoBackground from '@/app/components/VideoBackground/VideoBackground'
 
 /**
  * A top-level component that wraps the entire application to apply

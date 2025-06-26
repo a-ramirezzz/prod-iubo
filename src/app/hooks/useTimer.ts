@@ -12,8 +12,8 @@
 // =================================================================
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useTimerAlert } from './useTimerAlert';
-import { formatTime } from '../lib/time';
+import { useTimerAlert } from '@/app/hooks/useTimerAlert';
+import { formatTime } from '@/app/lib/time';
 
 // =================================================================
 // SECTION: Hook Definition

@@ -1,6 +1,6 @@
 // src/app/components/TimerDisplay/TimerDisplay.tsx
-import type { TimeParts } from '../../types'
-import styles from './TimerDisplay.module.css'
+import type { TimeParts } from '@/app/types'
+import styles from '@/app/components/TimerDisplay/TimerDisplay.module.css'
 
 /**
  * Defines the props for the TimerDisplay component

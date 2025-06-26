@@ -1,5 +1,5 @@
 // app/components/PresetButtons/PresetButtons.tsx
-import styles from './PresetButtons.module.css'
+import styles from '@/app/components/PresetButtons/PresetButtons.module.css'
 
 /**
  * Defines the props for the PresetButtons component

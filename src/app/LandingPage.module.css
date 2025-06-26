@@ -1,0 +1,45 @@
+/* /app/LandingPage.module.css (NUEVO ARCHIVO) */
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  background-color: var(--app-bg, #121212);
+  color: var(--text-color-primary, #ffffff);
+  padding: 2rem;
+}
+
+.content {
+  max-width: 600px;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--brand-color-uibo, #00ffff);
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  color: var(--text-color-secondary, #cccccc);
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+  background-color: var(--brand-color-uibo, #00ffff);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--brand-color-uibo, #00ffff);
+} 

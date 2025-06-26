@@ -1,51 +1,51 @@
 /* app/globals.css */
 
-/* 1. Variables Globales que NO cambian con el tema */
+/* 1. Global variables that DO NOT change with the theme */
 :root {
   --font-primary: var(--font-anton), sans-serif;
   --brand-color-prod: #E53935;
   --brand-color-uibo: #1E88E5;
 }
 
-/* 2. Paleta de Colores para el Tema Claro (CORREGIDA) */
+/* 2. Color palette for Light Theme (REVISED) */
 :root.light-mode {
-  /* Fondos */
-  --bg-color: #f8f9fa; /* Un blanco ligeramente más suave */
+  /* Backgrounds */
+  --bg-color: #f8f9fa; /* A slightly softer white */
   --panel-bg: #ffffff;
 
   --shadow-color: rgba(0, 0, 0, 0.1);
   --highlight-color: rgba(255, 255, 255, 0.7);
   
-  /* Textos */
-  --text-color-primary: #212529; /* Gris oscuro para alto contraste (se usará en el timer) */
-  --text-color-secondary: #6c757d; /* Gris para texto secundario */
+  /* Text colors */
+  --text-color-primary: #212529; /* Dark gray for high contrast (used in timer) */
+  --text-color-secondary: #6c757d; /* Gray for secondary text */
   --text-color-placeholder: #adb5bd;
   --text-color-disabled: #ced4da;
 
-  /* Bordes */
-  --border-color-primary: #dee2e6; /* Borde principal para inputs y botones */
+  /* Borders */
+  --border-color-primary: #dee2e6; /* Main border for inputs and buttons */
   --border-color-hover: #adb5bd;
   --border-color-disabled: #e9ecef;
 
-  /* Botones e Inputs */
-  --button-primary-bg: #f8f9fa; /* Fondo del botón casi igual al fondo principal */
-  --button-primary-bg-hover: #e9ecef; /* Un poco más oscuro al pasar el ratón */
+  /* Buttons and Inputs */
+  --button-primary-bg: #f8f9fa; /* Button background almost same as main background */
+  --button-primary-bg-hover: #e9ecef; /* Slightly darker on hover */
   --button-primary-bg-active: #dee2e6;
-  --input-bg: #ffffff; /* Fondo blanco para los inputs */
+  --input-bg: #ffffff; /* White background for inputs */
   
-  /* Botones de color */
+  /* Colored buttons */
   --button-reset-bg: #ffc107;
   --button-reset-bg-hover: #e0a800;
   --button-stop-bg: #dc3545;
   --button-stop-bg-hover: #c82333;
   --button-border-color: rgba(0, 0, 0, 0.05);
 
-  /* Deshabilitados */
+  /* Disabled states */
   --button-disabled-bg: #f8f9fa;
-  --input-bg-disabled: #e9ecef; /* Color para inputs deshabilitados */
+  --input-bg-disabled: #e9ecef; /* Color for disabled inputs */
 }
 
-/* 3. Paleta de Colores para el Tema Oscuro (Sin cambios) */
+/* 3. Color palette for Dark Theme (Unchanged) */
 :root.dark-mode {
   --bg-color: #1a1a1a;
   --panel-bg: #242526;
@@ -73,7 +73,7 @@
 }
 
 
-/* 4. Reseteo y Estilos Base (Sin cambios) */
+/* 4. Reset and Base Styles (Unchanged) */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -98,7 +98,7 @@ a {
   text-decoration: none;
 }
 
-/* 5. Estilos de Botones Globales (Sin cambios, usan las variables) */
+/* 5. Global Button Styles (Unchanged, uses variables) */
 .button {
   background-color: var(--button-primary-bg);
   color: var(--text-color-secondary);
@@ -111,12 +111,12 @@ a {
   transition: all 0.2s ease-out;
   min-width: auto; 
   font-family: var(--font-primary);
-  /* El efecto 3D */
+  /* 3D effect */
   box-shadow: 4px 4px 8px var(--shadow-color), -4px -4px 8px var(--highlight-color);
 }
 
 .button:active:not(:disabled) {
-  /* Invertimos las sombras para que parezca presionado */
+  /* Invert shadows to look pressed */
   box-shadow: inset 4px 4px 8px var(--shadow-color), inset -4px -4px 8px var(--highlight-color);
   transform: translateY(1px);
   color: var(--text-color-primary);
@@ -124,15 +124,15 @@ a {
 
 .button:disabled {
   background-color: var(--button-disabled-bg);
-  color: var(--text-color-placeholder); /* Texto más claro para deshabilitado */
+  color: var(--text-color-placeholder); /* Lighter text for disabled */
   border-color: var(--border-color-disabled);
   cursor: not-allowed;
 }
 
-/* Modificadores de color */
+/* Color modifiers */
 .button-reset, .button-stop {
   border-color: transparent;
-  color: #ffffff; /* Texto blanco para botones de color fuerte */
+  color: #ffffff; /* White text for strong color buttons */
 }
 
 .button-reset {

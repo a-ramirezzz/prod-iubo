@@ -1,5 +1,5 @@
 // app/components/SettingsButton/SettingsButton.tsx
-import styles from './SettingsButton.module.css'
+import styles from '@/app/components/SettingsButton/SettingsButton.module.css'
 
 /**
  * Defines the props for the SettingsButton component

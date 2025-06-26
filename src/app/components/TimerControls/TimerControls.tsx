@@ -1,5 +1,5 @@
 // app/components/TimerControls/TimerControls.tsx
-import styles from './TimerControls.module.css'
+import styles from '@/app/components/TimerControls/TimerControls.module.css'
 
 /**
  * Defines the props for the TimerControls component

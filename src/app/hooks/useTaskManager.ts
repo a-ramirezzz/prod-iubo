@@ -12,7 +12,7 @@
 // =================================================================
 
 import { useState, useCallback } from 'react';
-import type { Task } from '../types';
+import type { Task } from '@/app/types';
 
 // =================================================================
 // SECTION: Hook Definition

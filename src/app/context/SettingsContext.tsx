@@ -15,7 +15,7 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
-import type { AppSettings } from '../types';
+import type { AppSettings } from '@/app/types';
 
 // =================================================================
 // SECTION: Constants

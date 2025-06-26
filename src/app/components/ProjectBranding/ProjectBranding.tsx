@@ -1,5 +1,5 @@
 // app/components/ProjectBranding/ProjectBranding.tsx
-import styles from './ProjectBranding.module.css'
+import styles from '@/app/components/ProjectBranding/ProjectBranding.module.css'
 
 /**
  * A simple presentational component that displays the project's brand name
