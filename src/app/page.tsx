@@ -1,15 +1,19 @@
 // app/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+// =================================================================
+// SECTION: Imports
+// =================================================================
+
+import { useState, useEffect, useCallback } from 'react';
 import styles from './Page.module.css';
 
-// --- 1. Importamos nuestros hooks, incluyendo el de ajustes ---
+// Custom Hooks for Core Logic
 import { useTimer } from './hooks/useTimer';
 import { useTaskManager } from './hooks/useTaskManager';
-import { useSettings } from './context/SettingsContext'; // Hook para acceder a los ajustes
+import { useSettings } from './context/SettingsContext';
 
-// Importamos los componentes necesarios
+// UI Component Imports
 import ProjectBranding from './components/ProjectBranding/ProjectBranding';
 import TimerDisplay from './components/TimerDisplay/TimerDisplay';
 import PresetButtons from './components/PresetButtons/PresetButtons';
@@ -19,11 +23,20 @@ import TaskList from './components/TaskList/TaskList';
 import SettingsButton from './components/SettingsButton/SettingsButton';
 import SettingsPanel from './components/SettingsPanel/SettingsPanel';
 
+/**
+ * HomePage is the main component of the application, serving as the central hub
+ * for all primary user interactions. It integrates timer logic, task management,
+ * and user settings to create a cohesive productivity experience.
+ */
 export default function HomePage() {
-  // --- Obtenemos la configuración global ---
+  // =================================================================
+  // SECTION: State and Hooks
+  // =================================================================
+
+  // Global settings from context
   const { settings } = useSettings();
 
-  // --- Usamos los hooks para obtener la lógica y el estado ---
+  // Core application logic from custom hooks
   const {
     timeParts,
     isActive,
@@ -44,59 +57,94 @@ export default function HomePage() {
     handleDeleteTask,
   } = useTaskManager();
 
-  // Estados que son puramente de la UI se quedan en el componente
+  // Local UI state for this page
   const [customHoursInput, setCustomHoursInput] = useState('');
   const [customMinutesInput, setCustomMinutesInput] = useState('');
-  const [isMiniMode, setIsMiniMode] = useState(false); // El valor inicial será sobrescrito por el ajuste
+  const [isMiniMode, setIsMiniMode] = useState(false);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
 
-  // --- APLICAR AJUSTES ---
-  // Efecto para establecer el modo mini según la configuración guardada
+  // =================================================================
+  // SECTION: Effects
+  // =================================================================
+
+  /**
+   * Effect to synchronize the mini-mode state with the global settings.
+   * Runs whenever the `startInMiniMode` setting changes.
+   */
   useEffect(() => {
     setIsMiniMode(settings.startInMiniMode);
   }, [settings.startInMiniMode]);
 
-  // Pedir permiso para notificaciones al cargar
+  /**
+   * Effect to request notification permissions from the user upon
+   * the component's initial mount.
+   */
   useEffect(() => {
+    // Check if the Notification API is available and permission hasn't been granted/denied yet.
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once.
 
-  const handleCustomStart = () => {
-    const hours = parseInt(customHoursInput, 10);
-    const minutes = parseInt(customMinutesInput, 10);
-    const totalMinutesToStart = (isNaN(hours) ? 0 : hours * 60) + (isNaN(minutes) ? 0 : minutes);
+  // =================================================================
+  // SECTION: Event Handlers
+  // =================================================================
+  
+  /**
+   * Starts the timer with a custom duration provided by the user.
+   * Validates the input before starting.
+   */
+  const handleCustomStart = useCallback(() => {
+    const hours = parseInt(customHoursInput, 10) || 0;
+    const minutes = parseInt(customMinutesInput, 10) || 0;
+    const totalMinutesToStart = (hours * 60) + minutes;
 
     if (totalMinutesToStart > 0) {
       startTimer(totalMinutesToStart);
       setCustomHoursInput('');
       setCustomMinutesInput('');
     } else {
+      // NOTE: Consider replacing alert() with a custom modal for better UX.
       alert('Por favor, ingresa un tiempo válido.');
     }
-  };
+  }, [customHoursInput, customMinutesInput, startTimer]);
   
-  // Función que maneja el botón "Stop" considerando la configuración del usuario
-  const handleStopWithConfirmation = () => {
+  /**
+   * Stops and resets the timer, showing a confirmation dialog if the
+   * user has enabled this setting.
+   */
+  const handleStopWithConfirmation = useCallback(() => {
     if (settings.confirmOnStop) {
+      // NOTE: Consider replacing window.confirm() with a custom modal.
       if (window.confirm('¿Estás seguro de que quieres detener y reiniciar el temporizador?')) {
         stopTimer();
       }
     } else {
       stopTimer();
     }
-  };
+  }, [settings.confirmOnStop, stopTimer]);
+
+  // =================================================================
+  // SECTION: Render Logic
+  // =================================================================
+  
+  // Boolean to determine if the timer setup controls should be shown.
+  const showSetupControls = !isMiniMode;
+  
+  // Boolean to determine if the initial instruction text should be shown.
+  const showInstructionText = !isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0;
 
   return (
     <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
-      {!isMiniMode && <ProjectBranding />}
+      {showSetupControls && <ProjectBranding />}
       
+      {/* Main Timer Display */}
       <div className='timerDisplay'>
         <TimerDisplay timeParts={timeParts} />
       </div>
 
-      {!isMiniMode && (
+      {/* Timer Setup Controls (Presets and Custom Input) */}
+      {showSetupControls && (
         <>
           <div className='presetButtons'>
             <PresetButtons onSetTime={startTimer} disabled={isActive} />
@@ -115,6 +163,7 @@ export default function HomePage() {
         </>
       )}
 
+      {/* Core Timer Controls (Start, Pause, Stop) */}
       <TimerControls
         isActive={isActive}
         initialTimeSet={initialTimeSet}
@@ -124,13 +173,15 @@ export default function HomePage() {
         onStop={handleStopWithConfirmation}
       />
 
+      {/* UI Mode Toggles */}
       <div className={styles.miniModeButtonContainer}>
         <button onClick={() => setIsMiniMode(!isMiniMode)} className="button">
           {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
         </button>
       </div>
 
-      {!isMiniMode && (
+      {/* Task Management Section */}
+      {showSetupControls && (
         <div className={styles.taskSection}>
           <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
           <form onSubmit={handleAddTask} className={styles.taskForm}>
@@ -155,12 +206,14 @@ export default function HomePage() {
         </div>
       )}
 
-      {!isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0 && (
+      {/* Initial User Instruction */}
+      {showInstructionText && (
         <p className={styles.instructionText}>
           Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar.
         </p>
       )}
 
+      {/* Settings Panel Trigger and Component */}
       <div className='settingsButton'>
         <SettingsButton onClick={() => setIsSettingsPanelOpen(true)} />
       </div>

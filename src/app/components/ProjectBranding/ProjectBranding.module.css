@@ -1,5 +1,9 @@
 /* app/components/ProjectBranding/ProjectBranding.module.css */
 
+/**
+ * Main container for the project branding text
+ * It's positioned absolutely in the top-right corner of the viewport
+ */
 .projectName {
   position: absolute;
   top: 20px;
@@ -7,19 +11,29 @@
   font-size: 1.4rem;
   font-weight: bold;
   z-index: 10;
-  user-select: none; /* Para que no se pueda seleccionar */
+  user-select: none; /* Prevents the user from selecting the text */
 }
 
-/* Usamos las variables globales para los colores */
+/**
+ * Color styling for the "Prod" part of the brand name
+ * Uses a global CSS variable for the brand color
+ */
 .projectNameProd {
   color: var(--brand-color-prod);
 }
 
+/**
+ * Color styling for the "-UIBO" part of the brand name
+ * Uses a global CSS variable for the brand color
+ */
 .projectNameUibo {
   color: var(--brand-color-uibo);
 }
 
-/* Media queries para que el componente sea responsivo */
+
+/* --- Responsive Design --- */
+
+/* Adjusts font size and positioning for tablet-sized screens */
 @media (max-width: 768px) {
   .projectName {
     font-size: 1.2rem;
@@ -28,6 +42,7 @@
   }
 }
 
+/* Adjusts font size and positioning for mobile-sized screens */
 @media (max-width: 480px) {
   .projectName {
     font-size: 1.1rem;

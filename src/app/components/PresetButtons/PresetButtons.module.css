@@ -1,10 +1,14 @@
 /* app/components/PresetButtons/PresetButtons.module.css */
 
+/**
+ * Container for the preset time buttons
+ * Uses flexbox to create a centered, wrapping row of buttons
+ */
 .presetsContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allows buttons to stack on smaller screens */
   gap: 15px;
   margin-bottom: 25px;
 }

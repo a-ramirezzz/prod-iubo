@@ -1,83 +1,145 @@
-// app/hooks/useTimerAlert.ts
-import { useRef } from 'react';
+/**
+ * =================================================================
+ * src/app/hooks/useTimerAlert.ts
+ * -----------------------------------------------------------------
+ * This custom hook encapsulates the logic for alerting the user
+ * when a timer session finishes. It handles both audio and native
+ * browser notifications.
+ * =================================================================
+ */
 
+// =================================================================
+// SECTION: Imports
+// =================================================================
+
+import { useRef, useCallback, useEffect } from 'react';
+
+// =================================================================
+// SECTION: Hook Definition
+// =================================================================
+
+/**
+ * A custom hook to manage user alerts (sound and notifications) for the timer.
+ * @returns {object} An object containing the `triggerAlert` function.
+ */
 export const useTimerAlert = () => {
+  // -----------------------------------------------------------------
+  // State and Refs
+  // We use refs to store instances that should persist across renders
+  // without causing re-renders themselves (like audio elements or timers).
+  // -----------------------------------------------------------------
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const notificationRef = useRef<Notification | null>(null);
-  const audioIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const soundTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const stopAlert = () => {
-    // Detiene la reproducción del sonido
+  // -----------------------------------------------------------------
+  // Memoized Functions
+  // Using useCallback to ensure these functions have a stable identity
+  // across renders, preventing unnecessary re-renders.
+  // -----------------------------------------------------------------
+  
+  /**
+   * Stops all alert activities: pauses the sound and clears any pending playback.
+   */
+  const stopAlert = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
-    // Detiene las repeticiones futuras
-    if (audioIntervalRef.current) {
-      clearInterval(audioIntervalRef.current);
+    if (soundTimeoutRef.current) {
+      clearTimeout(soundTimeoutRef.current);
     }
-  };
+  }, []);
 
-  const playSound = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio('/simple-notification-152054.mp3');
-    }
-
-    let playCount = 0;
-    const maxPlays = 3;
-
-    stopAlert();
-
-    const playAudioRepeatedly = () => {
-      if (playCount < maxPlays) {
-        audioRef.current?.play().catch(e => console.error("Error al reproducir audio:", e));
-        playCount++;
-      } else {
-        stopAlert();
-      }
-    };
-
-    playAudioRepeatedly(); 
-    audioIntervalRef.current = setInterval(playAudioRepeatedly, 2500);
-  };
-
-  const showNotification = () => {
+  /**
+   * Shows a native browser notification.
+   */
+  const showNotification = useCallback(() => {
     const notificationTitle = '¡Tiempo cumplido!';
     const notificationOptions: NotificationOptions = {
       body: 'Tu sesión de productividad ha finalizado.',
-      icon: '/favicon.ico', // Puedes usar tu propio ícono
+      icon: '/favicon.ico',
     };
 
-    // Crea la notificación
     notificationRef.current = new Notification(notificationTitle, notificationOptions);
 
-    // Cuando el usuario haga clic en la notificación, detén el sonido
+    // Add event listeners to stop the sound if the user interacts with the notification.
     notificationRef.current.onclick = () => {
       stopAlert();
       notificationRef.current?.close();
     };
-    
-    // También detén el sonido si el usuario cierra la notificación
     notificationRef.current.onclose = () => {
-        stopAlert();
+      stopAlert();
     };
-  };
+  }, [stopAlert]);
+  
+  /**
+   * Plays the alert sound a fixed number of times with a delay.
+   * This uses chained setTimeouts for a more robust sequence than setInterval.
+   */
+  const playSound = useCallback(() => {
+    // Ensure the audio element exists, creating it on the first play.
+    if (!audioRef.current) {
+      audioRef.current = new Audio('/simple-notification-152054.mp3');
+    }
 
-  const triggerAlert = async () => {
-    // 1. Reproducir el sonido
+    stopAlert(); // Stop any previous alert before starting a new one.
+
+    const maxPlays = 3;
+    const delay = 2500; // 2.5 seconds between plays
+
+    const playRepeatedly = (playCount: number) => {
+      if (playCount <= 0) return;
+
+      audioRef.current?.play().catch(e => console.error("Error playing audio:", e));
+      
+      // Schedule the next play.
+      soundTimeoutRef.current = setTimeout(() => {
+        playRepeatedly(playCount - 1);
+      }, delay);
+    };
+
+    playRepeatedly(maxPlays);
+  }, [stopAlert]);
+
+  /**
+   * The main function exposed by the hook. It coordinates playing the
+   * sound and showing the notification, handling permissions as needed.
+   */
+  const triggerAlert = useCallback(async () => {
     playSound();
 
-    // 2. Gestionar la notificación
     if (Notification.permission === 'granted') {
       showNotification();
     } else if (Notification.permission !== 'denied') {
-      // Si no tenemos permiso, lo solicitamos
+      // If we don't have permission yet, request it.
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
         showNotification();
       }
     }
-  };
+  }, [playSound, showNotification]);
+  
+  // -----------------------------------------------------------------
+  // Lifecycle Management
+  // -----------------------------------------------------------------
+  
+  /**
+   * Effect to clean up any running alerts when the component that
+   * uses this hook unmounts. This is crucial to prevent memory leaks
+   * and "ghost" sounds.
+   */
+  useEffect(() => {
+    // The returned function is the cleanup function.
+    return () => {
+      stopAlert();
+    };
+  }, [stopAlert]); // Dependency on stopAlert ensures cleanup has access to the latest function.
+
+  // -----------------------------------------------------------------
+  // Public API
+  // -----------------------------------------------------------------
 
   return { triggerAlert };
 };
