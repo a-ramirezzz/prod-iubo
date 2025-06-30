@@ -11,26 +11,6 @@
  * - Modern card-based layout
  */
 
-/* CSS Custom Properties (Variables) */
-:root {
-  /* Primary color scheme */
-  --bg-primary: #111827;           /* Main background color */
-  --text-primary: #E5E7EB;         /* Primary text color */
-  --text-secondary: #9CA3AF;       /* Secondary text color */
-  --accent-color: #3B82F6;         /* Primary accent color (blue) */
-  --accent-hover: #2563EB;         /* Accent color on hover */
-  --border-color: #374151;         /* Border color */
-  --card-bg: #1F2937;              /* Card background color */
-  
-  /* Brand colors */
-  --prod-red: #EF4444;             /* PROD text color */
-  --uibo-blue: #3B82F6;            /* UIBO text color */
-  
-  /* Pomodoro theme colors */
-  --pomodoro-orange: #F97316;      /* Pomodoro primary color */
-  --pomodoro-light: #FB923C;       /* Pomodoro light variant */
-}
-
 /* Main Container */
 .container {
   min-height: 100vh;
