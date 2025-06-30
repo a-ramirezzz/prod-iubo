@@ -22,7 +22,7 @@ import icon from '@/app/prod-iubo.png';
 
 // Configures the 'Anton' font from Google Fonts using next/font.
 // This optimizes the font and makes it available globally via a CSS variable.
-export const anton = Anton({
+const anton = Anton({
   subsets: ['latin'],
   weight: '400',
   variable: '--font-anton', // Assigns the font to a CSS variable
