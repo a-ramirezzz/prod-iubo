@@ -5,6 +5,19 @@
   --font-primary: var(--font-anton), sans-serif;
   --brand-color-prod: #E53935;
   --brand-color-uibo: #1E88E5;
+
+  /* Landing Page global variables */
+  --bg-primary: #111827;
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --accent-color: #3B82F6;
+  --accent-hover: #2563EB;
+  --border-color: #374151;
+  --card-bg: #1F2937;
+  --prod-red: #EF4444;
+  --uibo-blue: #3B82F6;
+  --pomodoro-orange: #F97316;
+  --pomodoro-light: #FB923C;
 }
 
 /* 2. Color palette for Light Theme (REVISED) */
