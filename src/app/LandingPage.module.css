@@ -632,58 +632,204 @@
   margin-bottom: 0;
 }
 
-/* Footer Section */
+/* Redesigned Footer */
 .footer {
   background: var(--card-bg);
-  padding: 4rem 0;
-  text-align: center;
   border-top: 1px solid var(--border-color);
+  margin-top: 4rem;
+  padding: 0;
 }
 
-/* Footer text */
-.footerText {
+.footerMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 2rem 2rem;
+  flex-wrap: wrap;
+}
+
+.footerLeft {
+  flex: 1 1 320px;
+  min-width: 260px;
+  max-width: 400px;
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.footerLogo {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+}
+
+.footerTitle {
   font-size: 1.25rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 2rem;
-  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
-/* Footer buttons container */
-.footerButtons {
+.footerBy {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 0.5rem;
+}
+
+.footerDesc {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+.footerSocials {
   display: flex;
   gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
+  margin-top: 0.5rem;
 }
 
-/* Footer button styling */
-.footerButton {
-  display: inline-block;
-  padding: 12px 24px;
+.socialIcon {
+  color: var(--accent-color);
+  background: rgba(59,130,246,0.08);
+  border-radius: 50%;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  font-size: 1.25rem;
+}
+.socialIcon:hover {
   background: var(--accent-color);
-  color: white;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.footerRight {
+  flex: 1 1 220px;
+  min-width: 180px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  font-size: 1.08rem;
+}
+
+.footerNav a {
+  color: var(--text-secondary);
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  border: none;
+  font-weight: 500;
+  transition: color 0.2s, transform 0.2s;
   cursor: pointer;
 }
 
-/* Footer button hover effects */
-.footerButton:hover {
-  background: var(--accent-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+.footerNav a:hover {
+  color: var(--accent-color);
+  transform: translateX(4px);
 }
 
-/* Copyright text */
-.copyright {
+.footerNav a:last-child {
+  margin-top: 1.2rem;
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+  padding: 1.2rem 2rem 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 0.98rem;
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin: 0;
+  flex-wrap: wrap;
+}
+
+.footerCopyright {
+  flex: 1 1 200px;
+  text-align: left;
+}
+
+.footerLegal {
+  display: flex;
+  gap: 1.2rem;
+  flex: 1 1 200px;
+  justify-content: flex-end;
+}
+
+.footerLegalLink {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+  font-size: 0.98rem;
+}
+.footerLegalLink:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .footerMain {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2.5rem 1rem 1.5rem 1rem;
+    gap: 2.5rem;
+  }
+  .footerRight {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 1.5rem;
+  }
+  .footerNav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+  }
+  .footerNav a:last-child {
+    margin-top: 0;
+  }
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1rem 0.7rem 1rem;
+  }
+  .footerLegal {
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .footerMain {
+    padding: 2rem 0.5rem 1rem 0.5rem;
+  }
+  .footerBottom {
+    padding: 0.7rem 0.5rem 0.5rem 0.5rem;
+    font-size: 0.93rem;
+  }
+  .footerTitle {
+    font-size: 1.08rem;
+  }
+  .footerDesc {
+    font-size: 0.98rem;
+  }
 }
 
 /* Responsive Design - Tablet and smaller screens */
@@ -817,4 +963,243 @@
   .stepNumber {
     align-self: center;
   }
+}
+
+/* Roadmap Section Styles */
+.roadmapGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.roadmapItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(59,130,246,0.07);
+  border-radius: 12px;
+  padding: 1.2rem 1.2rem;
+  font-size: 1.08rem;
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(59,130,246,0.06);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  animation: fadeInUp 0.7s both;
+}
+.roadmapItem:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(59,130,246,0.13);
+  background: rgba(59,130,246,0.13);
+}
+.roadmapDone {
+  border-left: 5px solid #22c55e;
+  color: #22c55e;
+  background: rgba(34,197,94,0.08);
+}
+.roadmapNext {
+  border-left: 5px solid #f59e42;
+  color: #f59e42;
+  background: rgba(245,158,66,0.08);
+}
+.roadmapIcon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+  margin-right: 0.2rem;
+}
+
+/* Mini Roadmap in Footer */
+.footerCenter {
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.7rem;
+}
+.footerMiniRoadmapTitle {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.footerMiniRoadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+.footerMiniRoadmap .roadmapItem {
+  font-size: 0.98rem;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 0;
+  background: transparent;
+  transition: background 0.2s, color 0.2s;
+}
+.footerMiniRoadmap .roadmapDone {
+  color: #22c55e;
+  border-left: 4px solid #22c55e;
+  background: rgba(34,197,94,0.06);
+}
+.footerMiniRoadmap .roadmapNext {
+  color: #f59e42;
+  border-left: 4px solid #f59e42;
+  background: rgba(245,158,66,0.06);
+}
+.footerMiniRoadmap .roadmapItem:hover {
+  background: rgba(59,130,246,0.08);
+  color: var(--accent-color);
+}
+
+@media (max-width: 900px) {
+  .footerMain {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2.5rem 1rem 1.5rem 1rem;
+    gap: 2.5rem;
+  }
+  .footerRight {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 1.5rem;
+  }
+  .footerCenter {
+    width: 100%;
+    max-width: 100%;
+    margin: 1.5rem 0;
+    align-items: flex-start;
+  }
+  .footerMiniRoadmap {
+    flex-direction: row;
+    gap: 0.7rem;
+  }
+  .footerMiniRoadmap .roadmapItem {
+    font-size: 0.93rem;
+    padding: 0.6rem 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .roadmapGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .footerMiniRoadmap {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}
+
+/* Loading Overlay Styles */
+.loadingOverlay {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(17,24,39,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+  animation: fadeInOverlay 0.3s;
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.spinnerWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+.spinner {
+  width: 54px;
+  height: 54px;
+  border: 6px solid #3B82F6;
+  border-top: 6px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 16px #3B82F6;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loadingText {
+  color: #E5E7EB;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-top: 0.2rem;
+  text-shadow: 0 2px 8px #111827;
+}
+
+/* BETA Badge - Floating top right */
+.betaBadge {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 10001;
+  background: linear-gradient(90deg, #f59e42, #fbbf24);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.08em;
+  padding: 0.38em 1.2em;
+  border-radius: 2em;
+  box-shadow: 0 2px 12px rgba(245,158,66,0.13);
+  text-shadow: 0 1px 4px #b45309;
+  border: 2px solid #fff3;
+  user-select: none;
+  pointer-events: auto;
+  transition: transform 0.2s;
+  cursor: help;
+  animation: fadeInOverlay 0.7s;
+}
+@media (max-width: 600px) {
+  .betaBadge {
+    top: 10px;
+    right: 10px;
+    font-size: 0.98rem;
+    padding: 0.32em 0.9em;
+  }
+}
+
+/* Beta notice in Estado Actual */
+.betaNotice {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  background: rgba(245,158,66,0.09);
+  border-left: 4px solid #f59e42;
+  color: #b45309;
+  font-size: 1.04rem;
+  font-weight: 500;
+  padding: 1em 1.2em;
+  border-radius: 8px;
+  margin-bottom: 2.2rem;
+  margin-top: 0.5rem;
+  animation: fadeInUp 0.7s;
+}
+.betaNoticeBadge {
+  background: linear-gradient(90deg, #f59e42, #fbbf24);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.98rem;
+  border-radius: 1.2em;
+  padding: 0.18em 0.9em;
+  letter-spacing: 0.07em;
+  margin-right: 0.2em;
+  box-shadow: 0 1px 6px rgba(245,158,66,0.13);
+  text-shadow: 0 1px 4px #b45309;
+  border: 1.5px solid #fff3;
+  user-select: none;
 } 

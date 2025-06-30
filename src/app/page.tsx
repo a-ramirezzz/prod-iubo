@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '@/app/LandingPage.module.css';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 /**
  * Landing Page Component
@@ -18,10 +20,44 @@ import styles from '@/app/LandingPage.module.css';
  * for enhanced user experience.
  */
 export default function LandingPage() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  // Smooth scroll handler for internal navigation
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, id: string) => {
+    e.preventDefault();
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Handler for CTA button with loading animation
+  const handleStart = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      router.push('/app');
+    }, 1200);
+  };
+
   return (
     <div className={styles.container}>
+      {/* BETA Badge */}
+      <div className={styles.betaBadge} title="Esta aplicación está en fase BETA y aún no ha sido lanzada oficialmente.">
+        BETA
+      </div>
+      {/* Loading Overlay */}
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.spinnerWrapper}>
+            <div className={styles.spinner}></div>
+            <span className={styles.loadingText}>Cargando aplicación…</span>
+          </div>
+        </div>
+      )}
       {/* Hero Section - Main call-to-action area */}
-      <section className={styles.hero}>
+      <section className={styles.hero} id="inicio">
         <div className={styles.heroContent}>
           {/* Brand title with color-coded styling */}
           <h1 className={styles.heroTitle}>
@@ -33,14 +69,14 @@ export default function LandingPage() {
             Un temporizador de productividad personalizable para máxima concentración.
           </p>
           {/* Primary call-to-action button */}
-          <Link href="/app" className={styles.heroButton}>
+          <a href="/app" className={styles.heroButton} onClick={handleStart}>
             Comenzar Ahora
-          </Link>
+          </a>
         </div>
       </section>
 
       {/* Introduction Section - Project explanation and Pomodoro technique */}
-      <section className={styles.section}>
+      <section className={styles.section} id="informacion">
         <div className={styles.content}>
           <h2 className={styles.sectionTitle}>¿Qué es y por qué existe?</h2>
           {/* Project description paragraphs */}
@@ -135,7 +171,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section - Main product capabilities */}
-      <section className={styles.section}>
+      <section className={styles.section} id="caracteristicas">
         <div className={styles.content}>
           <h2 className={styles.sectionTitle}>Características Principales</h2>
           <div className={styles.featuresGrid}>
@@ -191,7 +227,7 @@ export default function LandingPage() {
       </section>
 
       {/* Visual Gallery Section - Application screenshots and demos */}
-      <section className={styles.section}>
+      <section className={styles.section} id="galeria">
         <div className={styles.content}>
           <h2 className={styles.sectionTitle}>El Proyecto en Acción</h2>
           <div className={styles.gallery}>
@@ -236,9 +272,13 @@ export default function LandingPage() {
       </section>
 
       {/* Project Status Section - Current development state */}
-      <section className={styles.section}>
+      <section className={styles.section} id="estado">
         <div className={styles.content}>
           <h2 className={styles.sectionTitle}>Estado Actual</h2>
+          <div className={styles.betaNotice}>
+            <span className={styles.betaNoticeBadge}>BETA</span>
+            <span>Esta aplicación está en fase de prueba y aún no ha sido lanzada oficialmente. Puede contener errores o cambios frecuentes.</span>
+          </div>
           <ul className={styles.statusList}>
             {/* Software version status */}
             <li>Software: Versión 1.0 funcional y desplegada. La aplicación web es completamente operativa.</li>
@@ -250,27 +290,101 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer Section - Call-to-action and project links */}
-      <footer className={styles.footer}>
+      {/* Roadmap Section - Upcoming features and improvements */}
+      <section className={styles.section} id="roadmap">
         <div className={styles.content}>
-          <p className={styles.footerText}>¿Interesado en el proyecto?</p>
-          <div className={styles.footerButtons}>
-            {/* GitHub repository link */}
-            <a 
-              href="https://github.com/rodrigobeta/prod-iubo" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className={styles.footerButton}
-            >
-              Ver en GitHub
-            </a>
-            {/* Application access link */}
-            <Link href="/app" className={styles.footerButton}>
-              Usar la Aplicación
-            </Link>
+          <h2 className={styles.sectionTitle}>Roadmap</h2>
+          <div className={styles.roadmapGrid}>
+            <div className={styles.roadmapItem + ' ' + styles.roadmapDone}>
+              <span className={styles.roadmapIcon}>✔️</span>
+              <span>Temporizador Pomodoro</span>
+            </div>
+            <div className={styles.roadmapItem + ' ' + styles.roadmapDone}>
+              <span className={styles.roadmapIcon}>✔️</span>
+              <span>Sonidos ambientales</span>
+            </div>
+            <div className={styles.roadmapItem + ' ' + styles.roadmapNext}>
+              <span className={styles.roadmapIcon}>🔜</span>
+              <span>Sincronización en la nube</span>
+            </div>
+            <div className={styles.roadmapItem + ' ' + styles.roadmapNext}>
+              <span className={styles.roadmapIcon}>🔜</span>
+              <span>App móvil</span>
+            </div>
           </div>
-          {/* Copyright information */}
-          <p className={styles.copyright}>© 2024 Alan Rodrigo Ramírez Luna</p>
+        </div>
+      </section>
+
+      {/* Footer Section - Redesigned */}
+      <footer className={styles.footer}>
+        <div className={styles.footerMain}>
+          {/* Left: Branding, description, social */}
+          <div className={styles.footerLeft}>
+            <div className={styles.footerBrand}>
+              <Image src="/favicon.png" alt="Prod-UIBO Logo" width={36} height={36} className={styles.footerLogo} />
+              <div>
+                <div className={styles.footerTitle}>PROD-UIBO <span className={styles.footerBy}>by Alan Rodrigo Ramírez</span></div>
+              </div>
+            </div>
+            <p className={styles.footerDesc}>
+              El compañero de productividad definitivo para quienes buscan lograr más, reducir el estrés y dominar su tiempo con la técnica Pomodoro y un entorno visual y sonoro totalmente personalizable.
+            </p>
+            <div className={styles.footerSocials}>
+              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={styles.socialIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 2C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2H7ZM12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7ZM19 7.5C19.2761 7.5 19.5 7.27614 19.5 7C19.5 6.72386 19.2761 6.5 19 6.5C18.7239 6.5 18.5 6.72386 18.5 7C18.5 7.27614 18.7239 7.5 19 7.5Z" fill="currentColor"/></svg>
+              </a>
+              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X" className={styles.socialIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17.53 2H21.5L14.36 10.39L22.74 21.5H16.08L10.98 14.93L5.19 21.5H1.21L8.78 12.61L0.75 2H7.58L12.18 7.97L17.53 2ZM16.36 19.5H18.19L6.5 4.5H4.54L16.36 19.5Z" fill="currentColor"/></svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Center: Mini Roadmap */}
+          <div className={styles.footerCenter}>
+            <div className={styles.footerMiniRoadmapTitle}>Mini Roadmap</div>
+            <div className={styles.footerMiniRoadmap}>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapDone}>
+                <span className={styles.roadmapIcon}>✔️</span>
+                <span>Pomodoro</span>
+              </div>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapDone}>
+                <span className={styles.roadmapIcon}>✔️</span>
+                <span>Sonidos</span>
+              </div>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapNext}>
+                <span className={styles.roadmapIcon}>🔜</span>
+                <span>Nube</span>
+              </div>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapNext}>
+                <span className={styles.roadmapIcon}>🔜</span>
+                <span>App móvil</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Navigation menu */}
+          <div className={styles.footerRight}>
+            <nav className={styles.footerNav} aria-label="Footer Navigation">
+              <a href="#inicio" onClick={e => handleScroll(e, 'inicio')}>Inicio</a>
+              <a href="#informacion" onClick={e => handleScroll(e, 'informacion')}>Información</a>
+              <a href="#caracteristicas" onClick={e => handleScroll(e, 'caracteristicas')}>Características</a>
+              <a href="#galeria" onClick={e => handleScroll(e, 'galeria')}>Galería</a>
+              <a href="#estado" onClick={e => handleScroll(e, 'estado')}>Estado</a>
+              <a href="#roadmap" onClick={e => handleScroll(e, 'roadmap')}>Roadmap</a>
+              <Link href="/app">Usar la Aplicación</Link>
+            </nav>
+          </div>
+        </div>
+        {/* Bottom: Copyright and legal links */}
+        <div className={styles.footerBottom}>
+          <div className={styles.footerCopyright}>
+            © 2024 Alan Rodrigo Ramírez Luna
+          </div>
+          <div className={styles.footerLegal}>
+            <a href="#" className={styles.footerLegalLink}>Privacy Policy</a>
+            <a href="#" className={styles.footerLegalLink}>Terms of Service</a>
+            <a href="#" className={styles.footerLegalLink}>Cookie Policy</a>
+          </div>
         </div>
       </footer>
     </div>
