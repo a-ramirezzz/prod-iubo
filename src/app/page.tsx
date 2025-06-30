@@ -219,7 +219,7 @@ export default function LandingPage() {
               </div>
               <h3 className={styles.featureTitle}>Flexibilidad Total</h3>
               <p className={styles.featureDescription}>
-                Desde temporizadores predefinidos hasta entrada manual y una lista de tareas integrada. Incluye un "Modo Mini" para una vista compacta y sin distracciones.
+                Desde temporizadores predefinidos hasta entrada manual y una lista de tareas integrada. Incluye un Modo Mini para una vista compacta y sin distracciones.
               </p>
             </div>
           </div>

@@ -12,7 +12,7 @@ interface PresetButtonsProps {
 }
 
 // An array of numbers representing the preset minute options
-const PRESET_MINUTES = [20, 30, 45, 60]
+const PRESET_MINUTES = [10, 25, 45, 60]
 
 /**
  * A component that renders a set of buttons to quickly set a timer
