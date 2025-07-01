@@ -73,6 +73,30 @@ export default function LandingPage() {
             Comenzar Ahora
           </a>
         </div>
+        
+        {/* Scroll indicator - invites users to explore more content */}
+        <a 
+          href="#informacion" 
+          className={styles.scrollIndicator}
+          onClick={e => handleScroll(e, 'informacion')}
+          aria-label="Explorar más información sobre el proyecto"
+        >
+          <span className={styles.scrollIndicatorText}>Descubre más</span>
+          <svg 
+            className={styles.scrollIndicatorArrow}
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M7 10L12 15L17 10" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
       </section>
 
       {/* Introduction Section - Project explanation and Pomodoro technique */}
