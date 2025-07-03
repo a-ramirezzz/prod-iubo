@@ -308,8 +308,8 @@ export default function LandingPage() {
             <li>Software: Versión 1.0 funcional y desplegada. La aplicación web es completamente operativa.</li>
             {/* Implemented features */}
             <li>Características Implementadas: Sistema de temporizador completo (iniciar, pausar, resetear, detener), gestión de tareas, y un panel de configuración robusto con ajustes generales, sistema de temas (estáticos y animados) y control de sonidos de fondo con volumen.</li>
-            {/* Technical stack information */}
-            <li>Código Fuente: El proyecto está construido con Next.js y TypeScript, siguiendo las mejores prácticas de desarrollo. El código está completamente refactorizado y documentado en inglés.</li>
+            {/* Próxima funcionalidad */}
+            <li>Próximamente: Sincronización en la nube para guardar tus tareas y configuraciones, y aplicación móvil para acceder a Prod-UIBO desde cualquier lugar.</li>
           </ul>
         </div>
       </section>
@@ -395,7 +395,7 @@ export default function LandingPage() {
               <a href="#galeria" onClick={e => handleScroll(e, 'galeria')}>Galería</a>
               <a href="#estado" onClick={e => handleScroll(e, 'estado')}>Estado</a>
               <a href="#roadmap" onClick={e => handleScroll(e, 'roadmap')}>Roadmap</a>
-              <Link href="/app">Usar la Aplicación</Link>
+              <a href="#inicio" onClick={e => handleScroll(e, 'inicio')}>Usar la Aplicación</a>
             </nav>
           </div>
         </div>
