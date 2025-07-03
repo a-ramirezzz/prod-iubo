@@ -20,9 +20,10 @@ import { useRef, useCallback, useEffect } from 'react';
 
 /**
  * A custom hook to manage user alerts (sound and notifications) for the timer.
+ * @param enableDesktopNotifications - Whether to show browser notifications when the timer ends.
  * @returns {object} An object containing the `triggerAlert` function.
  */
-export const useTimerAlert = () => {
+export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
   // -----------------------------------------------------------------
   // State and Refs
   // We use refs to store instances that should persist across renders
@@ -110,6 +111,8 @@ export const useTimerAlert = () => {
   const triggerAlert = useCallback(async () => {
     playSound();
 
+    if (!enableDesktopNotifications) return;
+
     if (Notification.permission === 'granted') {
       showNotification();
     } else if (Notification.permission !== 'denied') {
@@ -119,7 +122,7 @@ export const useTimerAlert = () => {
         showNotification();
       }
     }
-  }, [playSound, showNotification]);
+  }, [playSound, showNotification, enableDesktopNotifications]);
   
   // -----------------------------------------------------------------
   // Lifecycle Management

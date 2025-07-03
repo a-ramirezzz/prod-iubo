@@ -1,7 +1,7 @@
 // src/app/components/SettingsPanel/SettingsPanel.tsx
 
 // React and hooks
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // Styles
 import styles from './SettingsPanel.module.css';
 // Context for global settings
@@ -47,6 +47,29 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
   // Access settings and update functions from context
   const { settings, updateSettings, resetSettings } = useSettings();
+
+  // Sincroniza el estado del toggle con el permiso de notificación del navegador
+  useEffect(() => {
+    if (!('Notification' in window) || !('permissions' in navigator)) return;
+
+    // Función para actualizar el estado según el permiso
+    const syncNotificationToggle = (permission: PermissionState) => {
+      if (permission === 'granted' && !settings.enableDesktopNotifications) {
+        updateSettings({ enableDesktopNotifications: true });
+      } else if (permission === 'denied' && settings.enableDesktopNotifications) {
+        updateSettings({ enableDesktopNotifications: false });
+      }
+    };
+
+    // Consultar el permiso y escuchar cambios
+    navigator.permissions.query({ name: 'notifications' as PermissionName }).then((permStatus) => {
+      syncNotificationToggle(permStatus.state);
+      const handler = () => syncNotificationToggle(permStatus.state);
+      permStatus.addEventListener('change', handler);
+      // Cleanup
+      return () => permStatus.removeEventListener('change', handler);
+    });
+  }, [settings.enableDesktopNotifications, updateSettings]);
 
   // If the panel is not open, render nothing
   if (!isOpen) {
@@ -153,6 +176,19 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <option value="es">Español</option>
                     <option value="en" disabled>English (Próximamente)</option>
                   </select>
+                </div>
+                {/* Desktop Notifications toggle */}
+                <div className={styles.settingItem}>
+                  <label htmlFor="desktop-notifications">Habilitar Notificaciones de Escritorio</label>
+                  <label className={styles.toggleSwitch}>
+                    <input
+                      id="desktop-notifications"
+                      type="checkbox"
+                      checked={!!settings.enableDesktopNotifications}
+                      onChange={(e) => updateSettings({ enableDesktopNotifications: e.target.checked })}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
                 </div>
                 {/* Reset settings button */}
                 <div className={styles.resetSection}>

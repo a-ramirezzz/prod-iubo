@@ -35,6 +35,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   selectedThemeId: 'dark-default',
   backgroundSound: 'none',
   volume: 0.5,
+  enableDesktopNotifications: false,
 };
 
 const SETTINGS_STORAGE_KEY = 'prod-uibo-settings';

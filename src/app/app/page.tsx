@@ -22,6 +22,7 @@ import TimerControls from '@/components/TimerControls/TimerControls';
 import TaskList from '@/components/TaskList/TaskList';
 import SettingsButton from '@/components/SettingsButton/SettingsButton';
 import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
+import VisualNotification from '@/components/Notification/Notification';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -46,7 +47,7 @@ export default function HomePage() {
     togglePause,
     resetTimer,
     stopTimer,
-  } = useTimer();
+  } = useTimer(!!settings.enableDesktopNotifications);
 
   const {
     tasks,
@@ -62,6 +63,7 @@ export default function HomePage() {
   const [customMinutesInput, setCustomMinutesInput] = useState('');
   const [isMiniMode, setIsMiniMode] = useState(false);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+  const [showVisualNotification, setShowVisualNotification] = useState(false);
 
   // =================================================================
   // SECTION: Effects
@@ -85,6 +87,13 @@ export default function HomePage() {
       Notification.requestPermission();
     }
   }, []); // Empty dependency array ensures this runs only once.
+
+  // Efecto para mostrar la notificación visual cuando el temporizador termina
+  useEffect(() => {
+    if (initialTimeSet > 0 && totalSeconds === 0 && !isActive) {
+      setShowVisualNotification(true);
+    }
+  }, [initialTimeSet, totalSeconds, isActive]);
 
   // =================================================================
   // SECTION: Event Handlers
@@ -219,6 +228,13 @@ export default function HomePage() {
       </div>
       
       <SettingsPanel isOpen={isSettingsPanelOpen} onClose={() => setIsSettingsPanelOpen(false)} />
+      {/* Visual notification centered on screen */}
+      <VisualNotification
+        message={"¡Tiempo cumplido!\nTu sesión de productividad ha finalizado."}
+        visible={showVisualNotification}
+        onClose={() => setShowVisualNotification(false)}
+        duration={3500}
+      />
     </main>
   );
 }
