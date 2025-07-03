@@ -22,9 +22,10 @@ import { formatTime } from '@/app/lib/time';
 /**
  * A custom hook to manage the state and logic for a countdown timer.
  * It depends on `useTimerAlert` to trigger a notification when the timer finishes.
+ * @param enableDesktopNotifications - Whether to show browser notifications when the timer ends.
  * @returns {object} An object containing the timer's state and control functions.
  */
-export const useTimer = () => {
+export const useTimer = (enableDesktopNotifications: boolean = false) => {
   // -----------------------------------------------------------------
   // State Management
   // -----------------------------------------------------------------
@@ -43,7 +44,7 @@ export const useTimer = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Dependency hook for triggering alerts.
-  const { triggerAlert } = useTimerAlert();
+  const { triggerAlert } = useTimerAlert(enableDesktopNotifications);
 
   // -----------------------------------------------------------------
   // Core Timer Logic

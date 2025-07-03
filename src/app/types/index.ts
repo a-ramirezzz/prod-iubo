@@ -44,4 +44,7 @@ export interface AppSettings {
   // --- Audio Settings ---
   backgroundSound: string; // The ID of the selected background sound ('none' for no sound).
   volume: number;          // The volume level for background audio (0.0 to 1.0).
+
+  // --- Notification Settings ---
+  enableDesktopNotifications?: boolean; // Enable desktop notifications when timer ends
 }
