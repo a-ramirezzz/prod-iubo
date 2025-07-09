@@ -87,6 +87,7 @@ export const useTaskManager = () => {
   
   return {
     tasks,
+    setTasks, // Expose setTasks for direct task management from modal
     currentTaskInput,
     setCurrentTaskInput,
     handleAddTask,

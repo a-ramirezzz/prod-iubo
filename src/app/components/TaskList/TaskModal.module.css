@@ -1,0 +1,189 @@
+/* Modal backdrop styles */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 2000;
+  animation: fadeIn 0.2s;
+}
+
+/* Modal container styles */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--panel-bg-transparent, rgba(36, 37, 38, 0.95));
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+  z-index: 2001;
+  min-width: 340px;
+  max-width: 95vw;
+  width: 400px;
+  padding: 32px 28px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: modalIn 0.25s;
+}
+
+/* Close button styles */
+.closeButton {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: var(--text-color-secondary, #fff);
+  font-size: 1.3rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+.closeButton:hover {
+  color: var(--text-color-primary, #fff);
+}
+
+/* Modal title styles */
+.title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-highlight-color, #fff);
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+/* Progress bar container styles */
+.progressBarContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.progressBarBg {
+  flex: 1;
+  height: 12px;
+  background: var(--border-color-primary, #333);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.progressBarFill {
+  height: 100%;
+  background: var(--brand-color-uibo, #1e88e5);
+  transition: width 0.3s;
+}
+.tasksArea {
+  width: 100%;
+  min-height: 80px;
+  margin-top: 10px;
+}
+
+/* Add task form styles */
+.addTaskForm {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.addTaskInput {
+  flex: 1;
+  background: var(--input-bg, #23272f);
+  color: var(--text-color-primary, #fff);
+  border: 1px solid var(--border-color-primary, #333);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  outline: none;
+}
+.addTaskInput::placeholder {
+  color: var(--text-color-placeholder, #bbb);
+  opacity: 0.7;
+}
+.addTaskButton {
+  background: var(--brand-color-uibo, #1e88e5);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.addTaskButton:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+.addTaskButton:hover:not(:disabled) {
+  background: #1565c0;
+  transform: scale(1.08);
+}
+
+/* Task list styles */
+.taskList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.taskItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color-primary, #333);
+}
+.taskLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  cursor: pointer;
+}
+.taskLabel input[type="checkbox"] {
+  accent-color: var(--brand-color-uibo, #1e88e5);
+  width: 18px;
+  height: 18px;
+}
+.completed {
+  text-decoration: line-through;
+  color: var(--text-color-secondary, #aaa);
+}
+.deleteButton {
+  background: none;
+  border: none;
+  color: var(--text-color-secondary, #fff);
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 10px;
+  transition: color 0.2s, transform 0.1s;
+}
+.deleteButton:hover {
+  color: var(--button-stop-bg, #e53935);
+  transform: scale(1.1);
+}
+.deleteButton:focus-visible {
+  outline: 2px solid var(--button-stop-bg, #e53935);
+  outline-offset: 2px;
+}
+.noTasks {
+  color: var(--text-color-secondary, #aaa);
+  font-style: italic;
+  text-align: center;
+  padding: 10px 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+} 

@@ -23,6 +23,7 @@ import TaskList from '@/components/TaskList/TaskList';
 import SettingsButton from '@/components/SettingsButton/SettingsButton';
 import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
 import VisualNotification from '@/components/Notification/Notification';
+import TaskModal from '@/components/TaskList/TaskModal';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -51,6 +52,7 @@ export default function HomePage() {
 
   const {
     tasks,
+    setTasks, // Import setTasks to allow global task updates from the modal
     currentTaskInput,
     setCurrentTaskInput,
     handleAddTask,
@@ -64,6 +66,8 @@ export default function HomePage() {
   const [isMiniMode, setIsMiniMode] = useState(false);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   const [showVisualNotification, setShowVisualNotification] = useState(false);
+  // State to control the visibility of the task objectives modal
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
   // =================================================================
   // SECTION: Effects
@@ -193,19 +197,51 @@ export default function HomePage() {
       {showSetupControls && (
         <div className={styles.taskSection}>
           <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
-          <form onSubmit={handleAddTask} className={styles.taskForm}>
-            <input
-              type="text"
-              value={currentTaskInput}
-              onChange={(e) => setCurrentTaskInput(e.target.value)}
-              placeholder="Escribe una nueva tarea..."
-              className={styles.taskInput}
-              disabled={isActive}
-            />
-            <button type="submit" className="button" disabled={isActive || currentTaskInput.trim() === ''}>
-              Añadir Tarea
-            </button>
-          </form>
+          {/* Button to open the objectives modal */}
+          <button
+            className={styles.openTaskModalButton}
+            onClick={() => setIsTaskModalOpen(true)}
+            aria-label="Abrir objetivos de hoy"
+            type="button"
+          >
+            <span className={styles.pulse}></span>
+            <svg
+              width="38"
+              height="38"
+              viewBox="0 0 38 38"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={styles.animatedIcon}
+            >
+              <circle cx="19" cy="19" r="17" stroke="#1e88e5" fill="#1e88e5" opacity="0.15"/>
+              <path d="M27 11.5a2.5 2.5 0 0 1 3.5 3.5L16 29l-5 1 1-5L27 11.5z" fill="#fff" />
+              <path d="M25 13.5l3.5 3.5" stroke="#1e88e5" />
+            </svg>
+          </button>
+          {/* Modal for today's objectives */}
+          <TaskModal
+            isOpen={isTaskModalOpen}
+            onClose={() => setIsTaskModalOpen(false)}
+            tasks={tasks}
+            onAddTask={(text: string) => {
+              // Add a new task to the global task list
+              if (text.trim() === '') return;
+              setTasks(prev => [
+                ...prev,
+                {
+                  id: crypto.randomUUID(),
+                  text: text.trim(),
+                  completed: false,
+                },
+              ]);
+            }}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+          />
+          {/* TaskList displays the current session tasks */}
           <TaskList
             tasks={tasks}
             onToggleTask={handleToggleTask}
