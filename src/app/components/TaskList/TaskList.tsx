@@ -14,12 +14,12 @@ interface TaskListProps {
 
 /**
  * A component that displays a list of tasks, allowing users to mark them
- * as complete or delete them
+ * as complete or delete them. The modal and its button are managed at the page level.
  */
 export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisabled }: TaskListProps) {
-  // Display a message if there are no tasks
+  // Show a message if there are no tasks
   if (!tasks.length) {
-    return <p className={styles.noTasks}>Aún no hay tareas para esta sesión</p>
+    return <p className={styles.noTasks}>Aún no hay tareas para esta sesión</p>;
   }
 
   return (
@@ -27,7 +27,7 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisab
       {tasks.map(task => (
         <li key={task.id} className={`${styles.taskItem} ${task.completed ? styles.completed : ''}`}>
           <div className={styles.taskContent}>
-            {/* Use a checkbox for better accessibility and semantics */}
+            {/* Checkbox for marking task as complete */}
             <input
               type="checkbox"
               id={`task-${task.id}`}
@@ -36,7 +36,7 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisab
               disabled={inputDisabled}
               className={styles.checkbox}
             />
-            {/* The label is associated with the checkbox */}
+            {/* Task label */}
             <label htmlFor={`task-${task.id}`} className={styles.taskText}>
               {task.text}
             </label>
@@ -45,12 +45,12 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisab
             onClick={() => onDeleteTask(task.id)}
             className={styles.deleteButton}
             disabled={inputDisabled}
-            aria-label={`Delete task: ${task.text}`} // Provides context for screen readers
+            aria-label={`Delete task: ${task.text}`}
           >
             ✕
           </button>
         </li>
       ))}
     </ul>
-  )
+  );
 }

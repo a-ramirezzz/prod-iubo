@@ -206,7 +206,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 <div className={styles.settingItem}>
                   <label>Apariencia</label>
                   <div className={styles.themeSwitcher}>
-                    <span>Claro</span>
+                    <span className={styles.themeSwitcherLabel}>Claro</span>
                     <label className={styles.toggleSwitch}>
                       <input
                         type="checkbox"
@@ -215,7 +215,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       />
                       <span className={styles.slider}></span>
                     </label>
-                    <span>Oscuro</span>
+                    <span className={styles.themeSwitcherLabel}>Oscuro</span>
                   </div>
                 </div>
 
