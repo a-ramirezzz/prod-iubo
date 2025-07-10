@@ -70,8 +70,8 @@ export default function HomePage() {
   // State to control the visibility of the task objectives modal
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
-  // Integrate PiP timer hook
-  const { canvasRef } = usePipTimer(timeParts, settings, {
+  // Integrate PiP timer hook (returns refs for both canvas and video)
+  const { canvasRef, videoRef } = usePipTimer(timeParts, settings, {
     onPipModeDisabled: () => updateSettings({ pipModeEnabled: false }),
   });
 
@@ -278,7 +278,7 @@ export default function HomePage() {
         onClose={() => setShowVisualNotification(false)}
         duration={3500}
       />
-      {/* Hidden canvas for Picture-in-Picture floating timer */}
+      {/* Hidden canvas and video for Picture-in-Picture floating timer */}
       <canvas
         ref={canvasRef}
         style={{
@@ -289,6 +289,20 @@ export default function HomePage() {
           height: 120,
           pointerEvents: 'none',
         }}
+      />
+      {/* Hidden video element used as PiP source (receives canvas stream) */}
+      <video
+        ref={videoRef}
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: '-9999px',
+          width: 320,
+          height: 120,
+          pointerEvents: 'none',
+        }}
+        tabIndex={-1}
+        aria-hidden="true"
       />
     </main>
   );
