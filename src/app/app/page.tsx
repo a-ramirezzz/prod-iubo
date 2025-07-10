@@ -70,8 +70,8 @@ export default function HomePage() {
   // State to control the visibility of the task objectives modal
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
-  // Integrate PiP timer hook (returns refs for both canvas and video)
-  const { canvasRef, videoRef } = usePipTimer(timeParts, settings, {
+  // Integrate PiP timer hook (returns refs for canvas, video, and background video)
+  const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settings, {
     onPipModeDisabled: () => updateSettings({ pipModeEnabled: false }),
   });
 
@@ -299,6 +299,20 @@ export default function HomePage() {
           top: '-9999px',
           width: 320,
           height: 120,
+          pointerEvents: 'none',
+        }}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      {/* Hidden background video element for animated themes in PiP */}
+      <video
+        ref={backgroundVideoRef}
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: '-9999px',
+          width: 1600,
+          height: 600,
           pointerEvents: 'none',
         }}
         tabIndex={-1}
