@@ -1,4 +1,4 @@
-/* --- Contenedor Principal y Fondo --- */
+/* Main container and backdrop styling */
 .backdrop {
   position: fixed;
   inset: 0;
@@ -26,7 +26,7 @@
   opacity: 0;
   transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
 
-  /* Efecto Glassmorphism */
+  /* Glassmorphism effect for modern UI */
   background-color: var(--panel-bg-transparent, rgba(36, 37, 38, 0.75));
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
@@ -54,17 +54,17 @@
 
 .closeButton:hover {
   color: var(--text-color-primary);
-  transform: rotate(90deg);
+  transform: rotate(90deg); /* Rotate on hover */
 }
 
-/* --- Contenido del Panel (Sidebar + Main) --- */
+/* Main content layout - sidebar + content area */
 .panelContent {
   display: flex;
   flex-grow: 1;
   height: 100%;
 }
 
-/* --- Barra Lateral de Navegación --- */
+/* Sidebar navigation with menu items */
 .sidebar {
   width: 220px;
   flex-shrink: 0;
@@ -74,6 +74,7 @@
   flex-direction: column;
 }
 
+/* Sidebar section titles */
 .sidebarTitle {
   font-size: 0.9rem;
   font-weight: 700;
@@ -91,6 +92,7 @@
   margin: 0;
 }
 
+/* Navigation menu styling */
 .menuButton {
   width: 100%;
   display: flex;
@@ -122,6 +124,7 @@
   stroke: var(--text-color-primary);
 }
 
+/* Active menu button state */
 .menuButton.active {
   background-color: var(--brand-color-uibo);
   color: #ffffff;
@@ -133,13 +136,14 @@
   stroke: #ffffff;
 }
 
-/* --- Área de Contenido Principal --- */
+/* Main content area for settings */
 .mainContentArea {
   flex-grow: 1;
   padding: 25px 30px;
   overflow-y: auto;
 }
 
+/* Section titles styling */
 .sectionTitle {
   font-size: 1.8rem;
   font-weight: 700;
@@ -148,6 +152,7 @@
   width: 100%;
 }
 
+/* Settings container layout */
 .settingsContainer {
   width: 100%;
   display: flex;
@@ -155,6 +160,7 @@
   gap: 20px;
 }
 
+/* Individual setting item layout */
 .settingItem {
   display: flex;
   justify-content: space-between;
@@ -171,6 +177,7 @@
   color: var(--text-color-disabled, #777) !important;
 }
 
+/* Toggle switch component styling */
 .toggleSwitch {
   position: relative;
   display: inline-block;
@@ -184,6 +191,7 @@
   height: 0;
 }
 
+/* Toggle switch slider animation */
 .slider {
   position: absolute;
   cursor: pointer;
@@ -266,6 +274,7 @@ input:disabled + .slider {
   width: 100%;
 }
 
+/* Theme grid layout for theme selection */
 .themeGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -274,13 +283,14 @@ input:disabled + .slider {
   color: #d1d1d1;
 }
 
-/* --- Estilos para la Sección de Sonidos --- */
+/* Sound section styling */
 .soundList {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+/* Sound card with hover and active states */
 .soundCard {
   display: flex;
   align-items: center;
@@ -329,6 +339,7 @@ input:disabled + .slider {
   color: var(--text-color-secondary);
 }
 
+/* Volume control slider styling */
 .volumeSlider {
   flex-grow: 1;
   -webkit-appearance: none;
@@ -371,6 +382,7 @@ input:disabled + .slider {
   to { opacity: 1; }
 }
 
+/* Responsive design for mobile devices */
 @media (max-width: 768px) {
   .sidebar {
     width: 180px;
@@ -379,7 +391,7 @@ input:disabled + .slider {
 
 @media (max-width: 600px) {
   .panelContent {
-    flex-direction: column;
+    flex-direction: column; /* Stack sidebar and content vertically */
   }
   .sidebar {
     width: 100%;
@@ -390,7 +402,7 @@ input:disabled + .slider {
   }
   .sidebar ul {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-around; /* Horizontal menu on mobile */
   }
   .sidebarTitle {
     text-align: center;
@@ -401,7 +413,7 @@ input:disabled + .slider {
     padding: 8px;
   }
   .menuButton span {
-    display: none;
+    display: none; /* Hide text labels on mobile */
   }
   .mainContentArea {
     padding: 20px;
