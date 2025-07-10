@@ -240,6 +240,7 @@ export default function HomePage() {
             }}
             onToggleTask={handleToggleTask}
             onDeleteTask={handleDeleteTask}
+            onReorderTasks={setTasks}
           />
           {/* TaskList displays the current session tasks */}
           <TaskList

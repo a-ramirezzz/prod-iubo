@@ -80,6 +80,14 @@ export const useTaskManager = () => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   }, []); // No dependencies needed.
 
+  /**
+   * Reorders the task list based on drag and drop operations.
+   * @param {Task[]} newTasks - The new ordered array of tasks.
+   */
+  const handleReorderTasks = useCallback((newTasks: Task[]) => {
+    setTasks(newTasks);
+  }, []); // No dependencies needed.
+
   // -----------------------------------------------------------------
   // Public API
   // The values and functions returned by the hook for components to use.
@@ -87,11 +95,12 @@ export const useTaskManager = () => {
   
   return {
     tasks,
-    setTasks, // Expose setTasks for direct task management from modal
+    setTasks,
     currentTaskInput,
     setCurrentTaskInput,
     handleAddTask,
     handleToggleTask,
     handleDeleteTask,
+    handleReorderTasks,
   };
 };

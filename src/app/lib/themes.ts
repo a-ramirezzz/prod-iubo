@@ -1,4 +1,4 @@
-// src/app/lib/themes.ts
+// Theme configuration for the application
 
 export interface Theme {
   id: string;
@@ -8,21 +8,21 @@ export interface Theme {
   previewImage: string;
   backgroundVideo?: string;
   styles: {
-    // Estilos existentes
+    // Core theme styles
     '--bg-color': string;
     '--panel-bg': string;
     '--bg-image'?: string;
 
-    // --- NUEVOS ESTILOS OPCIONALES POR TEMA ---
-    '--text-highlight-color'?: string; // Color para el contador y títulos
-    '--text-shadow'?: string;          // Sombra/contorno para el texto
-    '--button-accent-bg'?: string;     // Color de acento para botones
+    // Optional theme-specific styles
+    '--text-highlight-color'?: string; // Timer and title colors
+    '--text-shadow'?: string;          // Text shadow/outline effects
+    '--button-accent-bg'?: string;     // Button accent colors
   };
 }
 
-// Array con todos nuestros temas
+// Complete theme collection for the application
 export const themes: Theme[] = [
-  // --- TEMAS ESTÁTICOS ---
+  // Static themes - Basic light and dark modes
   {
     id: 'dark-default',
     name: 'Oscuro Básico',
@@ -32,9 +32,9 @@ export const themes: Theme[] = [
     styles: {
       '--bg-color': '#1a1a1a',
       '--panel-bg': '#242526',
-      '--text-highlight-color': '#f0f0f0', // Texto blanco/claro
+      '--text-highlight-color': '#f0f0f0', // White/light text
       '--text-shadow': 'none',
-      '--button-accent-bg': '#333', // Botones gris oscuro
+      '--button-accent-bg': '#333', // Dark gray buttons
     },
   },
   {
@@ -46,15 +46,15 @@ export const themes: Theme[] = [
     styles: {
       '--bg-color': '#f8f9fa',
       '--panel-bg': '#ffffff',
-      '--text-highlight-color': '#212529', // Texto oscuro
+      '--text-highlight-color': '#212529', // Dark text
       '--text-shadow': 'none',
-      '--button-accent-bg': '#f8f9fa', // Botones claros
+      '--button-accent-bg': '#f8f9fa', // Light buttons
     },
   },
   
-  // --- TEMAS ANIMADOS CON ESTILOS ---
+  // Animated themes - Video backgrounds with enhanced styling
 
-  // Atardecer (Claro): Texto blanco con sombra oscura y cálida mejorada para mayor visibilidad.
+  // Sunset (Light): White text with enhanced dark shadow for better visibility
   {
     id: 'animated-atardecer-light',
     name: 'Atardecer',
@@ -65,8 +65,8 @@ export const themes: Theme[] = [
     styles: { 
       '--bg-color': '#F9D4A6',
       '--panel-bg': 'rgba(255, 245, 235, 0.8)',
-      '--text-highlight-color': '#ffffff', // Texto blanco para contraste
-      '--text-shadow': '0 0 10px rgba(62, 47, 46, 0.8), 0 0 20px rgba(62, 47, 46, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3)' // Contorno mejorado y más visible
+      '--text-highlight-color': '#ffffff', // White text for contrast
+      '--text-shadow': '0 0 10px rgba(62, 47, 46, 0.8), 0 0 20px rgba(62, 47, 46, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3)' // Enhanced outline for better visibility
     }
   },
   {
@@ -84,7 +84,7 @@ export const themes: Theme[] = [
     },
   },
 
-  // Ciudad (Claro y Oscuro): Texto blanco con sombra oscura mejorada para mayor visibilidad.
+  // City (Light and Dark): White text with enhanced dark shadow for better visibility
   {
     id: 'animated-city-light',
     name: 'Mañana en la Ciudad',
@@ -96,7 +96,7 @@ export const themes: Theme[] = [
       '--bg-color': '#D1D5DB',
       '--panel-bg': 'rgba(243, 244, 246, 0.8)',
       '--text-highlight-color': '#ffffff', // White text for contrast against varied background colors
-      '--text-shadow': '0 0 15px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4)' // Enhanced outline for better visibility against yellow, blue, gray, and black backgrounds
+      '--text-shadow': '0 0 15px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4)' // Enhanced outline for better visibility against varied backgrounds
     }
   },
   {
@@ -110,12 +110,12 @@ export const themes: Theme[] = [
       '--bg-color': '#1E293B',
       '--panel-bg': 'rgba(15, 23, 42, 0.8)',
       '--text-highlight-color': '#FFFFFF', // White text for maximum contrast
-      '--text-shadow': '0 0 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.5)', // Enhanced outline for better prominence against varied city colors
+      '--text-shadow': '0 0 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.5)', // Enhanced outline for better prominence against varied backgrounds
       '--button-accent-bg': '#38bdf8'
     }
   },
 
-  // Cyberpunk (Claro y Oscuro): Tema futurista con colores dinámicos y llamativos
+  // Cyberpunk (Light and Dark): Futuristic theme with dynamic and vibrant colors
   {
     id: 'animated-cyberpunk-light',
     name: 'Cyberpunk',
@@ -126,9 +126,9 @@ export const themes: Theme[] = [
     styles: { 
       '--bg-color': '#FBCFE8', // Light pink background to complement the video
       '--panel-bg': 'rgba(15, 15, 25, 0.85)', // Dark panel with high opacity for contrast against pink/yellow/black background
-      '--text-highlight-color': '#FF1493', // Strong deep pink for maximum visibility without blurry glow
-      '--text-shadow': '0 2px 4px rgba(0, 0, 0, 0.8)', // Simple sharp shadow for definition without blur
-      '--button-accent-bg': '#FF00FF' // Magenta accent for buttons to create vibrant contrast with strong pink timer
+      '--text-highlight-color': '#FF1493', // Strong deep pink for maximum visibility
+      '--text-shadow': '0 2px 4px rgba(0, 0, 0, 0.8)', // Simple sharp shadow for definition
+      '--button-accent-bg': '#FF00FF' // Magenta accent for vibrant button contrast
     }
   },
   {
@@ -141,13 +141,13 @@ export const themes: Theme[] = [
     styles: { 
       '--bg-color': '#4C0519', // Dark background to complement the video
       '--panel-bg': 'rgba(20, 20, 30, 0.9)', // Very dark panel with high opacity for maximum contrast
-      '--text-highlight-color': '#FF1493', // Strong deep pink for maximum visibility without blurry glow
-      '--text-shadow': '0 2px 4px rgba(0, 0, 0, 0.9)', // Simple sharp shadow for definition without blur
-      '--button-accent-bg': '#FF00FF' // Bright magenta for vibrant button contrast with strong pink timer
+      '--text-highlight-color': '#FF1493', // Strong deep pink for maximum visibility
+      '--text-shadow': '0 2px 4px rgba(0, 0, 0, 0.9)', // Simple sharp shadow for definition
+      '--button-accent-bg': '#FF00FF' // Bright magenta for vibrant button contrast
     }
   },
 
-  // Disco (Claro y Oscuro)
+  // Disco (Light and Dark)
   {
     id: 'animated-disco-light',
     name: 'Disco',
@@ -178,7 +178,7 @@ export const themes: Theme[] = [
     }
   },
 
-  // Electro (Claro y Oscuro): Tema energético con colores vibrantes para música electrónica
+  // Electro (Light and Dark): Energetic theme with vibrant colors for electronic music
   {
     id: 'animated-electro-light',
     name: 'Electro',
@@ -189,9 +189,9 @@ export const themes: Theme[] = [
     styles: { 
       '--bg-color': '#E0F2FE', // Light blue background to complement the video
       '--panel-bg': 'rgba(10, 10, 15, 0.9)', // Very dark panel for maximum contrast against black/reddish background
-      '--text-highlight-color': '#FFD700', // Bright yellow for energetic timer display - contrasts well with black and red backgrounds
+      '--text-highlight-color': '#FFD700', // Bright yellow for energetic timer display
       '--text-shadow': '0 0 15px rgba(255, 215, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.6)', // Glowing yellow outline for energetic effect
-      '--button-accent-bg': '#FF4500' // Electric orange for vibrant button contrast with yellow timer
+      '--button-accent-bg': '#FF4500' // Electric orange for vibrant button contrast
     }
   },
   {
@@ -204,13 +204,13 @@ export const themes: Theme[] = [
     styles: { 
       '--bg-color': '#075985', // Dark blue background to complement the video
       '--panel-bg': 'rgba(5, 5, 10, 0.95)', // Very dark panel for maximum contrast against black/reddish background
-      '--text-highlight-color': '#FFD700', // Bright yellow for maximum energy and visibility against dark background
+      '--text-highlight-color': '#FFD700', // Bright yellow for maximum energy and visibility
       '--text-shadow': '0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 215, 0, 0.7)', // Intense yellow glow for dramatic energetic effect
-      '--button-accent-bg': '#FF4500' // Electric orange for vibrant button contrast with yellow timer
+      '--button-accent-bg': '#FF4500' // Electric orange for vibrant button contrast
     }
   },
 
-  // Fuego (Claro y Oscuro): Tema con colores cálidos y energéticos
+  // Fire (Light and Dark): Theme with warm and energetic colors
   {
     id: 'animated-fuego-light',
     name: 'Fuego',
@@ -221,8 +221,8 @@ export const themes: Theme[] = [
     styles: { 
       '--bg-color': '#FEF3C7', // Light background to complement the video
       '--panel-bg': 'rgba(254, 243, 199, 0.8)', // Panel background for contrast
-      '--text-highlight-color': '#FBBF24', // Golden yellow timer color - same as dark mode for consistency
-      '--text-shadow': '0 0 8px rgba(0, 0, 0, 0.9)', // Black shadow - same as dark mode for consistency
+      '--text-highlight-color': '#FBBF24', // Golden yellow timer color for consistency
+      '--text-shadow': '0 0 8px rgba(0, 0, 0, 0.9)', // Black shadow for consistency
     }
   },
   {
@@ -240,7 +240,7 @@ export const themes: Theme[] = [
     }
   },
   
-  // Galaxia (Claro y Oscuro)
+  // Galaxy (Light and Dark)
   {
     id: 'animated-galaxy-light',
     name: 'Galaxia',
@@ -270,7 +270,7 @@ export const themes: Theme[] = [
     }
   },
 
-  // Nubes (Claro y Oscuro)
+  // Clouds (Light and Dark)
   {
     id: 'animated-nubes-light',
     name: 'Nubes',
@@ -300,7 +300,7 @@ export const themes: Theme[] = [
     },
   },
 
-  // Universo (Claro y Oscuro)
+  // Universe (Light and Dark)
   {
     id: 'animated-universo-light',
     name: 'Universo',

@@ -48,7 +48,7 @@
 .title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--text-highlight-color, #fff);
+  color: #fff;
   margin-bottom: 22px;
   text-align: center;
 }
@@ -61,6 +61,11 @@
   gap: 10px;
   margin-bottom: 24px;
 }
+.progressBarContainer span {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
 .progressBarBg {
   flex: 1;
   height: 12px;
@@ -71,8 +76,7 @@
 }
 .progressBarFill {
   height: 100%;
-  background: var(--brand-color-uibo, #1e88e5);
-  transition: width 0.3s;
+  transition: width 0.3s, background-color 0.3s;
 }
 .tasksArea {
   width: 100%;
@@ -136,13 +140,51 @@
   justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid var(--border-color-primary, #333);
+  transition: all 0.2s ease;
+  cursor: grab;
 }
+
+.taskItem:active {
+  cursor: grabbing;
+}
+
+.taskItem.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+/* Drag handle for reordering tasks */
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  color: var(--text-color-secondary, #aaa);
+  font-size: 1.2rem;
+  cursor: grab;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.dragHandle:hover {
+  color: var(--text-color-primary, #fff);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
 .taskLabel {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
   cursor: pointer;
+}
+.taskLabel span {
+  color: #fff;
 }
 .taskLabel input[type="checkbox"] {
   accent-color: var(--brand-color-uibo, #1e88e5);

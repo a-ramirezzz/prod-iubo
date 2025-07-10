@@ -1,6 +1,6 @@
 # Prod-UIBO: Reloj de Productividad Inteligente
 
-![Prod-UIBO Logo](public/prod-iubo.png) Prod-UIBO es una aplicación web diseñada para ayudarte a maximizar tu productividad y gestionar tu tiempo de manera eficaz. Ofrece un temporizador de cuenta regresiva altamente personalizable con una interfaz limpia, moderna y enfocada en el usuario.
+![Prod-UIBO Logo](src/app/prod-iubo.png) Prod-UIBO es una aplicación web diseñada para ayudarte a maximizar tu productividad y gestionar tu tiempo de manera eficaz. Ofrece un temporizador de cuenta regresiva altamente personalizable con una interfaz limpia, moderna y enfocada en el usuario.
 
 ## ✨ Características Principales
 
@@ -20,6 +20,7 @@
 * **Animación Dinámica:** Los segundos cambian de forma fluida y visualmente agradable.
 * **Identidad de Marca:** Nombre del proyecto "Prod-UIBO" visible en la interfaz.
 * **Optimización SEO Básica:** Metadata y favicon configurados para una mejor indexación y reconocimiento.
+* **Gestión de Tareas con Drag & Drop:** Sistema completo de objetivos diarios con capacidad de reordenar tareas mediante arrastrar y soltar.
 
 ## 🚀 Tecnologías Utilizadas
 
@@ -28,6 +29,7 @@
 * **TypeScript:** Superset de JavaScript que añade tipado estático para un desarrollo más robusto.
 * **CSS Modules:** Para estilos encapsulados y específicos por componente, evitando colisiones de nombres.
 * **HTML5 & CSS3:** Estándares web para la estructura y el diseño.
+* **@dnd-kit:** Librería moderna para funcionalidad de arrastrar y soltar (drag & drop).
 
 ## 🛠️ Instalación y Puesta en Marcha Local
 
@@ -56,6 +58,8 @@ Sigue estos pasos para tener una copia del proyecto corriendo en tu máquina loc
     ```bash
     yarn install
     ```
+    
+    **Nota:** El proyecto incluye dependencias adicionales para funcionalidad de drag & drop que se instalan automáticamente con el comando anterior.
 
 3.  **Ejecuta el Servidor de Desarrollo:**
     Si usas npm:
@@ -69,6 +73,16 @@ Sigue estos pasos para tener una copia del proyecto corriendo en tu máquina loc
 
 4.  **Abre la Aplicación:**
     Abre tu navegador web y visita `http://localhost:3000`. Deberías ver la aplicación Prod-UIBO en funcionamiento.
+
+## 📋 Gestión de Tareas
+
+Prod-UIBO incluye un sistema completo de gestión de objetivos diarios:
+
+* **Modal de Objetivos:** Interfaz dedicada para crear y gestionar tareas de la sesión
+* **Barra de Progreso Dinámica:** Visualización del progreso con colores que cambian según el porcentaje completado
+* **Drag & Drop:** Reordena tus tareas arrastrando el handle (⋮⋮) de cada tarea
+* **Efecto de Celebración:** Animación especial con emojis de fuego 🔥 al completar el 100% de objetivos
+* **Persistencia:** Las tareas se mantienen durante la sesión de trabajo
 
 ## 📁 Estructura del Proyecto (Simplificada)
 
