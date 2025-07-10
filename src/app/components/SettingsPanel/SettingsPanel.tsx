@@ -156,11 +156,16 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <span className={styles.slider}></span>
                   </label>
                 </div>
-                {/* Always on Top (disabled, placeholder) */}
+                {/* PiP Floating Timer toggle */}
                 <div className={styles.settingItem}>
-                  <label htmlFor="always-on-top" className={styles.disabledLabel}>Mantener Siempre Visible</label>
+                  <label htmlFor="pip-mode">Activar Contador Flotante (PiP)</label>
                   <label className={styles.toggleSwitch}>
-                    <input id="always-on-top" type="checkbox" disabled />
+                    <input
+                      id="pip-mode"
+                      type="checkbox"
+                      checked={!!settings.pipModeEnabled}
+                      onChange={e => updateSettings({ pipModeEnabled: e.target.checked })}
+                    />
                     <span className={styles.slider}></span>
                   </label>
                 </div>

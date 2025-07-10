@@ -12,6 +12,7 @@ import styles from '@/app/Page.module.css';
 import { useTimer } from '@/hooks/useTimer';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSettings } from '@/context/SettingsContext';
+import { usePipTimer } from '@/hooks/usePipTimer';
 
 // UI Component Imports
 import ProjectBranding from '@/components/ProjectBranding/ProjectBranding';
@@ -36,7 +37,7 @@ export default function HomePage() {
   // =================================================================
 
   // Global settings from context
-  const { settings } = useSettings();
+  const { settings, updateSettings } = useSettings();
 
   // Core application logic from custom hooks
   const {
@@ -68,6 +69,11 @@ export default function HomePage() {
   const [showVisualNotification, setShowVisualNotification] = useState(false);
   // State to control the visibility of the task objectives modal
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+
+  // Integrate PiP timer hook
+  const { canvasRef } = usePipTimer(timeParts, settings, {
+    onPipModeDisabled: () => updateSettings({ pipModeEnabled: false }),
+  });
 
   // =================================================================
   // SECTION: Effects
@@ -271,6 +277,18 @@ export default function HomePage() {
         visible={showVisualNotification}
         onClose={() => setShowVisualNotification(false)}
         duration={3500}
+      />
+      {/* Hidden canvas for Picture-in-Picture floating timer */}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: '-9999px',
+          width: 320,
+          height: 120,
+          pointerEvents: 'none',
+        }}
       />
     </main>
   );
