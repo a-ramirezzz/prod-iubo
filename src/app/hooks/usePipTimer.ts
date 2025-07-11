@@ -1,7 +1,6 @@
 // src/app/hooks/usePipTimer.ts
 import { useRef, useEffect } from 'react';
 import { TimeParts, AppSettings } from '@/types/index';
-import { themes } from '@/app/lib/themes';
 
 interface UsePipTimerOptions {
   onPipModeDisabled?: () => void;
@@ -39,20 +38,7 @@ export const usePipTimer = (
   const PIP_WIDTH = 1600; // Much larger width for PiP
   const PIP_HEIGHT = 600; // Much larger height for PiP
 
-  /**
-   * Get the currently active theme object based on settings
-   */
-  const getActiveTheme = () => {
-    return themes.find(theme => theme.id === settings.selectedThemeId);
-  };
-
-  /**
-   * Check if the current theme is animated and has a background video
-   */
-  const isAnimatedTheme = () => {
-    const activeTheme = getActiveTheme();
-    return activeTheme?.type === 'animated' && activeTheme.backgroundVideo;
-  };
+  
 
   /**
    * Utility to ensure the Anton font is loaded before drawing on the canvas.
@@ -130,7 +116,7 @@ export const usePipTimer = (
         }
         if (document.pictureInPictureElement !== video) {
           console.log('[PiP] Requesting Picture-in-Picture on video...');
-          // @ts-ignore
+          // @ts-expect-error - requestPictureInPicture is not fully typed in TypeScript
           pipWindowRef.current = await video.requestPictureInPicture();
           console.log('[PiP] Picture-in-Picture window opened');
         } else {
@@ -192,9 +178,10 @@ export const usePipTimer = (
         streamRef.current = null;
         video.srcObject = null;
       }
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.pause();
-        backgroundVideoRef.current.src = '';
+      const backgroundVideo = backgroundVideoRef.current;
+      if (backgroundVideo) {
+        backgroundVideo.pause();
+        backgroundVideo.src = '';
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
