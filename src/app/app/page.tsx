@@ -54,9 +54,6 @@ export default function HomePage() {
   const {
     tasks,
     setTasks, // Import setTasks to allow global task updates from the modal
-    currentTaskInput,
-    setCurrentTaskInput,
-    handleAddTask,
     handleToggleTask,
     handleDeleteTask,
   } = useTaskManager();
