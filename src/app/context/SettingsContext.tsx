@@ -30,6 +30,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   startInMiniMode: false,
   confirmOnStop: true,
   alwaysOnTop: false,
+  pipModeEnabled: false,
   language: 'es',
   themeMode: 'dark',
   selectedThemeId: 'dark-default',
