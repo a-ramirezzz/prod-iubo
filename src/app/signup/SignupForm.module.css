@@ -1,0 +1,80 @@
+/* SignupForm.module.css */
+
+.formContainer {
+  background: rgba(30, 30, 40, 0.95); /* dark semi-transparent */
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 2.5rem 2rem;
+  min-width: 320px;
+  max-width: 380px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.formTitle {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #23233b;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input:focus {
+  border: 1.5px solid #6c63ff; /* accent color */
+}
+
+.button {
+  width: 100%;
+  padding: 0.8rem 0;
+  background: linear-gradient(90deg, #6c63ff 0%, #48c6ef 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background: linear-gradient(90deg, #48c6ef 0%, #6c63ff 100%);
+}
+
+.link {
+  color: #48c6ef;
+  text-decoration: underline;
+  margin-top: 1.2rem;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #6c63ff;
+}
+
+.error {
+  color: #ff6b6b;
+  background: rgba(255,107,107,0.08);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.98rem;
+  text-align: center;
+} 
