@@ -1,5 +1,6 @@
 /* SignupForm.module.css */
 
+/* Container for the signup form, provides background, padding, and layout */
 .formContainer {
   background: rgba(30, 30, 40, 0.95); /* dark semi-transparent */
   border-radius: 16px;
@@ -13,6 +14,7 @@
   align-items: center;
 }
 
+/* Title styling for the signup form */
 .formTitle {
   color: #fff;
   font-size: 2rem;
@@ -21,6 +23,7 @@
   letter-spacing: 1px;
 }
 
+/* Input fields styling for consistent look and feel */
 .input {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -34,10 +37,12 @@
   transition: border 0.2s;
 }
 
+/* Highlight input on focus with accent color */
 .input:focus {
   border: 1.5px solid #6c63ff; /* accent color */
 }
 
+/* Primary button styling for form submission */
 .button {
   width: 100%;
   padding: 0.8rem 0;
@@ -52,10 +57,12 @@
   transition: background 0.2s;
 }
 
+/* Button hover effect for better UX */
 .button:hover {
   background: linear-gradient(90deg, #48c6ef 0%, #6c63ff 100%);
 }
 
+/* Link styling for navigation to login page */
 .link {
   color: #48c6ef;
   text-decoration: underline;
@@ -65,10 +72,12 @@
   transition: color 0.2s;
 }
 
+/* Link hover effect for better UX */
 .link:hover {
   color: #6c63ff;
 }
 
+/* Error message styling for form feedback */
 .error {
   color: #ff6b6b;
   background: rgba(255,107,107,0.08);

@@ -1,3 +1,4 @@
+// Login page route for the application. Renders the LoginForm component for user authentication.
 import React from 'react';
 import LoginForm from "./LoginForm";
 
