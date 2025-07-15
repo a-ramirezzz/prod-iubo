@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from '@/app/LandingPage.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 /**
  * Landing Page Component
@@ -71,6 +72,15 @@ export default function LandingPage() {
           <a href="/app" className={styles.heroButton} onClick={handleStart}>
             Comenzar Ahora
           </a>
+          {/* Auth links */}
+          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+            <Link href="/login" style={{ color: '#48c6ef', fontWeight: 500, textDecoration: 'underline', fontSize: '1.08rem' }}>
+              Iniciar Sesión
+            </Link>
+            <Link href="/signup" style={{ color: '#6c63ff', fontWeight: 500, textDecoration: 'underline', fontSize: '1.08rem' }}>
+              Registrarse
+            </Link>
+          </div>
         </div>
         
         {/* Scroll indicator - invites users to explore more content */}
