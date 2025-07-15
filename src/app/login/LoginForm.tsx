@@ -4,6 +4,7 @@ import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "./actions";
+import landingStyles from "@/app/LandingPage.module.css";
 
 /**
  * LoginForm Component
@@ -17,6 +18,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showAppLoading, setShowAppLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -53,44 +55,58 @@ export default function LoginForm() {
     if (result?.error) {
       setError(result.error);
     } else if (result?.success) {
-      // Redirect to the main app page on successful login
-      router.push("/app");
+      // Show loading overlay before redirecting to the main app page
+      setShowAppLoading(true);
+      setTimeout(() => {
+        router.push("/app");
+      }, 1200);
     }
   };
 
   return (
-    <form className={styles.formContainer} onSubmit={handleSubmit}>
-      <div className={styles.formTitle}>Iniciar Sesión</div>
-      {/* Error message display */}
-      {error && <div className={styles.error}>{error}</div>}
-      {/* Email input */}
-      <input
-        className={styles.input}
-        type="email"
-        placeholder="Correo electrónico"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-        autoComplete="email"
-      />
-      {/* Password input */}
-      <input
-        className={styles.input}
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-        autoComplete="current-password"
-      />
-      {/* Submit button */}
-      <button className={styles.button} type="submit" disabled={loading || isPending}>
-        {loading || isPending ? "Ingresando..." : "Ingresar"}
-      </button>
-      {/* Link to signup page */}
-      <Link className={styles.link} href="/signup">
-        ¿No tienes cuenta? Regístrate
-      </Link>
-    </form>
+    <>
+      {/* App loading overlay (same as landing page) */}
+      {showAppLoading && (
+        <div className={landingStyles.loadingOverlay}>
+          <div className={landingStyles.spinnerWrapper}>
+            <div className={landingStyles.spinner}></div>
+            <span className={landingStyles.loadingText}>Cargando aplicación…</span>
+          </div>
+        </div>
+      )}
+      <form className={styles.formContainer} onSubmit={handleSubmit}>
+        <div className={styles.formTitle}>Iniciar Sesión</div>
+        {/* Error message display */}
+        {error && <div className={styles.error}>{error}</div>}
+        {/* Email input */}
+        <input
+          className={styles.input}
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+        />
+        {/* Password input */}
+        <input
+          className={styles.input}
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          autoComplete="current-password"
+        />
+        {/* Submit button */}
+        <button className={styles.button} type="submit" disabled={loading || isPending}>
+          {loading || isPending ? "Ingresando..." : "Ingresar"}
+        </button>
+        {/* Link to signup page */}
+        <Link className={styles.link} href="/signup">
+          ¿No tienes cuenta? Regístrate
+        </Link>
+      </form>
+    </>
   );
 } 
