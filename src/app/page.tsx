@@ -35,10 +35,7 @@ export default function LandingPage() {
   // Handler for CTA button with loading animation
   const handleStart = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      router.push('/app');
-    }, 1200);
+    router.push('/login');
   };
 
   return (
@@ -48,14 +45,6 @@ export default function LandingPage() {
         BETA
       </div>
       {/* Loading Overlay */}
-      {loading && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.spinnerWrapper}>
-            <div className={styles.spinner}></div>
-            <span className={styles.loadingText}>Cargando aplicación…</span>
-          </div>
-        </div>
-      )}
       {/* Hero Section - Main call-to-action area */}
       <section className={styles.hero} id="inicio">
         <div className={styles.heroContent}>
@@ -69,18 +58,10 @@ export default function LandingPage() {
             Un temporizador de productividad personalizable para máxima concentración.
           </p>
           {/* Primary call-to-action button */}
-          <a href="/app" className={styles.heroButton} onClick={handleStart}>
+          <a href="/login" className={styles.heroButton} onClick={handleStart}>
             Comenzar Ahora
           </a>
           {/* Auth links */}
-          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-            <Link href="/login" style={{ color: '#48c6ef', fontWeight: 500, textDecoration: 'underline', fontSize: '1.08rem' }}>
-              Iniciar Sesión
-            </Link>
-            <Link href="/signup" style={{ color: '#6c63ff', fontWeight: 500, textDecoration: 'underline', fontSize: '1.08rem' }}>
-              Registrarse
-            </Link>
-          </div>
         </div>
         
         {/* Scroll indicator - invites users to explore more content */}

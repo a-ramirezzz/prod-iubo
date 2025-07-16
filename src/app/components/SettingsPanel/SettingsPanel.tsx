@@ -10,6 +10,9 @@ import { useSettings } from '../../context/SettingsContext';
 import { themes } from '../../lib/themes';
 import ThemeCard from '../ThemeCard/ThemeCard';
 import { sounds, noSound } from '../../lib/sounds';
+import { supabase } from '../../lib/supabaseClient';
+import { useAuth } from '../../context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -46,7 +49,10 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   // State for the currently active section
   const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
   // Access settings and update functions from context
-  const { settings, updateSettings, resetSettings } = useSettings();
+  const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
+  const { user } = useAuth();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   // Sincroniza el estado del toggle con el permiso de notificación del navegador
   useEffect(() => {
@@ -81,6 +87,15 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     if (window.confirm('¿Estás seguro de que quieres restablecer todos los ajustes a sus valores predeterminados?')) {
       resetSettings();
     }
+  };
+
+  // Handler for logging out the user
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    await supabase.auth.signOut();
+    await resetSettings(); // Optionally reset settings state
+    setLoggingOut(false);
+    router.push('/');
   };
 
   // Handler for toggling theme mode (light/dark)
@@ -196,9 +211,18 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                   </label>
                 </div>
                 {/* Reset settings button */}
-                <div className={styles.resetSection}>
+                <div className={styles.resetSection} style={{ flexDirection: 'column', alignItems: 'center' }}>
                   <button onClick={handleResetClick} className={`${styles.resetButton} button button-stop`}>
                     Restablecer Ajustes
+                  </button>
+                  {/* Logout button for ending the user session */}
+                  <button
+                    onClick={handleLogout}
+                    className={`${styles.resetButton} button button-stop`}
+                    style={{ marginTop: 16 }}
+                    disabled={loggingOut}
+                  >
+                    {loggingOut ? 'Cerrando sesión...' : 'Cerrar sesión'}
                   </button>
                 </div>
               </div>
@@ -234,7 +258,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                         key={theme.id}
                         theme={theme}
                         isSelected={settings.selectedThemeId === theme.id}
-                        onClick={() => updateSettings({ selectedThemeId: theme.id })}
+                        onClick={() => !settingsLoading && updateSettings({ selectedThemeId: theme.id })}
                       />
                     ))}
                 </div>
@@ -249,7 +273,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                         key={theme.id}
                         theme={theme}
                         isSelected={settings.selectedThemeId === theme.id}
-                        onClick={() => updateSettings({ selectedThemeId: theme.id })}
+                        onClick={() => !settingsLoading && updateSettings({ selectedThemeId: theme.id })}
                       />
                     ))}
                 </div>
@@ -268,6 +292,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       key={sound.id}
                       className={`${styles.soundCard} ${settings.backgroundSound === sound.id ? styles.activeSound : ''}`}
                       onClick={() => updateSettings({ backgroundSound: sound.id })}
+                      disabled={settingsLoading}
                     >
                       <div className={styles.soundIcon}>{sound.icon}</div>
                       <span>{sound.name}</span>
@@ -287,6 +312,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                         value={settings.volume}
                         className={styles.volumeSlider}
                         onChange={(e) => updateSettings({ volume: parseFloat(e.target.value) })}
+                        disabled={settingsLoading}
                     />
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
                 </div>
