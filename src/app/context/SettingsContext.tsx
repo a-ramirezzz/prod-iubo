@@ -4,29 +4,31 @@
  * -----------------------------------------------------------------
  * This file creates and manages the global state for all user-
  * configurable settings. It uses React Context to provide settings
- * data throughout the application and persists them to localStorage.
+ * data throughout the application and persists them to Supabase.
  * =================================================================
  */
-
-// =================================================================
-// SECTION: Imports
-// =================================================================
 
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import type { AppSettings } from '@/app/types';
+import { supabase } from '@/app/lib/supabaseClient';
+import { useAuth } from './AuthContext';
 
 // =================================================================
 // SECTION: Constants
 // =================================================================
+
+// Extend AppSettings to include is_pro
+export type FullAppSettings = AppSettings & { is_pro: boolean };
 
 /**
  * The default state for application settings.
  * Used on the very first launch or after a settings reset.
  * The app is configured to always start in dark mode by default.
  */
-const DEFAULT_SETTINGS: AppSettings = {
+const DEFAULT_SETTINGS: FullAppSettings = {
+  is_pro: false,
   startInMiniMode: false,
   confirmOnStop: true,
   alwaysOnTop: false,
@@ -39,8 +41,6 @@ const DEFAULT_SETTINGS: AppSettings = {
   enableDesktopNotifications: false,
 };
 
-const SETTINGS_STORAGE_KEY = 'prod-uibo-settings';
-
 // =================================================================
 // SECTION: Context Definition
 // =================================================================
@@ -49,9 +49,11 @@ const SETTINGS_STORAGE_KEY = 'prod-uibo-settings';
  * Defines the shape of the data that the SettingsContext will provide.
  */
 interface SettingsContextType {
-  settings: AppSettings;
-  updateSettings: (newSettings: Partial<AppSettings>) => void;
-  resetSettings: () => void;
+  settings: FullAppSettings;
+  updateSettings: (newSettings: Partial<FullAppSettings>) => Promise<void>;
+  resetSettings: () => Promise<void>;
+  loading: boolean;
+  error: string | null;
 }
 
 /**
@@ -67,56 +69,87 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 /**
  * The provider component that wraps the application and makes the
  * settings state available to all child components.
+ * Loads and persists settings to Supabase for the authenticated user.
  * @param {object} props - The component props.
  * @param {React.ReactNode} props.children - The child components to render.
  * @returns {JSX.Element} The context provider component.
  */
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const { user, loading: authLoading } = useAuth();
+  const [settings, setSettings] = useState<FullAppSettings>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   /**
-   * Effect to load (hydrate) settings from localStorage on initial client-side render.
+   * Effect to load settings from Supabase for the authenticated user.
    */
   useEffect(() => {
-    let initialSettings = { ...DEFAULT_SETTINGS };
-    try {
-      const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-      if (storedSettings) {
-        // If settings exist in storage, merge them over the defaults.
-        initialSettings = { ...initialSettings, ...JSON.parse(storedSettings) };
+    if (authLoading) return; // Espera a que AuthContext termine de cargar
+    if (!user) {
+      setSettings(DEFAULT_SETTINGS);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const fetchSettings = async () => {
+      const { data, error } = await supabase
+        .from('user_settings')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      if (error || !data) {
+        setSettings(DEFAULT_SETTINGS);
+        console.log('[SettingsContext] No settings found or error:', error);
+      } else {
+        setSettings({ ...DEFAULT_SETTINGS, ...data });
+        console.log('[SettingsContext] Loaded settings from Supabase:', data);
       }
-    } catch (error) {
-      console.error("Failed to parse settings from localStorage", error);
+      setLoading(false);
+    };
+    fetchSettings();
+  }, [user, authLoading]);
+
+  /**
+   * Updates one or more settings and persists them to Supabase.
+   * Uses upsert to ensure the row exists.
+   */
+  const updateSettings = useCallback(async (newSettings: Partial<FullAppSettings>) => {
+    if (!user) return;
+    setError(null);
+    // Always include is_pro in the upsert
+    const updated: FullAppSettings = { ...settings, ...newSettings, is_pro: settings.is_pro ?? false };
+    setSettings(updated);
+    console.log('[SettingsContext] updateSettings called:', newSettings, 'Full object:', updated);
+    const { error } = await supabase
+      .from('user_settings')
+      .upsert([{ id: user.id, ...updated }], { onConflict: 'id' });
+    if (error) {
+      setError('Error updating settings: ' + error.message);
+      console.error('[SettingsContext] Error updating settings:', error);
+    } else {
+      console.log('[SettingsContext] Settings updated successfully in Supabase');
     }
-    setSettings(initialSettings);
-  }, []); // Empty dependency array ensures this runs only once on mount.
+  }, [user, settings]);
 
   /**
-   * Effect to persist settings to localStorage whenever they change.
+   * Resets all settings back to their default values in Supabase.
+   * Uses upsert to ensure the row exists.
    */
-  useEffect(() => {
-    try {
-      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-    } catch (error) {
-      console.error("Failed to save settings to localStorage", error);
-    }
-  }, [settings]);
-
-  /**
-   * Updates one or more settings and merges them into the current state.
-   * Memoized with useCallback to maintain a stable function reference.
-   */
-  const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
-  }, []);
-
-  /**
-   * Resets all settings back to their default values.
-   * Memoized with useCallback.
-   */
-  const resetSettings = useCallback(() => {
+  const resetSettings = useCallback(async () => {
+    if (!user) return;
+    setError(null);
     setSettings(DEFAULT_SETTINGS);
-  }, []);
+    console.log('[SettingsContext] resetSettings called');
+    const { error } = await supabase
+      .from('user_settings')
+      .upsert([{ id: user.id, ...DEFAULT_SETTINGS }], { onConflict: 'id' });
+    if (error) {
+      setError('Error resetting settings: ' + error.message);
+      console.error('[SettingsContext] Error resetting settings:', error);
+    } else {
+      console.log('[SettingsContext] Settings reset successfully in Supabase');
+    }
+  }, [user]);
 
   /**
    * Memoize the context value to prevent unnecessary re-renders in consumers.
@@ -125,8 +158,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({
     settings,
     updateSettings,
-    resetSettings
-  }), [settings, updateSettings, resetSettings]);
+    resetSettings,
+    loading,
+    error
+  }), [settings, updateSettings, resetSettings, loading, error]);
 
   return (
     <SettingsContext.Provider value={value}>

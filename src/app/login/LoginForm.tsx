@@ -3,7 +3,7 @@ import React, { useState, useTransition } from "react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "./actions";
+import { supabase } from "@/app/lib/supabaseClient";
 import landingStyles from "@/app/LandingPage.module.css";
 
 /**
@@ -33,7 +33,7 @@ export default function LoginForm() {
   };
 
   /**
-   * Handles form submission, calls the server action, and manages UI feedback.
+   * Handles form submission, authenticates the user with Supabase, and manages UI feedback.
    * Redirects to the main app page on successful login.
    * @param e React.FormEvent
    */
@@ -46,15 +46,15 @@ export default function LoginForm() {
       return;
     }
     setLoading(true);
-    // Call the server action to authenticate the user
-    const result = await signIn({
+    // Authenticate the user directly in the client
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     setLoading(false);
-    if (result?.error) {
-      setError(result.error);
-    } else if (result?.success) {
+    if (error) {
+      setError(error.message);
+    } else {
       // Show loading overlay before redirecting to the main app page
       setShowAppLoading(true);
       setTimeout(() => {

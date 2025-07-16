@@ -99,15 +99,13 @@ export const viewport: Viewport = {
  */
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={anton.variable}>
-      <body>
-        <SettingsProvider>
-          <ThemeWrapper>
-            {children}
-            <AmbientSoundPlayer />
-          </ThemeWrapper>
-        </SettingsProvider>
-      </body>
-    </html>
+    <>
+      <SettingsProvider>
+        <ThemeWrapper>
+          {children}
+          <AmbientSoundPlayer />
+        </ThemeWrapper>
+      </SettingsProvider>
+    </>
   );
 }

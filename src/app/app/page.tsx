@@ -13,6 +13,8 @@ import { useTimer } from '@/hooks/useTimer';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 // UI Component Imports
 import ProjectBranding from '@/components/ProjectBranding/ProjectBranding';
@@ -72,6 +74,16 @@ export default function HomePage() {
     onPipModeDisabled: () => updateSettings({ pipModeEnabled: false }),
   });
 
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  // Redirect to /login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [authLoading, user, router]);
+
   // =================================================================
   // SECTION: Effects
   // =================================================================
@@ -95,7 +107,7 @@ export default function HomePage() {
     }
   }, []); // Empty dependency array ensures this runs only once.
 
-  // Efecto para mostrar la notificación visual cuando el temporizador termina
+  // Effect to show visual notification when the timer ends
   useEffect(() => {
     if (initialTimeSet > 0 && totalSeconds === 0 && !isActive) {
       setShowVisualNotification(true);
