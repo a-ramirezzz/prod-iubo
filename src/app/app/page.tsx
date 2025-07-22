@@ -51,7 +51,7 @@ export default function HomePage() {
     togglePause,
     resetTimer,
     stopTimer,
-  } = useTimer(!!settings.enableDesktopNotifications);
+  } = useTimer(!!settings.enable_desktop_notifications);
 
   const {
     tasks,
@@ -71,7 +71,7 @@ export default function HomePage() {
 
   // Integrate PiP timer hook (returns refs for canvas, video, and background video)
   const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settings, {
-    onPipModeDisabled: () => updateSettings({ pipModeEnabled: false }),
+    onPipModeDisabled: () => updateSettings({ pip_mode_enabled: false }),
   });
 
   const { user, loading: authLoading } = useAuth();
@@ -93,8 +93,8 @@ export default function HomePage() {
    * Runs whenever the `startInMiniMode` setting changes.
    */
   useEffect(() => {
-    setIsMiniMode(settings.startInMiniMode);
-  }, [settings.startInMiniMode]);
+    setIsMiniMode(settings.start_in_mini_mode);
+  }, [settings.start_in_mini_mode]);
 
   /**
    * Effect to request notification permissions from the user upon
@@ -142,7 +142,7 @@ export default function HomePage() {
    * user has enabled this setting.
    */
   const handleStopWithConfirmation = useCallback(() => {
-    if (settings.confirmOnStop) {
+    if (settings.confirm_on_stop) {
       // NOTE: Consider replacing window.confirm() with a custom modal.
       if (window.confirm('¿Estás seguro de que quieres detener y reiniciar el temporizador?')) {
         stopTimer();
@@ -150,7 +150,7 @@ export default function HomePage() {
     } else {
       stopTimer();
     }
-  }, [settings.confirmOnStop, stopTimer]);
+  }, [settings.confirm_on_stop, stopTimer]);
 
   // =================================================================
   // SECTION: Render Logic
