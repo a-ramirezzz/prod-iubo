@@ -50,7 +50,6 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
   // Access settings and update functions from context
   const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
-  const { user } = useAuth();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
