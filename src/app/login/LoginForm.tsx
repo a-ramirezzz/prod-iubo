@@ -17,7 +17,6 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
   // Form state hooks for each input field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAppLoading, setShowAppLoading] = useState(false);
   const router = useRouter();
@@ -83,7 +82,6 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     const validationError = validate();
     if (validationError) {
       setNotification({ visible: true, message: validationError, icon: iconError });
@@ -104,7 +102,6 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
       } else {
         setNotification({ visible: true, message: translated, icon: iconError });
       }
-      setError(translated);
     } else {
       // Show loading overlay before redirecting to the main app page
       setShowAppLoading(true);
@@ -135,7 +132,6 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
       <form className={styles.formContainer} onSubmit={handleSubmit}>
         <div className={styles.formTitle}>Iniciar Sesión</div>
         {/* Error message display */}
-        {error && <div className={styles.error}>{error}</div>}
         {/* Email input */}
         <input
           className={styles.input}
