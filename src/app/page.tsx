@@ -4,7 +4,6 @@ import Image from 'next/image';
 import styles from '@/app/LandingPage.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 /**
  * Landing Page Component
@@ -20,7 +19,6 @@ import Link from 'next/link';
  * for enhanced user experience.
  */
 export default function LandingPage() {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   // Smooth scroll handler for internal navigation

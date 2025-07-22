@@ -20,7 +20,6 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAppLoading, setShowAppLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [notification, setNotification] = useState<{ visible: boolean; message: string; icon: React.ReactNode }>({ visible: false, message: '', icon: null });
 
@@ -158,8 +157,8 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
           autoComplete="current-password"
         />
         {/* Submit button */}
-        <button className={styles.button} type="submit" disabled={loading || isPending}>
-          {loading || isPending ? "Ingresando..." : "Ingresar"}
+        <button className={styles.button} type="submit" disabled={loading}>
+          {loading ? "Ingresando..." : "Ingresar"}
         </button>
         {/* Link to signup page */}
         {!hideLinks && (
