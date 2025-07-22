@@ -60,10 +60,10 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
     // Función para actualizar el estado según el permiso
     const syncNotificationToggle = (permission: PermissionState) => {
-      if (permission === 'granted' && !settings.enableDesktopNotifications) {
-        updateSettings({ enableDesktopNotifications: true });
-      } else if (permission === 'denied' && settings.enableDesktopNotifications) {
-        updateSettings({ enableDesktopNotifications: false });
+      if (permission === 'granted' && !settings.enable_desktop_notifications) {
+        updateSettings({ enable_desktop_notifications: true });
+      } else if (permission === 'denied' && settings.enable_desktop_notifications) {
+        updateSettings({ enable_desktop_notifications: false });
       }
     };
 
@@ -75,7 +75,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       // Cleanup
       return () => permStatus.removeEventListener('change', handler);
     });
-  }, [settings.enableDesktopNotifications, updateSettings]);
+  }, [settings.enable_desktop_notifications, updateSettings]);
 
   // If the panel is not open, render nothing
   if (!isOpen) {
@@ -100,13 +100,13 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
   // Handler for toggling theme mode (light/dark)
   const handleThemeChange = () => {
-    const newThemeMode = settings.themeMode === 'light' ? 'dark' : 'light';
+    const newThemeMode = settings.theme_mode === 'light' ? 'dark' : 'light';
     // When changing mode, also select the first static theme by default
     const defaultThemeForMode = themes.find(t => t.mode === newThemeMode && t.type === 'static');
     
     updateSettings({ 
-      themeMode: newThemeMode,
-      selectedThemeId: defaultThemeForMode ? defaultThemeForMode.id : settings.selectedThemeId 
+      theme_mode: newThemeMode,
+      selected_theme_id: defaultThemeForMode ? defaultThemeForMode.id : settings.selected_theme_id 
     });
   };
 
@@ -152,8 +152,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <input
                       id="start-mini"
                       type="checkbox"
-                      checked={settings.startInMiniMode}
-                      onChange={(e) => updateSettings({ startInMiniMode: e.target.checked })}
+                      checked={settings.start_in_mini_mode}
+                      onChange={(e) => updateSettings({ start_in_mini_mode: e.target.checked })}
                     />
                     <span className={styles.slider}></span>
                   </label>
@@ -165,8 +165,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <input
                       id="confirm-stop"
                       type="checkbox"
-                      checked={settings.confirmOnStop}
-                      onChange={(e) => updateSettings({ confirmOnStop: e.target.checked })}
+                      checked={settings.confirm_on_stop}
+                      onChange={(e) => updateSettings({ confirm_on_stop: e.target.checked })}
                     />
                     <span className={styles.slider}></span>
                   </label>
@@ -178,8 +178,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <input
                       id="pip-mode"
                       type="checkbox"
-                      checked={!!settings.pipModeEnabled}
-                      onChange={e => updateSettings({ pipModeEnabled: e.target.checked })}
+                      checked={!!settings.pip_mode_enabled}
+                      onChange={e => updateSettings({ pip_mode_enabled: e.target.checked })}
                     />
                     <span className={styles.slider}></span>
                   </label>
@@ -204,8 +204,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <input
                       id="desktop-notifications"
                       type="checkbox"
-                      checked={!!settings.enableDesktopNotifications}
-                      onChange={(e) => updateSettings({ enableDesktopNotifications: e.target.checked })}
+                      checked={!!settings.enable_desktop_notifications}
+                      onChange={(e) => updateSettings({ enable_desktop_notifications: e.target.checked })}
                     />
                     <span className={styles.slider}></span>
                   </label>
@@ -239,7 +239,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                     <label className={styles.toggleSwitch}>
                       <input
                         type="checkbox"
-                        checked={settings.themeMode === 'dark'}
+                        checked={settings.theme_mode === 'dark'}
                         onChange={handleThemeChange}
                       />
                       <span className={styles.slider}></span>
@@ -252,13 +252,13 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 <h3 className={styles.subSectionTitle}>Temas Estáticos</h3>
                 <div className={styles.themeGrid}>
                   {themes
-                    .filter(theme => theme.mode === settings.themeMode && theme.type === 'static')
+                    .filter(theme => theme.mode === settings.theme_mode && theme.type === 'static')
                     .map(theme => (
                       <ThemeCard
                         key={theme.id}
                         theme={theme}
-                        isSelected={settings.selectedThemeId === theme.id}
-                        onClick={() => !settingsLoading && updateSettings({ selectedThemeId: theme.id })}
+                        isSelected={settings.selected_theme_id === theme.id}
+                        onClick={() => !settingsLoading && updateSettings({ selected_theme_id: theme.id })}
                       />
                     ))}
                 </div>
@@ -267,13 +267,13 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 <h3 className={styles.subSectionTitle}>Temas Animados</h3>
                 <div className={styles.themeGrid}>
                    {themes
-                    .filter(theme => theme.mode === settings.themeMode && theme.type === 'animated')
+                    .filter(theme => theme.mode === settings.theme_mode && theme.type === 'animated')
                     .map(theme => (
                       <ThemeCard
                         key={theme.id}
                         theme={theme}
-                        isSelected={settings.selectedThemeId === theme.id}
-                        onClick={() => !settingsLoading && updateSettings({ selectedThemeId: theme.id })}
+                        isSelected={settings.selected_theme_id === theme.id}
+                        onClick={() => !settingsLoading && updateSettings({ selected_theme_id: theme.id })}
                       />
                     ))}
                 </div>
@@ -290,8 +290,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                   {[noSound, ...sounds].map((sound) => (
                     <button
                       key={sound.id}
-                      className={`${styles.soundCard} ${settings.backgroundSound === sound.id ? styles.activeSound : ''}`}
-                      onClick={() => updateSettings({ backgroundSound: sound.id })}
+                      className={`${styles.soundCard} ${settings.background_sound === sound.id ? styles.activeSound : ''}`}
+                      onClick={() => updateSettings({ background_sound: sound.id })}
                       disabled={settingsLoading}
                     >
                       <div className={styles.soundIcon}>{sound.icon}</div>
