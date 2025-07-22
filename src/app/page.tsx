@@ -2,8 +2,6 @@
 
 import Image from 'next/image';
 import styles from '@/app/LandingPage.module.css';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 /**
  * Landing Page Component
@@ -19,8 +17,6 @@ import { useRouter } from 'next/navigation';
  * for enhanced user experience.
  */
 export default function LandingPage() {
-  const router = useRouter();
-
   // Smooth scroll handler for internal navigation
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, id: string) => {
     e.preventDefault();
@@ -33,7 +29,7 @@ export default function LandingPage() {
   // Handler for CTA button with loading animation
   const handleStart = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
-    router.push('/login');
+    // router.push('/login'); // This line was removed as per the edit hint.
   };
 
   return (
