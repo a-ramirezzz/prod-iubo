@@ -20,18 +20,18 @@ export default function ThemeWrapper({ children }: { children: React.ReactNode }
   useEffect(() => {
     const root = document.documentElement
     // Determine the class to apply based on the theme mode setting
-    const modeClass = settings.themeMode === 'light' ? 'light-mode' : 'dark-mode'
+    const modeClass = settings.theme_mode === 'light' ? 'light-mode' : 'dark-mode'
     
     // Clean up previous classes and apply the new one
     root.classList.remove('light-mode', 'dark-mode')
     root.classList.add(modeClass)
-  }, [settings.themeMode])
+  }, [settings.theme_mode])
 
   // Find the active theme object based on the selected ID
   // useMemo prevents re-calculating this on every render unless the ID changes
   const activeTheme = useMemo(() => {
-    return themes.find(theme => theme.id === settings.selectedThemeId)
-  }, [settings.selectedThemeId])
+    return themes.find(theme => theme.id === settings.selected_theme_id)
+  }, [settings.selected_theme_id])
 
   // Effect to apply the specific theme's styles (colors, background, etc.)
   useEffect(() => {

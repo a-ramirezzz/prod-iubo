@@ -26,7 +26,7 @@ export default function AmbientSoundPlayer() {
     }
 
     // Find the sound object that matches the current setting
-    const selectedSound = sounds.find(s => s.id === settings.backgroundSound) || noSound
+    const selectedSound = sounds.find(s => s.id === settings.background_sound) || noSound
 
     // Always apply the volume from settings, as it can change independently
     audio.volume = settings.volume
@@ -67,7 +67,7 @@ export default function AmbientSoundPlayer() {
       // We pause the audio to prevent memory leaks or sound playing on other pages
       audio.pause()
     }
-  }, [settings.backgroundSound, settings.volume])
+  }, [settings.background_sound, settings.volume])
 
   // The audio element is rendered but controlled entirely via the useEffect hook
   return <audio ref={audioRef} loop />
