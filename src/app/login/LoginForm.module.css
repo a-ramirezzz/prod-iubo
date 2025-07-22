@@ -2,13 +2,14 @@
 
 /* Container for the login form, provides background, padding, and layout */
 .formContainer {
+  font-family: var(--font-primary);
   background: rgba(30, 30, 40, 0.95); /* dark semi-transparent */
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
   padding: 2.5rem 2rem;
   min-width: 320px;
   max-width: 360px;
-  margin: 2rem auto;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;

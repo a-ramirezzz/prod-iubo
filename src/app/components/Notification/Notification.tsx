@@ -6,17 +6,19 @@ interface NotificationProps {
   visible: boolean;
   onClose: () => void;
   duration?: number; // ms
+  icon?: React.ReactNode; // Optional icon to display
 }
 
 /**
  * Notification component
- * Shows a centered notification with a message and auto-dismiss.
+ * Shows a centered notification with a message, icon, and auto-dismiss.
  * @param message - The message to display
  * @param visible - Whether the notification is visible
  * @param onClose - Callback when notification should close
  * @param duration - Duration in ms before auto-close (default: 8000)
+ * @param icon - Optional icon to display before the message
  */
-const Notification: React.FC<NotificationProps> = ({ message, visible, onClose, duration = 8000 }) => {
+const Notification: React.FC<NotificationProps> = ({ message, visible, onClose, duration = 8000, icon }) => {
   useEffect(() => {
     if (!visible) return;
     const timer = setTimeout(onClose, duration);
@@ -27,6 +29,7 @@ const Notification: React.FC<NotificationProps> = ({ message, visible, onClose, 
 
   return (
     <div className={styles.notification} role="alert" aria-live="assertive">
+      {icon && <span className={styles.icon}>{icon}</span>}
       {message}
       <button
         className={styles.buttonAccept}

@@ -35,6 +35,9 @@ export async function signUp(formData: {
     }
   });
 
+  // Debug: Log the response from Supabase
+  console.log({ data, error });
+
   // Handle registration errors
   if (error) {
     return { error: error.message };
