@@ -1,8 +1,7 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 import styles from "./SignupForm.module.css";
 import Link from "next/link";
-import { supabase } from "@/app/lib/supabaseClient";
 import { signUp } from "./actions";
 import Notification from "@/app/components/Notification/Notification";
 
@@ -24,7 +23,6 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const [notification, setNotification] = useState<{ visible: boolean; message: string; icon: React.ReactNode }>({ visible: false, message: '', icon: null });
 
   // SVG icons
@@ -229,8 +227,8 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
           minLength={6}
         />
         {/* Submit button */}
-        <button className={styles.button} type="submit" disabled={loading || isPending}>
-          {loading || isPending ? "Registrando..." : "Registrarse"}
+        <button className={styles.button} type="submit" disabled={loading}>
+          {loading ? "Registrando..." : "Registrarse"}
         </button>
         {/* Link to login page */}
         {!hideLinks && (
