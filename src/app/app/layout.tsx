@@ -4,7 +4,6 @@
 // SECTION: Imports
 // =================================================================
 import type { Metadata, Viewport } from 'next';
-import { Anton } from 'next/font/google';
 import '@/app/globals.css';
 
 // Component and Provider Imports
