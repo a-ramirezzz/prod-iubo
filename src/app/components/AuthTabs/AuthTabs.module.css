@@ -1,0 +1,80 @@
+/* AuthTabs.module.css */
+
+.authCardWrapper {
+  font-family: var(--font-primary);
+  background: rgba(30, 30, 40, 0.97);
+  border-radius: 20px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.22);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 320px;
+  max-width: 410px;
+  margin: 3.5rem auto 2rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(30px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tabsContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 2.2rem;
+  gap: 0.5rem;
+}
+
+.tab, .tabActive {
+  flex: 1;
+  padding: 0.85rem 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  background: none;
+  color: #bfc9ff;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  outline: none;
+  letter-spacing: 0.5px;
+}
+
+.tabActive {
+  background: linear-gradient(90deg, #6c63ff 0%, #48c6ef 100%);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(72,198,239,0.08);
+  z-index: 2;
+}
+
+.tab:not(.tabActive):hover {
+  background: rgba(76, 99, 255, 0.08);
+  color: #6c63ff;
+}
+
+.tabContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInTab 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes fadeInTab {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .authCardWrapper {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    min-width: unset;
+    max-width: 98vw;
+  }
+  .tabsContainer {
+    font-size: 0.98rem;
+  }
+} 

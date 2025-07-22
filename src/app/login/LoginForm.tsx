@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabaseClient";
 import landingStyles from "@/app/LandingPage.module.css";
+import Notification from "@/app/components/Notification/Notification";
 
 /**
  * LoginForm Component
@@ -12,7 +13,7 @@ import landingStyles from "@/app/LandingPage.module.css";
  * Renders a login form for existing users, including validation and integration
  * with a server action to authenticate the user using Supabase Auth.
  */
-export default function LoginForm() {
+export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }) {
   // Form state hooks for each input field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,6 +22,22 @@ export default function LoginForm() {
   const [showAppLoading, setShowAppLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const [notification, setNotification] = useState<{ visible: boolean; message: string; icon: React.ReactNode }>({ visible: false, message: '', icon: null });
+
+  // SVG icons
+  const iconWarning = (
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="#f59e42"/>
+      <path d="M24 14V28" stroke="#fff" strokeWidth="3" strokeLinecap="round"/>
+      <circle cx="24" cy="34" r="2.5" fill="#fff"/>
+    </svg>
+  );
+  const iconError = (
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="#E53935"/>
+      <path d="M17 17L31 31M31 17L17 31" stroke="#fff" strokeWidth="3" strokeLinecap="round"/>
+    </svg>
+  );
 
   /**
    * Validates the form fields before submission.
@@ -33,6 +50,34 @@ export default function LoginForm() {
   };
 
   /**
+   * Translates common Supabase error messages to Spanish for user alerts.
+   * @param errorMsg - The original error message from Supabase
+   * @returns The translated message in Spanish, or the original if not recognized
+   */
+  function translateSupabaseError(errorMsg: string): string {
+    const msg = errorMsg.toLowerCase();
+    if (msg.includes('invalid login credentials') || msg.includes('invalid email or password')) {
+      return 'Correo electrónico o contraseña incorrectos.';
+    }
+    if (msg.includes('user not found')) {
+      return 'Usuario no encontrado.';
+    }
+    if (msg.includes('email not confirmed') || msg.includes('confirm your email')) {
+      return 'Por favor confirma tu correo electrónico.';
+    }
+    if (msg.includes('email already registered') || msg.includes('user already registered') || msg.includes('duplicate key value')) {
+      return 'El correo electrónico ya está registrado.';
+    }
+    if (msg.includes('network error')) {
+      return 'Error de red. Intenta de nuevo más tarde.';
+    }
+    if (msg.includes('password')) {
+      return 'La contraseña es incorrecta o no cumple los requisitos.';
+    }
+    return errorMsg;
+  }
+
+  /**
    * Handles form submission, authenticates the user with Supabase, and manages UI feedback.
    * Redirects to the main app page on successful login.
    * @param e React.FormEvent
@@ -42,7 +87,7 @@ export default function LoginForm() {
     setError("");
     const validationError = validate();
     if (validationError) {
-      setError(validationError);
+      setNotification({ visible: true, message: validationError, icon: iconError });
       return;
     }
     setLoading(true);
@@ -53,7 +98,14 @@ export default function LoginForm() {
     });
     setLoading(false);
     if (error) {
-      setError(error.message);
+      // Check for unconfirmed email error (Supabase error message may vary)
+      const translated = translateSupabaseError(error.message);
+      if (translated === 'Por favor confirma tu correo electrónico.') {
+        setNotification({ visible: true, message: translated, icon: iconWarning });
+      } else {
+        setNotification({ visible: true, message: translated, icon: iconError });
+      }
+      setError(translated);
     } else {
       // Show loading overlay before redirecting to the main app page
       setShowAppLoading(true);
@@ -65,6 +117,13 @@ export default function LoginForm() {
 
   return (
     <>
+      <Notification
+        message={notification.message}
+        visible={notification.visible}
+        icon={notification.icon}
+        duration={3000}
+        onClose={() => setNotification({ ...notification, visible: false })}
+      />
       {/* App loading overlay (same as landing page) */}
       {showAppLoading && (
         <div className={landingStyles.loadingOverlay}>
@@ -103,9 +162,11 @@ export default function LoginForm() {
           {loading || isPending ? "Ingresando..." : "Ingresar"}
         </button>
         {/* Link to signup page */}
-        <Link className={styles.link} href="/signup">
-          ¿No tienes cuenta? Regístrate
-        </Link>
+        {!hideLinks && (
+          <Link className={styles.link} href="/signup">
+            ¿No tienes cuenta? Regístrate
+          </Link>
+        )}
       </form>
     </>
   );

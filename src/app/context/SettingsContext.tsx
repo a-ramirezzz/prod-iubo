@@ -129,11 +129,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const updateSettings = useCallback(async (newSettings: Partial<FullAppSettings>) => {
     if (!user) return;
     setError(null);
-    // Solo incluir propiedades snake_case válidas en el objeto enviado a Supabase
+
     const updated: FullAppSettings = { ...settings, ...newSettings };
     setSettings(updated);
     console.log('[SettingsContext] updateSettings called:', newSettings, 'Full object:', updated);
-    // Enviar solo snake_case (todas las props de FullAppSettings ya son snake_case)
+ 
     const snakeCaseSettings = { ...updated };
     const { error } = await supabase
       .from('user_settings')
@@ -155,7 +155,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setError(null);
     setSettings(DEFAULT_SETTINGS);
     console.log('[SettingsContext] resetSettings called');
-    // Enviar solo snake_case (todas las props de DEFAULT_SETTINGS ya son snake_case)
+  
     const snakeCaseDefaults = { ...DEFAULT_SETTINGS };
     const { error } = await supabase
       .from('user_settings')
