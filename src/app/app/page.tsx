@@ -69,8 +69,22 @@ export default function HomePage() {
   // State to control the visibility of the task objectives modal
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
+  // Mapea settings de snake_case a camelCase para AppSettings
+  const settingsCamel = {
+    startInMiniMode: settings.start_in_mini_mode,
+    confirmOnStop: settings.confirm_on_stop,
+    pipModeEnabled: settings.pip_mode_enabled,
+    language: settings.language,
+    themeMode: settings.theme_mode,
+    selectedThemeId: settings.selected_theme_id,
+    backgroundSound: settings.background_sound,
+    volume: settings.volume,
+    enableDesktopNotifications: settings.enable_desktop_notifications,
+    alwaysOnTop: false, 
+  };
+
   // Integrate PiP timer hook (returns refs for canvas, video, and background video)
-  const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settings, {
+  const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settingsCamel, {
     onPipModeDisabled: () => updateSettings({ pip_mode_enabled: false }),
   });
 
