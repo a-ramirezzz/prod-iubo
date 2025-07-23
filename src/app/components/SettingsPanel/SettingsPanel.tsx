@@ -11,7 +11,6 @@ import { themes } from '../../lib/themes';
 import ThemeCard from '../ThemeCard/ThemeCard';
 import { sounds, noSound } from '../../lib/sounds';
 import { supabase } from '../../lib/supabaseClient';
-import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 // Props for the SettingsPanel component
