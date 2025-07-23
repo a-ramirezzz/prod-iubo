@@ -148,95 +148,95 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
         duration={3000}
         onClose={() => setNotification({ ...notification, visible: false })}
       />
-      <form className={styles.formContainer} onSubmit={handleSubmit}>
-        <div className={styles.formTitle}>Registro</div>
-        {/* Error message display */}
-        {error && <div className={styles.error}>{error}</div>}
-        {/* Success message display */}
-        {success && <div style={{ color: '#48c6ef', background: 'rgba(72,198,239,0.08)', borderRadius: 6, padding: '0.5rem 1rem', marginBottom: '1rem', textAlign: 'center' }}>{success}</div>}
-        {/* Username input */}
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          required
-          autoComplete="username"
-          minLength={3}
-        />
-        {/* First name input */}
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="Primer nombre(s)"
-          value={firstName}
-          onChange={e => setFirstName(e.target.value)}
-          required
-          autoComplete="given-name"
-        />
-        {/* Last name input */}
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="Apellido"
-          value={lastName}
-          onChange={e => setLastName(e.target.value)}
-          required
-          autoComplete="family-name"
-        />
-        {/* Email input */}
-        <input
-          className={styles.input}
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-          autoComplete="email"
-        />
-        {/* Phone input (optional) */}
-        <input
-          className={styles.input}
-          type="tel"
-          placeholder="Teléfono (opcional)"
-          value={phone}
-          onChange={e => setPhone(e.target.value)}
-          autoComplete="tel"
-        />
-        {/* Password input */}
-        <input
-          className={styles.input}
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          autoComplete="new-password"
-          minLength={6}
-        />
-        {/* Confirm password input */}
-        <input
-          className={styles.input}
-          type="password"
-          placeholder="Confirmar contraseña"
-          value={confirmPassword}
-          onChange={e => setConfirmPassword(e.target.value)}
-          required
-          autoComplete="new-password"
-          minLength={6}
-        />
-        {/* Submit button */}
+    <form className={styles.formContainer} onSubmit={handleSubmit}>
+      <div className={styles.formTitle}>Registro</div>
+      {/* Error message display */}
+      {error && <div className={styles.error}>{error}</div>}
+      {/* Success message display */}
+      {success && <div style={{ color: '#48c6ef', background: 'rgba(72,198,239,0.08)', borderRadius: 6, padding: '0.5rem 1rem', marginBottom: '1rem', textAlign: 'center' }}>{success}</div>}
+      {/* Username input */}
+      <input
+        className={styles.input}
+        type="text"
+        placeholder="Usuario"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        required
+        autoComplete="username"
+        minLength={3}
+      />
+      {/* First name input */}
+      <input
+        className={styles.input}
+        type="text"
+        placeholder="Primer nombre(s)"
+        value={firstName}
+        onChange={e => setFirstName(e.target.value)}
+        required
+        autoComplete="given-name"
+      />
+      {/* Last name input */}
+      <input
+        className={styles.input}
+        type="text"
+        placeholder="Apellido"
+        value={lastName}
+        onChange={e => setLastName(e.target.value)}
+        required
+        autoComplete="family-name"
+      />
+      {/* Email input */}
+      <input
+        className={styles.input}
+        type="email"
+        placeholder="Correo electrónico"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        required
+        autoComplete="email"
+      />
+      {/* Phone input (optional) */}
+      <input
+        className={styles.input}
+        type="tel"
+        placeholder="Teléfono (opcional)"
+        value={phone}
+        onChange={e => setPhone(e.target.value)}
+        autoComplete="tel"
+      />
+      {/* Password input */}
+      <input
+        className={styles.input}
+        type="password"
+        placeholder="Contraseña"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        required
+        autoComplete="new-password"
+        minLength={6}
+      />
+      {/* Confirm password input */}
+      <input
+        className={styles.input}
+        type="password"
+        placeholder="Confirmar contraseña"
+        value={confirmPassword}
+        onChange={e => setConfirmPassword(e.target.value)}
+        required
+        autoComplete="new-password"
+        minLength={6}
+      />
+      {/* Submit button */}
         <button className={styles.button} type="submit" disabled={loading}>
           {loading ? "Registrando..." : "Registrarse"}
-        </button>
-        {/* Link to login page */}
+      </button>
+      {/* Link to login page */}
         {!hideLinks && (
-          <Link className={styles.link} href="/login">
-            ¿Ya tienes cuenta? Inicia sesión
-          </Link>
+      <Link className={styles.link} href="/login">
+        ¿Ya tienes cuenta? Inicia sesión
+      </Link>
         )}
-      </form>
+    </form>
     </>
   );
 } 

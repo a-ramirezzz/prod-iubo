@@ -158,9 +158,9 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
         </button>
         {/* Link to signup page */}
         {!hideLinks && (
-          <Link className={styles.link} href="/signup">
-            ¿No tienes cuenta? Regístrate
-          </Link>
+        <Link className={styles.link} href="/signup">
+          ¿No tienes cuenta? Regístrate
+        </Link>
         )}
       </form>
     </>
