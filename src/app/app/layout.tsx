@@ -10,6 +10,13 @@ import '@/app/globals.css';
 import { SettingsProvider } from '@/context/SettingsContext';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
 import AmbientSoundPlayer from '@/components/AmbientSoundPlayer/AmbientSoundPlayer';
+import { Anton } from 'next/font/google';
+
+const anton = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-anton',
+});
 
 // Asset Imports
 import icon from '@/app/prod-iubo.png';
