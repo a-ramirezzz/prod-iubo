@@ -2,6 +2,13 @@ import './globals.css';
 import { SettingsProvider } from '@/context/SettingsContext'; 
 import { AuthProvider } from '@/context/AuthContext';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
+import { Anton } from 'next/font/google';
+
+const anton = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-anton',
+});
 
 /**
  * Root Layout Component
@@ -73,7 +80,7 @@ export const metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" className={anton.variable}>
       {/* Head section with favicon links for maximum browser compatibility */}
       <head>
         <link rel="icon" href="/favicon.png" />
