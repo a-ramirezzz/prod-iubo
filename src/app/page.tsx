@@ -26,12 +26,6 @@ export default function LandingPage() {
     }
   };
 
-  // Handler for CTA button with loading animation
-  const handleStart = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    // router.push('/login'); // This line was removed as per the edit hint.
-  };
-
   return (
     <div className={styles.container}>
       {/* BETA Badge */}
@@ -52,7 +46,7 @@ export default function LandingPage() {
             Un temporizador de productividad personalizable para máxima concentración.
           </p>
           {/* Primary call-to-action button */}
-          <a href="/login" className={styles.heroButton} onClick={handleStart}>
+          <a href="/login" className={styles.heroButton}>
             Comenzar Ahora
           </a>
           {/* Auth links */}
