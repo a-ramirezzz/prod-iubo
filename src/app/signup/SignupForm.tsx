@@ -68,23 +68,25 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
    */
   function translateSupabaseError(errorMsg: string): string {
     const msg = errorMsg.toLowerCase();
-    if (msg.includes('invalid login credentials') || msg.includes('invalid email or password')) {
-      return 'Correo electrónico o contraseña incorrectos.';
+
+    // Handle duplicate user errors first and be more specific
+    if (msg.includes('user already registered') || msg.includes('duplicate key value')) {
+      if (msg.includes('username')) { // Check if the constraint is on the username
+        return 'El nombre de usuario ya está en uso. Por favor, elige otro.';
+      }
+      return 'El correo electrónico ya está registrado.';
     }
-    if (msg.includes('user not found')) {
-      return 'Usuario no encontrado.';
-    }
+
+    // Other common errors
     if (msg.includes('email not confirmed') || msg.includes('confirm your email')) {
       return 'Por favor confirma tu correo electrónico.';
-    }
-    if (msg.includes('email already registered') || msg.includes('user already registered') || msg.includes('duplicate key value')) {
-      return 'El correo electrónico ya está registrado.';
     }
     if (msg.includes('network error')) {
       return 'Error de red. Intenta de nuevo más tarde.';
     }
     if (msg.includes('password')) {
-      return 'La contraseña es incorrecta o no cumple los requisitos.';
+      // This is a bit generic, but can catch password policy errors
+      return 'La contraseña no cumple los requisitos de seguridad.';
     }
     return errorMsg;
   }
@@ -103,6 +105,46 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       return;
     }
     setLoading(true);
+
+    // Pre-submission check to see if the email already exists.
+    // This provides immediate feedback to the user without waiting for the full signup process to fail.
+    try {
+      const emailCheckResponse = await fetch('/api/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      // --- DEBUG: Log the raw response from the API ---
+      console.log("API Response Status:", emailCheckResponse.status);
+
+      // Read the JSON body of the response a single time.
+      const responseData = await emailCheckResponse.json();
+
+      // Handle cases where the API responds with an error status (e.g., 500)
+      if (!emailCheckResponse.ok) {
+        // If the response is not OK, throw an error with the message from the API.
+        throw new Error(responseData.error || 'Failed to check email existence.');
+      }
+
+      if (responseData.exists) {
+        setNotification({ visible: true, message: 'El correo electrónico ya está registrado.', icon: iconWarning });
+        setLoading(false);
+        return; // Stop the submission process.
+      }
+    } catch (apiError) {
+      // Type-safe error handling. Check if the caught object is an instance of Error.
+      if (apiError instanceof Error) {
+        console.error("API error checking email:", apiError.message);
+      } else {
+        console.error("An unexpected API error occurred:", apiError);
+      }
+      // Show a generic error to the user and stop the submission.
+      setNotification({ visible: true, message: 'No se pudo verificar el correo en este momento. Inténtalo de nuevo.', icon: iconError });
+      setLoading(false);
+      return;
+    }
+
     // Call the server action to register the user (Supabase will return error if email exists)
     const result = await signUp({
       username,
@@ -115,8 +157,8 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
     setLoading(false);
     if (result?.error) {
       const translated = translateSupabaseError(result.error);
-      // Show warning icon if it's a duplicate email, else error icon
-      if (translated === "El correo electrónico ya está registrado.") {
+      // Show warning icon if it's a duplicate user error, else error icon
+      if (translated.includes("ya está registrado") || translated.includes("ya está en uso")) {
         setNotification({ visible: true, message: translated, icon: iconWarning });
       } else {
         setNotification({ visible: true, message: translated, icon: iconError });
