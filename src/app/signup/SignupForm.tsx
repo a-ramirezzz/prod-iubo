@@ -115,13 +115,10 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
         body: JSON.stringify({ email }),
       });
 
-      // --- DEBUG: Log the raw response from the API ---
-      console.log("API Response Status:", emailCheckResponse.status);
-
       // Read the JSON body of the response a single time.
       const responseData = await emailCheckResponse.json();
 
-      // Handle cases where the API responds with an error status (e.g., 500)
+      // Handle cases where the API responds with a non-2xx status (e.g., 500).
       if (!emailCheckResponse.ok) {
         // If the response is not OK, throw an error with the message from the API.
         throw new Error(responseData.error || 'Failed to check email existence.');
@@ -132,12 +129,12 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
         setLoading(false);
         return; // Stop the submission process.
       }
-    } catch (apiError) {
+    } catch (apiError) { // The 'any' type is removed here for type safety.
       // Type-safe error handling. Check if the caught object is an instance of Error.
       if (apiError instanceof Error) {
-        console.error("API error checking email:", apiError.message);
+        console.error("API error during email check:", apiError.message);
       } else {
-        console.error("An unexpected API error occurred:", apiError);
+        console.error("An unexpected API error occurred during email check:", apiError);
       }
       // Show a generic error to the user and stop the submission.
       setNotification({ visible: true, message: 'No se pudo verificar el correo en este momento. Inténtalo de nuevo.', icon: iconError });
@@ -145,7 +142,8 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       return;
     }
 
-    // Call the server action to register the user (Supabase will return error if email exists)
+    // Call the server action to register the user.
+    // Supabase will handle the final check for duplicate emails as a fallback.
     const result = await signUp({
       username,
       firstName,
