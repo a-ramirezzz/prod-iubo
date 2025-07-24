@@ -22,6 +22,20 @@
 * **Optimización SEO Básica:** Metadata y favicon configurados para una mejor indexación y reconocimiento.
 * **Gestión de Tareas con Drag & Drop:** Sistema completo de objetivos diarios con capacidad de reordenar tareas mediante arrastrar y soltar.
 
+## 🍅 La Técnica Pomodoro
+
+Prod-UIBO está inspirado en la **Técnica Pomodoro**, un método de gestión del tiempo diseñado para mejorar el enfoque y la productividad. La técnica consiste en trabajar en intervalos concentrados de 25 minutos (llamados "pomodoros"), seguidos de un breve descanso de 5 minutos.
+
+Para facilitar la inmersión durante estos intervalos, Prod-UIBO te permite personalizar tu entorno con una variedad de **temas visuales** y **sonidos ambientales**, ayudándote a crear el espacio de concentración perfecto para ti.
+
+Este método es especialmente útil tanto para perfeccionistas como para procrastinadores, ya que divide grandes tareas en bloques manejables. Sus principales beneficios son:
+
+*   **Mejora la concentración:** Ayuda a mantener la mente fresca y enfocada.
+*   **Minimiza las distracciones:** Fomenta un entorno de trabajo sin interrupciones.
+*   **Previene el agotamiento:** Los descansos regulares evitan la fatiga mental.
+*   **Fomenta la responsabilidad:** Facilita el seguimiento del tiempo dedicado a cada tarea.
+*   **Aumenta la motivación:** Es más fácil comprometerse a trabajar 25 minutos que enfrentar una tarde entera de trabajo sin parar.
+
 ## 🚀 Tecnologías Utilizadas
 
 * **Next.js (v13+ con App Router):** Framework de React para aplicaciones web modernas y optimizadas.

@@ -2,39 +2,33 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 /**
- * API route to check if an email is already registered.
- * This route uses the Supabase Admin client to securely query the auth.users table.
+ * API route to check if an email is already registered in the system.
+ * This route uses the Supabase Admin client to securely query the database via an RPC function.
  *
  * @param {Request} request - The incoming request object, expected to have a JSON body with an 'email' property.
  * @returns {NextResponse} - A JSON response indicating if the email exists or an error.
  */
 export async function POST(request: Request) {
-  // --- DEBUG: Log when the API route is hit ---
-  console.log("API route /api/check-email hit.");
-
-  // --- DEBUG: Check if environment variables are loaded on the server ---
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  console.log(`SERVICE_ROLE_KEY is ${serviceRoleKey ? 'loaded' : 'MISSING!'}`);
-
   const { email } = await request.json();
 
-  // Validate the incoming request body
+  // Validate the incoming request body.
   if (!email || typeof email !== 'string') {
     return NextResponse.json({ error: 'Email is required and must be a string.' }, { status: 400 });
   }
 
-  // Securely fail if the service role key is not available.
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  // Securely fail if the service role key is not available. This is a critical server configuration.
   if (!serviceRoleKey) {
-    console.error("CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not set in .env.local. The server cannot perform admin tasks.");
+    console.error("CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not set. The server cannot perform admin tasks.");
     return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
   }
 
-  // Create a Supabase client with the service_role key for admin privileges.
-  // This should be stored securely in environment variables.
+  // Create a Supabase admin client with the service_role key for privileged access.
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     serviceRoleKey,
-    { auth: { persistSession: false } } // No need to persist session for an admin client
+    { auth: { persistSession: false } } // No need to persist session for a server-side admin client.
   );
 
   // Call the 'email_exists' RPC function in the database.
@@ -43,11 +37,8 @@ export async function POST(request: Request) {
     email_to_check: email,
   });
 
-  // --- DEBUG: Log the result from the RPC call ---
-  console.log("RPC call result:", { data, error: error?.message });
-
   if (error) {
-    console.error('Supabase RPC error while checking email:', error);
+    console.error('Supabase RPC error while checking email:', error.message);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 
