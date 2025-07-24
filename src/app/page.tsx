@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import styles from '@/app/LandingPage.module.css';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 /**
  * Landing Page Component
@@ -17,6 +19,9 @@ import styles from '@/app/LandingPage.module.css';
  * for enhanced user experience.
  */
 export default function LandingPage() {
+  const [] = useState(false);
+  const router = useRouter();
+
   // Smooth scroll handler for internal navigation
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, id: string) => {
     e.preventDefault();
@@ -24,6 +29,12 @@ export default function LandingPage() {
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  // Handler for CTA button with loading animation
+  const handleStart = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    router.push('/login');
   };
 
   return (
@@ -46,7 +57,7 @@ export default function LandingPage() {
             Un temporizador de productividad personalizable para máxima concentración.
           </p>
           {/* Primary call-to-action button */}
-          <a href="/login" className={styles.heroButton}>
+          <a href="/login" className={styles.heroButton} onClick={handleStart}>
             Comenzar Ahora
           </a>
           {/* Auth links */}
