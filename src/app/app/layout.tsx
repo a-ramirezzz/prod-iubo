@@ -100,13 +100,13 @@ export const viewport: Viewport = {
  */
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className={anton.variable}>
       <SettingsProvider>
         <ThemeWrapper>
           {children}
           <AmbientSoundPlayer />
         </ThemeWrapper>
       </SettingsProvider>
-    </>
+    </div>
   );
 }

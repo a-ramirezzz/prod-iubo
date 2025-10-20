@@ -145,6 +145,7 @@ export const usePipTimer = (
   useEffect(() => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
+    const backgroundVideo = backgroundVideoRef.current;
     if (!canvas || !video) return;
 
     // Always set the canvas and video resolution to high quality
@@ -177,8 +178,7 @@ export const usePipTimer = (
         streamRef.current.getTracks().forEach(track => track.stop());
         streamRef.current = null;
         video.srcObject = null;
-      }
-      const backgroundVideo = backgroundVideoRef.current;
+      }      
       if (backgroundVideo) {
         backgroundVideo.pause();
         backgroundVideo.src = '';
