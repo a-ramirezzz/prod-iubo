@@ -52,6 +52,49 @@
   50% { transform: translateY(-20px) rotate(1deg); }
 }
 
+/* Particle canvas */
+.heroCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Decorative orbs */
+.orbRed {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(239,68,68,0.15), transparent 70%);
+  filter: blur(60px);
+  z-index: 0;
+  pointer-events: none;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orbBlue {
+  position: absolute;
+  bottom: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  animation: orbFloat 20s ease-in-out infinite reverse;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
 /* Hero content container */
 .heroContent {
   max-width: 800px;
@@ -204,6 +247,19 @@
   to { text-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
 }
 
+/* Blinking cursor for typewriter */
+.typingCursor {
+  display: inline-block;
+  margin-left: 2px;
+  font-weight: 300;
+  animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 /* Hero subtitle */
 .heroSubtitle {
   font-size: clamp(1.25rem, 4vw, 1.5rem);
@@ -211,26 +267,34 @@
   max-width: 600px;
   margin: 0 auto 2.5rem auto;
   font-weight: 400;
+  min-height: 2.4em;
   animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+/* CTA pulse animation */
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(59,130,246,0.3), 0 0 0 0 rgba(59,130,246,0.3); }
+  50% { box-shadow: 0 4px 30px rgba(59,130,246,0.6), 0 0 0 6px rgba(59,130,246,0.1); }
 }
 
 /* Primary call-to-action button */
 .heroButton {
   display: inline-block;
-  padding: 16px 32px;
+  padding: 18px 42px;
   font-size: 1.125rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: white;
   background: linear-gradient(135deg, var(--accent-color), #60A5FA);
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   border: none;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  animation: fadeInUp 1s ease-out 0.6s both;
+  animation: fadeInUp 1s ease-out 0.6s both, ctaPulse 2.5s ease-in-out infinite;
 }
 
 /* Shimmer effect for button */
@@ -259,6 +323,41 @@
 .heroButton:active {
   transform: translateY(-1px);
 }
+
+/* Stat badge row */
+.statBadges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.statBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out forwards;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.statBadge:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(59,130,246,0.25);
+}
+
+.statBadge1 { animation-delay: 0.8s; }
+.statBadge2 { animation-delay: 1.0s; }
+.statBadge3 { animation-delay: 1.2s; }
 
 /* Content container for sections */
 .content {
@@ -979,6 +1078,17 @@
   /* Hero section adjustments */
   .hero {
     padding: 1rem;
+  }
+
+  /* Orb size reduction on mobile */
+  .orbRed {
+    width: 240px;
+    height: 240px;
+  }
+
+  .orbBlue {
+    width: 300px;
+    height: 300px;
   }
   
   .heroTitle {
