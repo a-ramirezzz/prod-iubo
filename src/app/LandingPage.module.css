@@ -359,6 +359,71 @@
 .statBadge2 { animation-delay: 1.0s; }
 .statBadge3 { animation-delay: 1.2s; }
 
+/* Scroll-triggered reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered delays for sibling reveal groups */
+.pomodoroSteps [data-reveal]:nth-child(1),
+.featuresGrid [data-reveal]:nth-child(1),
+.roadmapGrid [data-reveal]:nth-child(1) {
+  transition-delay: 0s;
+}
+.pomodoroSteps [data-reveal]:nth-child(2),
+.featuresGrid [data-reveal]:nth-child(2),
+.roadmapGrid [data-reveal]:nth-child(2) {
+  transition-delay: 0.1s;
+}
+.pomodoroSteps [data-reveal]:nth-child(3),
+.featuresGrid [data-reveal]:nth-child(3),
+.roadmapGrid [data-reveal]:nth-child(3) {
+  transition-delay: 0.2s;
+}
+.pomodoroSteps [data-reveal]:nth-child(4),
+.roadmapGrid [data-reveal]:nth-child(4) {
+  transition-delay: 0.3s;
+}
+.benefitsGrid .benefitItem:nth-child(1) { transition-delay: 0s; }
+.benefitsGrid .benefitItem:nth-child(2) { transition-delay: 0.1s; }
+.benefitsGrid .benefitItem:nth-child(3) { transition-delay: 0.2s; }
+.benefitsGrid .benefitItem:nth-child(4) { transition-delay: 0.3s; }
+
+/* Introduction highlight callout */
+.introHighlight {
+  max-width: 700px;
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 2rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(239,68,68,0.06));
+  border: 1px solid rgba(59,130,246,0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.introHighlightIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.introHighlight p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.introHighlight strong {
+  color: var(--text-primary);
+}
+
 /* Content container for sections */
 .content {
   max-width: 1200px;
@@ -646,6 +711,25 @@
   left: 100%;
 }
 
+/* Accent bar on feature card top edge */
+.featureCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--prod-red), var(--uibo-blue));
+  border-radius: 16px 16px 0 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.featureCard:hover::after {
+  transform: scaleX(1);
+}
+
 /* Feature card hover effects */
 .featureCard:hover {
   transform: translateY(-8px);
@@ -708,8 +792,8 @@
 
 /* Gallery item hover effects */
 .galleryItem:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(59,130,246,0.4);
 }
 
 /* Image and video containers */
@@ -737,42 +821,23 @@
   transform: scale(1.05);
 }
 
-/* Image overlay for static theme */
-.imageOverlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-  color: white;
-  padding: 1.5rem 1rem 1rem;
-  font-weight: 600;
-  font-size: 1.125rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.galleryItem:hover .imageOverlay {
-  opacity: 1;
-}
-
-/* Video overlay for animated theme */
+/* Image and video overlays — always visible */
+.imageOverlay,
 .videoOverlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
   color: white;
-  padding: 1.5rem 1rem 1rem;
-  font-weight: 600;
-  font-size: 1.125rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.galleryItem:hover .videoOverlay {
+  padding: 2rem 1.25rem 1.25rem;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   opacity: 1;
+  display: flex;
+  align-items: flex-end;
 }
 
 .videoLabel {
@@ -798,6 +863,15 @@
   color: var(--text-secondary);
   font-size: 1.125rem;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.statusIcon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 
 /* Status list item hover effects */
@@ -813,9 +887,27 @@
 /* Redesigned Footer */
 .footer {
   background: var(--card-bg);
-  border-top: 1px solid var(--border-color);
+  border-top: none;
   margin-top: 4rem;
   padding: 0;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--prod-red), var(--uibo-blue), var(--prod-red));
+  background-size: 200% 100%;
+  animation: footerBorderSlide 4s linear infinite;
+}
+
+@keyframes footerBorderSlide {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
 }
 
 .footerMain {
@@ -850,8 +942,11 @@
 .footerTitle {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary);
   letter-spacing: -0.01em;
+  background: linear-gradient(90deg, var(--prod-red), var(--uibo-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footerBy {
@@ -1075,6 +1170,13 @@
     max-width: 300px;
   }
   
+  /* Intro highlight mobile */
+  .introHighlight {
+    padding: 1rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
   /* Hero section adjustments */
   .hero {
     padding: 1rem;
@@ -1171,6 +1273,11 @@
   }
 }
 
+/* Roadmap wrapper with decorative progress line */
+.roadmapWrapper {
+  position: relative;
+}
+
 /* Roadmap Section Styles */
 .roadmapGrid {
   display: grid;
@@ -1192,6 +1299,8 @@
   box-shadow: 0 2px 10px rgba(59,130,246,0.06);
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   animation: fadeInUp 0.7s both;
+  position: relative;
+  z-index: 1;
 }
 .roadmapItem:hover {
   transform: translateY(-4px) scale(1.03);

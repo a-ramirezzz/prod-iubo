@@ -127,6 +127,25 @@ export default function LandingPage() {
     };
   }, []);
 
+  // Scroll-triggered reveal
+  useEffect(() => {
+    const els = document.querySelectorAll('[data-reveal]');
+    els.forEach(el => el.classList.add(styles.reveal));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.revealed);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    els.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   // Smooth scroll handler for internal navigation
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, id: string) => {
     e.preventDefault();
@@ -220,6 +239,11 @@ export default function LandingPage() {
             </p>
           </div>
 
+          <div className={styles.introHighlight}>
+            <span className={styles.introHighlightIcon}>💡</span>
+            <p>Prod-UIBO no es solo un cronómetro — es un <strong>entorno de trabajo completo</strong> que se adapta a ti, no al revés.</p>
+          </div>
+
           {/* Pomodoro Technique Section - Educational content with interactive elements */}
           <div className={styles.pomodoroSection}>
             {/* Section header with animated icon */}
@@ -235,7 +259,7 @@ export default function LandingPage() {
             {/* Step-by-step Pomodoro process */}
             <div className={styles.pomodoroSteps}>
               {/* Step 1: Choose a task */}
-              <div className={styles.pomodoroStep}>
+              <div className={styles.pomodoroStep} data-reveal>
                 <div className={styles.stepNumber}>1</div>
                 <div className={styles.stepContent}>
                   <h4>Elige una tarea</h4>
@@ -244,7 +268,7 @@ export default function LandingPage() {
               </div>
               
               {/* Step 2: 25-minute focus session */}
-              <div className={styles.pomodoroStep}>
+              <div className={styles.pomodoroStep} data-reveal>
                 <div className={styles.stepNumber}>2</div>
                 <div className={styles.stepContent}>
                   <h4>25 minutos de concentración</h4>
@@ -253,7 +277,7 @@ export default function LandingPage() {
               </div>
               
               {/* Step 3: Short break */}
-              <div className={styles.pomodoroStep}>
+              <div className={styles.pomodoroStep} data-reveal>
                 <div className={styles.stepNumber}>3</div>
                 <div className={styles.stepContent}>
                   <h4>Pausa de 5 minutos</h4>
@@ -262,7 +286,7 @@ export default function LandingPage() {
               </div>
               
               {/* Step 4: Repeat cycle */}
-              <div className={styles.pomodoroStep}>
+              <div className={styles.pomodoroStep} data-reveal>
                 <div className={styles.stepNumber}>4</div>
                 <div className={styles.stepContent}>
                   <h4>Repite el ciclo</h4>
@@ -307,7 +331,7 @@ export default function LandingPage() {
           <h2 className={styles.sectionTitle}>Características Principales</h2>
           <div className={styles.featuresGrid}>
             {/* Feature 1: Immersive Personalization */}
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-reveal>
               <div className={styles.featureIcon}>
                 {/* Custom SVG icon for personalization */}
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -323,7 +347,7 @@ export default function LandingPage() {
             </div>
             
             {/* Feature 2: Ambient Sounds */}
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-reveal>
               <div className={styles.featureIcon}>
                 {/* Custom SVG icon for audio/sound */}
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -338,7 +362,7 @@ export default function LandingPage() {
             </div>
             
             {/* Feature 3: Total Flexibility */}
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-reveal>
               <div className={styles.featureIcon}>
                 {/* Custom SVG icon for list/tasks */}
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -363,7 +387,7 @@ export default function LandingPage() {
           <h2 className={styles.sectionTitle}>El Proyecto en Acción</h2>
           <div className={styles.gallery}>
             {/* Static theme screenshot */}
-            <div className={styles.galleryItem}>
+            <div className={styles.galleryItem} data-reveal>
               <div className={styles.imageContainer}>
                 <Image
                   src="/captura-estatico.png"
@@ -379,7 +403,7 @@ export default function LandingPage() {
             </div>
             
             {/* Animated theme video demo */}
-            <div className={styles.galleryItem}>
+            <div className={styles.galleryItem} data-reveal>
               <div className={styles.videoContainer}>
                 <video
                   autoPlay
@@ -411,12 +435,9 @@ export default function LandingPage() {
             <span>Esta aplicación está en fase de prueba y aún no ha sido lanzada oficialmente. Puede contener errores o cambios frecuentes.</span>
           </div>
           <ul className={styles.statusList}>
-            {/* Software version status */}
-            <li>Software: Versión 1.0 funcional y desplegada. La aplicación web es completamente operativa.</li>
-            {/* Implemented features */}
-            <li>Características Implementadas: Sistema de temporizador completo (iniciar, pausar, resetear, detener), gestión de tareas, y un panel de configuración robusto con ajustes generales, sistema de temas (estáticos y animados) y control de sonidos de fondo con volumen.</li>
-            {/* Próxima funcionalidad */}
-            <li>Próximamente: Sincronización en la nube para guardar tus tareas y configuraciones, y aplicación móvil para acceder a Prod-UIBO desde cualquier lugar.</li>
+            <li data-reveal><span className={styles.statusIcon}>🚀</span>Software: Versión 1.0 funcional y desplegada. La aplicación web es completamente operativa.</li>
+            <li data-reveal><span className={styles.statusIcon}>⚙️</span>Características Implementadas: Sistema de temporizador completo (iniciar, pausar, resetear, detener), gestión de tareas, y un panel de configuración robusto con ajustes generales, sistema de temas (estáticos y animados) y control de sonidos de fondo con volumen.</li>
+            <li data-reveal><span className={styles.statusIcon}>🔜</span>Próximamente: Sincronización en la nube para guardar tus tareas y configuraciones, y aplicación móvil para acceder a Prod-UIBO desde cualquier lugar.</li>
           </ul>
         </div>
       </section>
@@ -425,22 +446,24 @@ export default function LandingPage() {
       <section className={styles.section} id="roadmap">
         <div className={styles.content}>
           <h2 className={styles.sectionTitle}>Roadmap</h2>
-          <div className={styles.roadmapGrid}>
-            <div className={styles.roadmapItem + ' ' + styles.roadmapDone}>
-              <span className={styles.roadmapIcon}>✔️</span>
-              <span>Temporizador Pomodoro</span>
-            </div>
-            <div className={styles.roadmapItem + ' ' + styles.roadmapDone}>
-              <span className={styles.roadmapIcon}>✔️</span>
-              <span>Sonidos ambientales</span>
-            </div>
-            <div className={styles.roadmapItem + ' ' + styles.roadmapNext}>
-              <span className={styles.roadmapIcon}>🔜</span>
-              <span>Sincronización en la nube</span>
-            </div>
-            <div className={styles.roadmapItem + ' ' + styles.roadmapNext}>
-              <span className={styles.roadmapIcon}>🔜</span>
-              <span>App móvil</span>
+          <div className={styles.roadmapWrapper}>
+            <div className={styles.roadmapGrid}>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapDone} data-reveal>
+                <span className={styles.roadmapIcon}>✔️</span>
+                <span>Temporizador Pomodoro</span>
+              </div>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapDone} data-reveal>
+                <span className={styles.roadmapIcon}>✔️</span>
+                <span>Sonidos ambientales</span>
+              </div>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapNext} data-reveal>
+                <span className={styles.roadmapIcon}>🔜</span>
+                <span>Sincronización en la nube</span>
+              </div>
+              <div className={styles.roadmapItem + ' ' + styles.roadmapNext} data-reveal>
+                <span className={styles.roadmapIcon}>🔜</span>
+                <span>App móvil</span>
+              </div>
             </div>
           </div>
         </div>
