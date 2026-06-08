@@ -16,49 +16,55 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, var(--brand-color-uibo, #1E88E5) 0%, var(--panel-bg, #242526) 100%);
-  color: var(--text-color-primary, #fff);
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #fff;
+  padding: 2rem 2rem 1.75rem;
   border-radius: 20px;
-  box-shadow: 0 12px 40px 0 var(--shadow-color, rgba(0,0,0,0.37));
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.2);
   z-index: 2000;
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 500;
   text-align: center;
-  min-width: 320px;
-  max-width: 95vw;
+  min-width: 300px;
+  max-width: 90vw;
   pointer-events: auto;
-  opacity: 1;
-  transition: opacity 0.3s;
   white-space: pre-line;
   animation: notification-fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  border: 2px solid var(--brand-color-uibo, #1E88E5);
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, #EF4444, #3B82F6) 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .icon {
   display: block;
-  font-size: 3.2rem;
-  margin: 0 auto 1.1rem auto;
-  text-align: center;
+  margin: 0 auto 0.5rem;
   line-height: 1;
-  color: var(--brand-color-uibo, #1E88E5);
 }
 
 .buttonAccept {
-  margin-top: 1.5rem;
-  background: var(--brand-color-uibo, #1E88E5);
+  margin-top: 1.25rem;
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  padding: 0.7rem 2.2rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.65rem 2rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px var(--shadow-color, rgba(0,0,0,0.15));
-  transition: background 0.2s, transform 0.1s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 15px rgba(59,130,246,0.3);
 }
+
 .buttonAccept:hover, .buttonAccept:focus {
-  background: var(--accent-hover, #2563EB);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59,130,246,0.45);
   outline: none;
-  transform: scale(1.04);
-} 
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
+}
