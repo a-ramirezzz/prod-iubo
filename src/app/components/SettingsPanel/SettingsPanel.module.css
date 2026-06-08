@@ -377,6 +377,28 @@ input:disabled + .slider {
   transition: color 0.2s;
 }
 
+/* --- Section content fade transition --- */
+
+.sectionContent {
+  animation: sectionFadeIn 0.22s ease-out both;
+}
+
+@keyframes sectionFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Sidebar icon animation --- */
+
+.sidebarIcon {
+  transition: transform 0.2s ease;
+  display: inline-flex;
+}
+
+.menuButton.active .sidebarIcon {
+  transform: scale(1.2) rotate(-5deg);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

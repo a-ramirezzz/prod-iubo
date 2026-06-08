@@ -199,7 +199,10 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
             <SortableContext items={tasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
               <ul className={styles.taskList}>
                 {tasks.length === 0 && (
-                  <li className={styles.noTasks}>Aún no hay objetivos.</li>
+                  <li className={styles.noTasks} style={{ listStyle: 'none', textAlign: 'center', padding: '1.5rem 0' }}>
+                    <span style={{ display: 'block', fontSize: '2rem', opacity: 0.4, marginBottom: '0.5rem' }}>🎯</span>
+                    Aún no hay objetivos. ¡Agrega uno para comenzar!
+                  </li>
                 )}
                 {tasks.map(task => (
                   <SortableTaskItem

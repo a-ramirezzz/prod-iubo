@@ -8,8 +8,58 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px; 
+  gap: 15px;
   margin: 20px 0;
-  /* Setting a min-height prevents layout shifts when the controls appear */
   min-height: 45px;
+}
+
+.btnPause {
+  background: var(--btn-pause-bg, rgba(59,130,246,0.2));
+  border: 1.5px solid var(--btn-pause-border, rgba(59,130,246,0.5));
+  color: var(--btn-pause-text, #93C5FD);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.btnPause:hover:not(:disabled) {
+  background: var(--btn-pause-bg-hover, rgba(59,130,246,0.4));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59,130,246,0.35);
+}
+
+.btnReset {
+  background: var(--btn-reset-bg, rgba(245,158,11,0.2));
+  border: 1.5px solid var(--btn-reset-border, rgba(245,158,11,0.5));
+  color: var(--btn-reset-text, #FCD34D);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.btnReset:hover:not(:disabled) {
+  background: var(--btn-reset-bg-hover, rgba(245,158,11,0.35));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+}
+
+.btnStop {
+  background: var(--btn-stop-bg, rgba(239,68,68,0.2));
+  border: 1.5px solid var(--btn-stop-border, rgba(239,68,68,0.5));
+  color: var(--btn-stop-text, #FCA5A5);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.btnStop:hover:not(:disabled) {
+  background: var(--btn-stop-bg-hover, rgba(239,68,68,0.35));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(239,68,68,0.3);
 }

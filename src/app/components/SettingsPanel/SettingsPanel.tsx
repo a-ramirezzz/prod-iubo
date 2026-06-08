@@ -128,7 +128,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       className={`${styles.menuButton} ${activeSection === item ? styles.active : ''}`}
                       onClick={() => setActiveSection(item)}
                     >
-                      {ICONS[item]}
+                      <span className={styles.sidebarIcon}>{ICONS[item]}</span>
                       <span>{item}</span>
                     </button>
                   </li>
@@ -139,7 +139,8 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           {/* Main content area */}
           <main className={styles.mainContentArea}>
             <h2 className={styles.sectionTitle}>{activeSection}</h2>
-            
+            <div key={activeSection} className={styles.sectionContent}>
+
             {/* General Settings Section */}
             {activeSection === 'General' && (
               <div className={styles.settingsContainer}>
@@ -321,6 +322,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             {activeSection === 'Focus' && (
               <div className={styles.comingSoon}>PRÓXIMAMENTE</div>
             )}
+            </div>
           </main>
         </div>
       </div>

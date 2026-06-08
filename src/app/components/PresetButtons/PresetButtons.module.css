@@ -12,3 +12,40 @@
   gap: 15px;
   margin-bottom: 25px;
 }
+
+.presetBtn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.presetBtn:hover {
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+}
+
+.presetBtn:active {
+  transform: scale(0.96);
+}
+
+.presetBtnPomodoro {
+  border: 2px solid rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+}
+
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(0);
+  animation: rippleEffect 0.5s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

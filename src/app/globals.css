@@ -18,6 +18,22 @@
   --uibo-blue: #3B82F6;
   --pomodoro-orange: #F97316;
   --pomodoro-light: #FB923C;
+
+  /* Timer button defaults (video/no-class themes) */
+  --btn-pause-bg: rgba(59,130,246,0.22);
+  --btn-pause-bg-hover: rgba(59,130,246,0.4);
+  --btn-pause-border: rgba(59,130,246,0.6);
+  --btn-pause-text: #BFDBFE;
+
+  --btn-reset-bg: rgba(245,158,11,0.22);
+  --btn-reset-bg-hover: rgba(245,158,11,0.4);
+  --btn-reset-border: rgba(245,158,11,0.6);
+  --btn-reset-text: #FDE68A;
+
+  --btn-stop-bg: rgba(239,68,68,0.22);
+  --btn-stop-bg-hover: rgba(239,68,68,0.4);
+  --btn-stop-border: rgba(239,68,68,0.6);
+  --btn-stop-text: #FECACA;
 }
 
 /* 2. Color palette for Light Theme (REVISED) */
@@ -41,21 +57,40 @@
   --border-color-disabled: #e9ecef;
 
   /* Buttons and Inputs */
-  --button-primary-bg: #f8f9fa; /* Button background almost same as main background */
-  --button-primary-bg-hover: #e9ecef; /* Slightly darker on hover */
-  --button-primary-bg-active: #dee2e6;
+  --button-primary-bg: #E2E8F0;
+  --button-primary-bg-hover: #CBD5E1;
+  --button-primary-bg-active: #94A3B8;
   --input-bg: #ffffff; /* White background for inputs */
-  
+
   /* Colored buttons */
   --button-reset-bg: #ffc107;
   --button-reset-bg-hover: #e0a800;
   --button-stop-bg: #dc3545;
   --button-stop-bg-hover: #c82333;
-  --button-border-color: rgba(0, 0, 0, 0.05);
+  --button-border-color: rgba(0,0,0,0.15);
+  --text-color-secondary: #1E293B;
+  --highlight-color: rgba(0,0,0,0.06);
+  --shadow-color: rgba(0,0,0,0.15);
 
   /* Disabled states */
   --button-disabled-bg: #f8f9fa;
-  --input-bg-disabled: #e9ecef; /* Color for disabled inputs */
+  --input-bg-disabled: #e9ecef;
+
+  /* Timer buttons – light mode */
+  --btn-pause-bg: rgba(59,130,246,0.12);
+  --btn-pause-bg-hover: rgba(59,130,246,0.25);
+  --btn-pause-border: rgba(59,130,246,0.6);
+  --btn-pause-text: #1D4ED8;
+
+  --btn-reset-bg: rgba(245,158,11,0.12);
+  --btn-reset-bg-hover: rgba(245,158,11,0.25);
+  --btn-reset-border: rgba(180,114,8,0.6);
+  --btn-reset-text: #92400E;
+
+  --btn-stop-bg: rgba(239,68,68,0.12);
+  --btn-stop-bg-hover: rgba(239,68,68,0.25);
+  --btn-stop-border: rgba(185,28,28,0.6);
+  --btn-stop-text: #991B1B;
 }
 
 /* 3. Color palette for Dark Theme (Unchanged) */
@@ -83,6 +118,22 @@
 
   --shadow-color: rgba(0, 0, 0, 0.3);
   --highlight-color: rgba(255, 255, 255, 0.05);
+
+  /* Timer buttons – dark mode */
+  --btn-pause-bg: rgba(59,130,246,0.18);
+  --btn-pause-bg-hover: rgba(59,130,246,0.35);
+  --btn-pause-border: rgba(59,130,246,0.5);
+  --btn-pause-text: #93C5FD;
+
+  --btn-reset-bg: rgba(245,158,11,0.18);
+  --btn-reset-bg-hover: rgba(245,158,11,0.35);
+  --btn-reset-border: rgba(245,158,11,0.5);
+  --btn-reset-text: #FCD34D;
+
+  --btn-stop-bg: rgba(239,68,68,0.18);
+  --btn-stop-bg-hover: rgba(239,68,68,0.35);
+  --btn-stop-border: rgba(239,68,68,0.5);
+  --btn-stop-text: #FCA5A5;
 }
 
 

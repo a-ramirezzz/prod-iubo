@@ -7,20 +7,31 @@ import styles from '@/app/components/TimerDisplay/TimerDisplay.module.css'
  */
 interface TimerDisplayProps {
   timeParts: TimeParts
+  isActive?: boolean
+  remainingSeconds?: number
 }
 
 /**
  * A component that displays the remaining time in HH:MM:SS format
  * It is semantically structured and accessible for screen readers
  */
-export default function TimerDisplay({ timeParts }: TimerDisplayProps) {
+export default function TimerDisplay({ timeParts, isActive = false, remainingSeconds = 0 }: TimerDisplayProps) {
   // Format the time into an ISO 8601 duration string for the datetime attribute
   // This provides a machine-readable format for assistive technologies
   const dateTimeString = `PT${timeParts.hours}H${timeParts.minutes}M${timeParts.seconds}S`
 
+  const timerStateClass =
+    isActive && remainingSeconds <= 10
+      ? styles.timerCritical
+      : isActive && remainingSeconds <= 60
+        ? styles.timerWarning
+        : isActive
+          ? styles.timerActive
+          : ''
+
   return (
     <time
-      className={styles.timerDisplay}
+      className={`${styles.timerDisplay} ${timerStateClass}`}
       dateTime={dateTimeString}
       aria-live="polite" // Announces updates to screen readers without interrupting
       aria-atomic="true" // Ensures the entire time is announced, not just the changed part

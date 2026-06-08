@@ -1,34 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import styles from './CelebrationEffect.module.css';
 
-// Configuration constants
-const PARTICLE_COUNT = 15;
-const ANIMATION_DURATION = 3000;
-const MAX_DELAY = 0.5;
+const EMOJI_SET = ['🔥','⭐','🎉','✨','💥','🏆','🎊','💫'];
+const PARTICLE_COUNT = 28;
+const ANIMATION_DURATION = 3500;
 
 interface CelebrationEffectProps {
-  /** Controls whether the celebration effect is active */
   isActive: boolean;
-  /** Callback fired when celebration animation completes */
   onComplete?: () => void;
 }
 
 export default function CelebrationEffect({ isActive, onComplete }: CelebrationEffectProps) {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
+  const [particles, setParticles] = useState<Array<{
+    id: number; emoji: string; x: number; y: number;
+    delay: number; scale: number; rotation: number; drift: number;
+  }>>([]);
 
   useEffect(() => {
     if (isActive) {
-      // Create fire particles with random positions and delays
       const newParticles = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
         id: i,
-        x: Math.random() * 100, // Random X position
-        y: Math.random() * 100, // Random Y position
-        delay: Math.random() * MAX_DELAY // Random delay for staggered animation
+        emoji: EMOJI_SET[Math.floor(Math.random() * EMOJI_SET.length)],
+        x: Math.random() * 90 + 5,
+        y: Math.random() * 80 + 10,
+        delay: Math.random() * 0.8,
+        scale: Math.random() * 0.8 + 0.8,
+        rotation: Math.random() * 60 - 30,
+        drift: Math.random() * 80 - 40,
       }));
-      
+
       setParticles(newParticles);
 
-      // Clean up after animation duration
       const timer = setTimeout(() => {
         setParticles([]);
         onComplete?.();
@@ -42,19 +44,25 @@ export default function CelebrationEffect({ isActive, onComplete }: CelebrationE
 
   return (
     <div className={styles.celebrationContainer}>
-      {particles.map((particle) => (
+      <div className={styles.flashOverlay} />
+      <div className={styles.burstRing} />
+      <div className={styles.burstRing2} />
+      {particles.map((p) => (
         <div
-          key={particle.id}
-          className={styles.fireParticle}
+          key={p.id}
+          className={styles.particle}
           style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            animationDelay: `${particle.delay}s`
-          }}
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            animationDelay: `${p.delay}s`,
+            '--scale': p.scale,
+            '--rotation': `${p.rotation}deg`,
+            '--drift': `${p.drift}px`,
+          } as React.CSSProperties}
         >
-          🔥
+          {p.emoji}
         </div>
       ))}
     </div>
   );
-} 
+}

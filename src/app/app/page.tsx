@@ -177,12 +177,12 @@ export default function HomePage() {
   const showInstructionText = !isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0;
 
   return (
-    <main className={`${styles.mainContainer} ${isMiniMode ? styles.miniModeActive : ''}`}>
+    <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
       {showSetupControls && <ProjectBranding />}
       
       {/* Main Timer Display */}
       <div className='timerDisplay'>
-        <TimerDisplay timeParts={timeParts} />
+        <TimerDisplay timeParts={timeParts} isActive={isActive} remainingSeconds={totalSeconds} />
       </div>
 
       {/* Timer Setup Controls (Presets and Custom Input) */}
