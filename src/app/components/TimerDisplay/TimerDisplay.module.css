@@ -40,6 +40,25 @@
 }
 
 
+/* --- State-driven timer classes --- */
+
+.timerActive {
+  animation: timerTick 1s steps(1, end) infinite;
+  transition: text-shadow 1s ease, color 1s ease;
+}
+
+.timerWarning {
+  color: #F59E0B;
+  text-shadow: 0 0 30px rgba(245, 158, 11, 0.6), 0 0 60px rgba(245, 158, 11, 0.3);
+  animation: timerTick 1s steps(1, end) infinite, warningPulse 1s ease-in-out infinite;
+}
+
+.timerCritical {
+  color: #EF4444;
+  text-shadow: 0 0 30px rgba(239, 68, 68, 0.8), 0 0 60px rgba(239, 68, 68, 0.4);
+  animation: criticalShake 0.5s ease-in-out infinite, warningPulse 0.5s ease-in-out infinite;
+}
+
 /* --- Animations --- */
 
 /**
@@ -55,4 +74,21 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+@keyframes timerTick {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.018); }
+  100% { transform: scale(1); }
+}
+
+@keyframes warningPulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+  50%       { text-shadow: 0 0 50px rgba(245, 158, 11, 0.9), 0 0 80px rgba(245, 158, 11, 0.4); }
+}
+
+@keyframes criticalShake {
+  0%, 100% { transform: translateX(0) scale(1.02); }
+  25%       { transform: translateX(-3px) scale(1.02); }
+  75%       { transform: translateX(3px) scale(1.02); }
 }

@@ -119,3 +119,58 @@
   font-style: italic;
   margin-top: 15px;
 }
+
+/* --- Task entrance / exit / completion animations --- */
+
+.taskItemEnter {
+  animation: taskSlideIn 0.3s ease-out both;
+}
+
+.taskItemComplete {
+  animation: taskComplete 0.4s ease-out forwards;
+}
+
+.taskItemDelete {
+  animation: taskSlideOut 0.28s ease-in forwards;
+  overflow: hidden;
+}
+
+/* --- Empty state --- */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.95rem;
+}
+
+.emptyStateIcon {
+  font-size: 2.5rem;
+  opacity: 0.4;
+  animation: emptyFloat 3s ease-in-out infinite;
+}
+
+@keyframes taskSlideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes taskComplete {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+@keyframes taskSlideOut {
+  from { opacity: 1; transform: translateX(0) scaleY(1); max-height: 80px; }
+  to   { opacity: 0; transform: translateX(20px) scaleY(0); max-height: 0; padding: 0; margin: 0; }
+}
+
+@keyframes emptyFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}

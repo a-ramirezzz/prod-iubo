@@ -1,90 +1,91 @@
-/* Celebration effect container - covers entire viewport */
 .celebrationContainer {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none; /* Prevents interaction with background elements */
-  z-index: 3000;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
   overflow: hidden;
 }
 
-/* Individual fire particle styling */
-.fireParticle {
+.flashOverlay {
   position: absolute;
-  font-size: 2rem;
-  animation: fireCelebration 2.5s ease-out forwards;
-  transform: scale(0);
-  opacity: 0;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,215,0,0.18) 0%, transparent 70%);
+  animation: flashPulse 0.5s ease-out forwards;
 }
 
-/* Fire particle animation - scale, rotate and fade effects */
-@keyframes fireCelebration {
-  0% {
-    transform: scale(0) rotate(0deg);
-    opacity: 0;
-  }
-  20% {
-    transform: scale(1.2) rotate(10deg);
-    opacity: 1;
-  }
-  40% {
-    transform: scale(1) rotate(-5deg);
-    opacity: 1;
-  }
-  60% {
-    transform: scale(1.1) rotate(8deg);
-    opacity: 1;
-  }
-  80% {
-    transform: scale(0.9) rotate(-3deg);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(0) rotate(0deg);
-    opacity: 0;
-  }
+@keyframes flashPulse {
+  0% { opacity: 0; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
 }
 
-/* Animation duration variations for different particles */
-.fireParticle:nth-child(odd) {
-  animation-duration: 2.8s;
-}
-
-.fireParticle:nth-child(even) {
-  animation-duration: 2.2s;
-}
-
-.fireParticle:nth-child(3n) {
-  animation-duration: 3s;
-}
-
-/* Glow effect using pseudo-element */
-.fireParticle::after {
-  content: '';
+.burstRing {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255, 165, 0, 0.3) 0%, transparent 70%);
-  transform: translate(-50%, -50%);
-  animation: glowEffect 2.5s ease-out forwards;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,215,0,0.7);
+  animation: burstExpand 0.8s ease-out forwards;
 }
 
-/* Glow effect animation - expands and fades */
-@keyframes glowEffect {
+.burstRing2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,100,100,0.5);
+  animation: burstExpand 0.8s ease-out 0.2s forwards;
+}
+
+@keyframes burstExpand {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(8); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  font-size: calc(1.6rem * var(--scale, 1));
+  animation: particleBurst 3.5s ease-out forwards;
+  transform-origin: center;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0 8px rgba(255,200,0,0.6));
+}
+
+@keyframes particleBurst {
   0% {
+    transform: scale(0) rotate(var(--rotation, 0deg)) translateX(0);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
   }
-  50% {
+  15% {
+    transform: scale(1.4) rotate(calc(var(--rotation, 0deg) + 15deg)) translateX(0);
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.5);
+  }
+  40% {
+    transform: scale(1) rotate(calc(var(--rotation, 0deg) - 10deg)) translateX(calc(var(--drift, 0px) * 0.5));
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.1) rotate(calc(var(--rotation, 0deg) + 5deg)) translateX(var(--drift, 0px));
+    opacity: 0.85;
   }
   100% {
+    transform: scale(0.3) rotate(calc(var(--rotation, 0deg) + 20deg)) translateX(calc(var(--drift, 0px) * 1.5)) translateY(60px);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(2);
   }
-} 
+}
+
+.particle:nth-child(3n) {
+  animation-duration: 3.8s;
+}
+.particle:nth-child(4n) {
+  animation-duration: 3.1s;
+}
+.particle:nth-child(5n) {
+  filter: drop-shadow(0 0 10px rgba(100,200,255,0.7));
+}
