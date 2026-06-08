@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
+// Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // Signup page route for the application. Renders the SignupForm component for user registration.
 import React from 'react';
 import AuthTabs from "../components/AuthTabs/AuthTabs";
