@@ -1,4 +1,6 @@
 "use client";
+// Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
+// Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 import React, { useState, useEffect } from "react";
 import LoginForm from "../../login/LoginForm";
 import SignupForm from "../../signup/SignupForm";

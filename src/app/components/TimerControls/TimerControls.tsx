@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
+// Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // app/components/TimerControls/TimerControls.tsx
 import styles from '@/app/components/TimerControls/TimerControls.module.css'
 

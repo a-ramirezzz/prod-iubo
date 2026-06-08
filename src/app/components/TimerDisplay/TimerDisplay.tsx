@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
+// Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // src/app/components/TimerDisplay/TimerDisplay.tsx
 import type { TimeParts } from '@/app/types'
 import styles from '@/app/components/TimerDisplay/TimerDisplay.module.css'
