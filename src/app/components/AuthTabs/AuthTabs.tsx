@@ -28,7 +28,10 @@ export default function AuthTabs() {
   }, [activeTab]);
 
   return (
-    <div className={styles.authCardWrapper}>
+    <div className={styles.pageWrapper}>
+      <div className={styles.orb1} aria-hidden="true" />
+      <div className={styles.orb2} aria-hidden="true" />
+      <div className={styles.authCardWrapper}>
       <div className={styles.tabsContainer}>
         <button
           className={activeTab === 0 ? styles.tabActive : styles.tab}
@@ -47,6 +50,7 @@ export default function AuthTabs() {
       </div>
       <div className={styles.tabContent}>
         {activeTab === 0 ? <LoginForm hideLinks /> : <SignupForm hideLinks />}
+      </div>
       </div>
     </div>
   );
