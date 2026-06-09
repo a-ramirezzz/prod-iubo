@@ -13,6 +13,7 @@
 import { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { useAuth } from './AuthContext';
+import Notification from '@/app/components/Notification/Notification';
 
 // =================================================================
 // SECTION: Constants
@@ -91,11 +92,19 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<FullAppSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{ visible: boolean; message: string; icon: React.ReactNode }>({ visible: false, message: '', icon: null });
 
   /**
    * Effect to load settings from Supabase for the authenticated user.
    * Waits for AuthContext to finish loading before fetching settings.
    */
+  const iconError = (
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="#EF4444"/>
+      <path d="M17 17L31 31M31 17L17 31" stroke="#fff" strokeWidth="3" strokeLinecap="round"/>
+    </svg>
+  );
+
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
@@ -110,9 +119,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         .select('*')
         .eq('id', user.id)
         .single();
-      if (error || !data) {
+      if (error) {
         setSettings(DEFAULT_SETTINGS);
-        console.log('[SettingsContext] No settings found or error:', error);
+        console.error('[SettingsContext] Error loading settings:', error);
+        setNotification({ visible: true, message: 'No se pudieron cargar los ajustes. Usando valores predeterminados.', icon: iconError });
+      } else if (!data) {
+        setSettings(DEFAULT_SETTINGS);
+        console.log('[SettingsContext] No settings found, using defaults.');
       } else {
         setSettings({ ...DEFAULT_SETTINGS, ...data });
         console.log('[SettingsContext] Loaded settings from Supabase:', data);
@@ -141,6 +154,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (error) {
       setError('Error updating settings: ' + error.message);
       console.error('[SettingsContext] Error updating settings:', error);
+      setNotification({ visible: true, message: 'No se pudieron guardar los ajustes. Verifica tu conexión.', icon: iconError });
     } else {
       console.log('[SettingsContext] Settings updated successfully in Supabase');
     }
@@ -163,6 +177,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (error) {
       setError('Error resetting settings: ' + error.message);
       console.error('[SettingsContext] Error resetting settings:', error);
+      setNotification({ visible: true, message: 'No se pudieron restablecer los ajustes. Verifica tu conexión.', icon: iconError });
     } else {
       console.log('[SettingsContext] Settings reset successfully in Supabase');
     }
@@ -182,6 +197,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   return (
     <SettingsContext.Provider value={value}>
+      <Notification
+        message={notification.message}
+        visible={notification.visible}
+        icon={notification.icon}
+        duration={4000}
+        onClose={() => setNotification({ ...notification, visible: false })}
+      />
       {children}
     </SettingsContext.Provider>
   );
