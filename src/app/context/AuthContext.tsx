@@ -23,24 +23,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the current session/user on mount
+    // Fast initial hydration from localStorage — no network round-trip
     const getSession = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user ?? null);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
       setLoading(false);
-      console.log('[AuthContext] Initial user:', data.user);
+      console.log('[AuthContext] Initial user (from session):', session?.user ?? null);
     };
     getSession();
 
-    // Listen for auth state changes (login, logout, refresh)
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    // Keep session updated on login, logout, and token refresh
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      console.log('[AuthContext] Auth state changed:', event, session?.user);
+      console.log('[AuthContext] Auth state changed:', _event, session?.user);
     });
 
     // Cleanup listener on unmount
     return () => {
-      listener.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
