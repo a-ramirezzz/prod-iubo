@@ -1,5 +1,5 @@
 "use server";
-import { supabase } from "@/app/lib/supabaseClient";
+import { createClient } from '@/app/lib/supabase/client';
 
 /**
  * Server Action: Authenticates a user using Supabase Auth.
@@ -13,6 +13,7 @@ export async function signIn(formData: {
   email: string;
   password: string;
 }) {
+  const supabase = createClient();
   // Call Supabase Auth to sign in with email and password
   const { error } = await supabase.auth.signInWithPassword({
     email: formData.email,

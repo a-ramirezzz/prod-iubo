@@ -12,7 +12,7 @@ import { useSettings } from '../../context/SettingsContext';
 import { themes } from '../../lib/themes';
 import ThemeCard from '../ThemeCard/ThemeCard';
 import { sounds, noSound } from '../../lib/sounds';
-import { supabase } from '../../lib/supabaseClient';
+import { createClient } from '@/app/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 // Props for the SettingsPanel component
@@ -47,6 +47,7 @@ const MENU_ITEMS: ActiveSectionType[] = ['General', 'Temas', 'Sonidos', 'Focus']
  * Displays a modal panel for user settings, including general options, themes, and sounds.
  */
 export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
+  const supabase = createClient();
   // State for the currently active section
   const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
   // Access settings and update functions from context

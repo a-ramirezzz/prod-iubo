@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/app/lib/supabaseClient";
+import { createClient } from '@/app/lib/supabase/client';
 import landingStyles from "@/app/LandingPage.module.css";
 import Notification from "@/app/components/Notification/Notification";
 
@@ -14,6 +14,7 @@ import Notification from "@/app/components/Notification/Notification";
  * with a server action to authenticate the user using Supabase Auth.
  */
 export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }) {
+  const supabase = createClient();
   // Form state hooks for each input field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
