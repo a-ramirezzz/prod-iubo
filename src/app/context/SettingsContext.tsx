@@ -11,7 +11,7 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
-import { supabase } from '@/app/lib/supabaseClient';
+import { createClient } from '@/app/lib/supabase/client';
 import { useAuth } from './AuthContext';
 import Notification from '@/app/components/Notification/Notification';
 
@@ -88,6 +88,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
  * @returns {JSX.Element} The context provider component.
  */
 export function SettingsProvider({ children }: { children: ReactNode }) {
+  const supabase = createClient();
   const { user, loading: authLoading } = useAuth();
   const [settings, setSettings] = useState<FullAppSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);

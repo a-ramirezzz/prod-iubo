@@ -3,6 +3,7 @@
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function GlobalError({
   error,
@@ -71,7 +72,7 @@ export default function GlobalError({
         >
           Reintentar
         </button>
-        <a
+        <Link
           href="/login"
           style={{
             padding: "0.75rem 2rem",
@@ -88,7 +89,7 @@ export default function GlobalError({
           }}
         >
           Ir al inicio
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/app/lib/supabaseClient";
+import { createClient } from '@/app/lib/supabase/client';
 import type { User } from "@supabase/supabase-js";
 
 /**
@@ -19,6 +19,7 @@ const AuthContext = createContext<AuthContextType>({ user: null, loading: true }
  * It listens to auth state changes and updates the user accordingly.
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
