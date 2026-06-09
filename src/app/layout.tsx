@@ -2,11 +2,11 @@ import './globals.css';
 import { SettingsProvider } from '@/context/SettingsContext'; 
 import { AuthProvider } from '@/context/AuthContext';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
-import { Anton } from 'next/font/google';
+import { Inter } from 'next/font/google';
 
-const anton = Anton({
+const inter = Inter({
   subsets: ['latin'],
-  weight: '400',
+  weight: ['400', '500', '600', '700'],
   variable: '--font-anton',
 });
 
@@ -31,6 +31,11 @@ const anton = Anton({
  * Comprehensive metadata setup for SEO, social sharing, and browser compatibility.
  * Includes Open Graph tags for social media sharing and Twitter Cards support.
  */
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata = {
   // Basic page information
   title: 'Prod-UIBO',
@@ -80,7 +85,7 @@ export const metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={anton.variable}>
+    <html lang="es" className={inter.variable}>
       {/* Head section with favicon links for maximum browser compatibility */}
       <head>
         <link rel="icon" href="/favicon.png" />
