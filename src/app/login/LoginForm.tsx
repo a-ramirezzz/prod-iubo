@@ -4,6 +4,7 @@ import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from '@/app/lib/supabase/client';
+import { translateSupabaseError } from '@/app/lib/errors';
 import landingStyles from "@/app/LandingPage.module.css";
 import Notification from "@/app/components/Notification/Notification";
 
@@ -47,34 +48,6 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
     if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres.";
     return null;
   };
-
-  /**
-   * Translates common Supabase error messages to Spanish for user alerts.
-   * @param errorMsg - The original error message from Supabase
-   * @returns The translated message in Spanish, or the original if not recognized
-   */
-  function translateSupabaseError(errorMsg: string): string {
-    const msg = errorMsg.toLowerCase();
-    if (msg.includes('invalid login credentials') || msg.includes('invalid email or password')) {
-      return 'Correo electrónico o contraseña incorrectos.';
-    }
-    if (msg.includes('user not found')) {
-      return 'Usuario no encontrado.';
-    }
-    if (msg.includes('email not confirmed') || msg.includes('confirm your email')) {
-      return 'Por favor confirma tu correo electrónico.';
-    }
-    if (msg.includes('email already registered') || msg.includes('user already registered') || msg.includes('duplicate key value')) {
-      return 'El correo electrónico ya está registrado.';
-    }
-    if (msg.includes('network error')) {
-      return 'Error de red. Intenta de nuevo más tarde.';
-    }
-    if (msg.includes('password')) {
-      return 'La contraseña es incorrecta o no cumple los requisitos.';
-    }
-    return errorMsg;
-  }
 
   /**
    * Handles form submission, authenticates the user with Supabase, and manages UI feedback.
