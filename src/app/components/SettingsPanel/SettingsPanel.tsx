@@ -14,6 +14,7 @@ import ThemeCard from '../ThemeCard/ThemeCard';
 import { sounds, noSound } from '../../lib/sounds';
 import { createClient } from '@/app/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -54,6 +55,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // Sincroniza el estado del toggle con el permiso de notificación del navegador
   useEffect(() => {
@@ -85,9 +87,7 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
   // Handler for resetting all settings to default
   const handleResetClick = () => {
-    if (window.confirm('¿Estás seguro de que quieres restablecer todos los ajustes a sus valores predeterminados?')) {
-      resetSettings();
-    }
+    setShowResetConfirm(true);
   };
 
   // Handler for logging out the user
@@ -329,6 +329,19 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           </main>
         </div>
       </div>
+      <ConfirmModal
+        visible={showResetConfirm}
+        message="¿Estás seguro de que quieres restablecer todos los ajustes a sus valores predeterminados?"
+        icon="🔄"
+        mode="confirm"
+        confirmLabel="Restablecer"
+        destructive={true}
+        onConfirm={async () => {
+          await resetSettings();
+          setShowResetConfirm(false);
+        }}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </>
   );
 }

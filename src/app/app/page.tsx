@@ -29,6 +29,7 @@ import SettingsButton from '@/components/SettingsButton/SettingsButton';
 import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
 import VisualNotification from '@/components/Notification/Notification';
 import TaskModal from '@/components/TaskList/TaskModal';
+import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -70,6 +71,8 @@ export default function HomePage() {
   const [showVisualNotification, setShowVisualNotification] = useState(false);
   // State to control the visibility of the task objectives modal
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [showInvalidTimeModal, setShowInvalidTimeModal] = useState(false);
+  const [showStopConfirm, setShowStopConfirm] = useState(false);
 
   // Mapea settings de snake_case a camelCase para AppSettings
   const settingsCamel = {
@@ -148,8 +151,7 @@ export default function HomePage() {
       setCustomHoursInput('');
       setCustomMinutesInput('');
     } else {
-      // NOTE: Consider replacing alert() with a custom modal for better UX.
-      alert('Por favor, ingresa un tiempo válido.');
+      setShowInvalidTimeModal(true);
     }
   }, [customHoursInput, customMinutesInput, startTimer]);
   
@@ -159,10 +161,7 @@ export default function HomePage() {
    */
   const handleStopWithConfirmation = useCallback(() => {
     if (settings.confirm_on_stop) {
-      // NOTE: Consider replacing window.confirm() with a custom modal.
-      if (window.confirm('¿Estás seguro de que quieres detener y reiniciar el temporizador?')) {
-        stopTimer();
-      }
+      setShowStopConfirm(true);
     } else {
       stopTimer();
     }
@@ -180,6 +179,26 @@ export default function HomePage() {
 
   return (
     <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
+      <ConfirmModal
+        visible={showInvalidTimeModal}
+        message="Por favor, ingresa un tiempo válido."
+        icon="⏱️"
+        mode="alert"
+        onConfirm={() => setShowInvalidTimeModal(false)}
+      />
+      <ConfirmModal
+        visible={showStopConfirm}
+        message="¿Estás seguro de que quieres detener y reiniciar el temporizador?"
+        icon="⏹️"
+        mode="confirm"
+        confirmLabel="Detener"
+        destructive={true}
+        onConfirm={() => {
+          stopTimer();
+          setShowStopConfirm(false);
+        }}
+        onCancel={() => setShowStopConfirm(false)}
+      />
       {showSetupControls && <ProjectBranding />}
       
       {/* Main Timer Display */}
