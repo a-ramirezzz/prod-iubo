@@ -18,10 +18,6 @@ const anton = Anton({
   variable: '--font-anton',
 });
 
-// Asset Imports
-import icon from '@/app/prod-iubo.png';
-
-
 // =================================================================
 // SECTION: Font Configuration
 // =================================================================
@@ -34,43 +30,11 @@ import icon from '@/app/prod-iubo.png';
 // SECTION: Metadata and Viewport
 // =================================================================
 
-// Defines the static metadata for the application, crucial for SEO and sharing.
+// Defines the metadata specific to the authenticated app area.
+// Global SEO fields (icons, openGraph, twitter, etc.) live in the root layout.
 export const metadata: Metadata = {
-  title: 'Prod-UIBO - Reloj de Productividad Inteligente',
-  description: 'Maximiza tu enfoque y gestiona tu tiempo eficazmente con Prod-UIBO, tu reloj de productividad personalizable.',
-  applicationName: 'Prod-UIBO',
-  keywords: ['productividad', 'reloj', 'temporizador', 'gestión del tiempo', 'enfoque', 'UIBO', 'Prod-UIBO', 'timer', 'pomodoro'],
-  authors: [{ name: '@rodrigobeta (Alan Rodrigo Ramirez Luna)', url: 'https://your-website.com' }],
-  creator: '@rodrigobeta (Alan Rodrigo Ramirez Luna)',
-  publisher: 'Alan Rodrigo Ramirez Luna',
-
-  icons: {
-    icon: icon.src,
-    apple: icon.src,
-  },
-
-  openGraph: {
-    type: 'website',
-    url: 'https://your-app-domain.com',
-    title: 'Prod-UIBO - Reloj de Productividad Inteligente',
-    description: 'Maximiza tu enfoque y gestiona tu tiempo eficazmente con Prod-UIBO.',
-    siteName: 'Prod-UIBO',
-    images: [
-      {
-        url: '/prod-iubo.png',
-        width: 256,
-        height: 256,
-        alt: 'Logo de Prod-UIBO',
-      },
-    ],
-  },
-
-  twitter: {
-    card: 'summary',
-    title: 'Prod-UIBO - Reloj de Productividad Inteligente',
-    description: 'Maximiza tu enfoque y gestiona tu tiempo eficazmente con Prod-UIBO.',
-    images: ['/prod-iubo.png'],
-  },
+  title: 'Mi Espacio — PROD-UIBO',
+  description: 'Tu temporizador de productividad personalizable con temas visuales y sonidos ambientales.',
 };
 
 // Defines the viewport configuration for responsive behavior and theme colors.
