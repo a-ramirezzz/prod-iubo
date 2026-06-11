@@ -1,0 +1,7 @@
+# PROD-UIBO Robots
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /api
+
+Sitemap: https://prod-uibo.vercel.app/sitemap.xml

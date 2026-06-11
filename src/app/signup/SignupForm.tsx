@@ -58,7 +58,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
     if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return "Correo electrónico inválido.";
     if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres.";
     if (password !== confirmPassword) return "Las contraseñas no coinciden.";
-    if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) return "Teléfono inválido.";
+    if (phone && !/^\+?[1-9]\d{6,14}$/.test(phone)) return "Teléfono inválido. Usa formato internacional, ej: +5215551234567";
     return null;
   };
 

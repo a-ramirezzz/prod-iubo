@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 const SUBTITLE = "Un temporizador de productividad personalizable para máxima concentración.";
 
 export default function LandingPage() {
-  const [] = useState(false);
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
