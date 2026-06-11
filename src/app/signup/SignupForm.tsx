@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import styles from "./SignupForm.module.css";
 import Link from "next/link";
 import { signUp } from "./actions";
+import { translateSupabaseError } from '@/app/lib/errors';
 import Notification from "@/app/components/Notification/Notification";
 
 /**
@@ -60,36 +61,6 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
     if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) return "Teléfono inválido.";
     return null;
   };
-
-  /**
-   * Translates common Supabase error messages to Spanish for user alerts.
-   * @param errorMsg - The original error message from Supabase
-   * @returns The translated message in Spanish, or the original if not recognized
-   */
-  function translateSupabaseError(errorMsg: string): string {
-    const msg = errorMsg.toLowerCase();
-
-    // Handle duplicate user errors first and be more specific
-    if (msg.includes('user already registered') || msg.includes('duplicate key value')) {
-      if (msg.includes('username')) { // Check if the constraint is on the username
-        return 'El nombre de usuario ya está en uso. Por favor, elige otro.';
-      }
-      return 'El correo electrónico ya está registrado.';
-    }
-
-    // Other common errors
-    if (msg.includes('email not confirmed') || msg.includes('confirm your email')) {
-      return 'Por favor confirma tu correo electrónico.';
-    }
-    if (msg.includes('network error')) {
-      return 'Error de red. Intenta de nuevo más tarde.';
-    }
-    if (msg.includes('password')) {
-      // This is a bit generic, but can catch password policy errors
-      return 'La contraseña no cumple los requisitos de seguridad.';
-    }
-    return errorMsg;
-  }
 
   /**
    * Handles form submission, calls the server action, and manages UI feedback.
