@@ -36,6 +36,7 @@ export interface AppSettings {
   confirmOnStop: boolean;   // Ask for confirmation before stopping the timer.
   alwaysOnTop: boolean;     // For future desktop app: keep window on top.
   pipModeEnabled: boolean; // Show floating timer using Picture-in-Picture (PiP) mode.
+  horizontalPipEnabled: boolean; // Show floating timer using Document Picture-in-Picture (horizontal layout).
   language: 'es' | 'en';    // Application language.
 
   // --- Theme & Appearance Settings ---

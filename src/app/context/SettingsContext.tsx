@@ -29,6 +29,7 @@ export interface FullAppSettings {
   start_in_mini_mode: boolean;
   confirm_on_stop: boolean;
   pip_mode_enabled: boolean;
+  horizontal_pip_enabled: boolean;
   language: 'es' | 'en';
   enable_desktop_notifications: boolean;
   theme_mode: 'light' | 'dark';
@@ -46,6 +47,7 @@ const DEFAULT_SETTINGS: FullAppSettings = {
   start_in_mini_mode: false,
   confirm_on_stop: true,
   pip_mode_enabled: false,
+  horizontal_pip_enabled: false,
   language: 'es',
   enable_desktop_notifications: true,
   theme_mode: 'dark',

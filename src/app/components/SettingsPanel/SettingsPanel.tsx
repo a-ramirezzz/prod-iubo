@@ -15,6 +15,7 @@ import { sounds, noSound } from '../../lib/sounds';
 import { createClient } from '@/app/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
+import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -56,6 +57,15 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+  // Only used here to read feature support (`isSupported`); the window itself
+  // is opened by the instance wired up in page.tsx with `enabled: true`.
+  const { isSupported: isHorizontalPipSupported } = useHorizontalPipTimer(
+    false,
+    { hours: '00', minutes: '00', seconds: '00' },
+    false,
+    undefined
+  );
 
   // Sincroniza el estado del toggle con el permiso de notificación del navegador
   useEffect(() => {
@@ -175,17 +185,64 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 </div>
                 {/* PiP Floating Timer toggle */}
                 <div className={styles.settingItem}>
-                  <label htmlFor="pip-mode">Activar Contador Flotante (PiP)</label>
+                  <label htmlFor="pip-mode" className={!!settings.horizontal_pip_enabled ? styles.disabledLabel : undefined}>
+                    Activar Contador Flotante (PiP)
+                  </label>
                   <label className={styles.toggleSwitch}>
                     <input
                       id="pip-mode"
                       type="checkbox"
                       checked={!!settings.pip_mode_enabled}
-                      onChange={e => updateSettings({ pip_mode_enabled: e.target.checked })}
+                      disabled={!!settings.horizontal_pip_enabled}
+                      onChange={e => {
+                        // Safety net: Chrome only allows one native PiP surface per tab,
+                        // so the horizontal PiP must be off before this one can be enabled.
+                        if (settings.horizontal_pip_enabled) return;
+                        updateSettings({ pip_mode_enabled: e.target.checked });
+                      }}
                     />
                     <span className={styles.slider}></span>
                   </label>
                 </div>
+                {!!settings.horizontal_pip_enabled && (
+                  <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
+                    Desactiva la vista horizontal flotante para usar esta opción
+                  </p>
+                )}
+                {/* Horizontal Document PiP Floating Timer toggle */}
+                <div className={styles.settingItem}>
+                  <label
+                    htmlFor="horizontal-pip-mode"
+                    className={(!isHorizontalPipSupported || !!settings.pip_mode_enabled) ? styles.disabledLabel : undefined}
+                  >
+                    Activar Vista Horizontal Flotante
+                  </label>
+                  <label className={styles.toggleSwitch}>
+                    <input
+                      id="horizontal-pip-mode"
+                      type="checkbox"
+                      checked={!!settings.horizontal_pip_enabled}
+                      disabled={!isHorizontalPipSupported || !!settings.pip_mode_enabled}
+                      onChange={e => {
+                        // Safety net: Chrome only allows one native PiP surface per tab,
+                        // so the canvas/video PiP must be off before this one can be enabled.
+                        if (settings.pip_mode_enabled) return;
+                        updateSettings({ horizontal_pip_enabled: e.target.checked });
+                      }}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </div>
+                {!isHorizontalPipSupported && (
+                  <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
+                    Disponible solo en Chrome/Edge de escritorio
+                  </p>
+                )}
+                {isHorizontalPipSupported && !!settings.pip_mode_enabled && (
+                  <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
+                    Desactiva el contador flotante (PiP) para usar esta opción
+                  </p>
+                )}
                 {/* Language selector */}
                 <div className={styles.settingItem}>
                   <label htmlFor="language">Idioma</label>
