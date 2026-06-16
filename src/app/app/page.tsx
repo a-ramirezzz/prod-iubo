@@ -15,6 +15,7 @@ import { useTimer } from '@/hooks/useTimer';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
+import { useHorizontalPipTimer } from '@/hooks/useHorizontalPipTimer';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -79,6 +80,7 @@ export default function HomePage() {
     startInMiniMode: settings.start_in_mini_mode,
     confirmOnStop: settings.confirm_on_stop,
     pipModeEnabled: settings.pip_mode_enabled,
+    horizontalPipEnabled: settings.horizontal_pip_enabled,
     language: settings.language,
     themeMode: settings.theme_mode,
     selectedThemeId: settings.selected_theme_id,
@@ -92,6 +94,18 @@ export default function HomePage() {
   const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settingsCamel, {
     onPipModeDisabled: () => updateSettings({ pip_mode_enabled: false }),
   });
+
+  // Name of the first incomplete task, shown as "current task" in the horizontal PiP window.
+  const currentTaskText = tasks.find(task => !task.completed)?.text;
+
+  // Integrate the Document Picture-in-Picture horizontal timer hook (separate, real-HTML floating window)
+  const { portal: horizontalPipPortal } = useHorizontalPipTimer(
+    settingsCamel.horizontalPipEnabled,
+    timeParts,
+    isActive,
+    currentTaskText,
+    { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
+  );
 
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -362,6 +376,8 @@ export default function HomePage() {
         tabIndex={-1}
         aria-hidden="true"
       />
+      {/* Portal target lives inside the separate Document PiP window, not in this DOM tree */}
+      {horizontalPipPortal}
     </main>
   );
 }
