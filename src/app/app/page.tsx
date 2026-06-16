@@ -104,6 +104,7 @@ export default function HomePage() {
     timeParts,
     isActive,
     currentTaskText,
+    settingsCamel.themeMode,
     { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
   );
 
