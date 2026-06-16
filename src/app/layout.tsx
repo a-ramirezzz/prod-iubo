@@ -85,7 +85,7 @@ export const metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={inter.variable}>
+    <html lang="es" className={inter.variable} suppressHydrationWarning>
       {/* Head section with favicon links for maximum browser compatibility */}
       <head>
         <link rel="icon" href="/favicon.png" />
