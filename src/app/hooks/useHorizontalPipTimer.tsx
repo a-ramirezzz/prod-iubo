@@ -29,7 +29,7 @@ const DEFAULT_HEIGHT = 220;
  * @param isActive - whether the timer is currently running.
  * @param currentTaskText - optional name of the active task to display.
  * @param themeMode - the app's current dark/light setting, used to pick the
- *   HUD color palette (same source as the canvas PiP's themeMode read).
+ *   color palette (same source as the canvas PiP's themeMode read).
  */
 export const useHorizontalPipTimer = (
   enabled: boolean,
@@ -69,21 +69,21 @@ export const useHorizontalPipTimer = (
 
       // The PiP window starts with a blank document, so styles must be
       // injected directly rather than relying on the app's stylesheet.
-      // Two HUD palettes are exposed as CSS variables on [data-theme], toggled
+      // Two palettes are exposed as CSS variables on [data-theme], toggled
       // from the effect below without needing to recreate the window.
       const style = pipWindow.document.createElement('style');
       style.textContent = `
         :root[data-theme='dark'] {
-          --pip-bg: #0a0e0f;
-          --pip-accent: #2de2c2;
-          --pip-accent-soft: rgba(45, 226, 194, 0.35);
-          --pip-text-secondary: #7fa9a3;
+          --pip-bg: #0a0a0a;
+          --pip-text: #ffffff;
+          --pip-text-secondary: #888888;
+          --pip-divider: rgba(255, 255, 255, 0.1);
         }
         :root[data-theme='light'] {
-          --pip-bg: #f5f7f8;
-          --pip-accent: #0066ff;
-          --pip-accent-soft: rgba(0, 102, 255, 0.3);
-          --pip-text-secondary: #5b73a3;
+          --pip-bg: #fafafa;
+          --pip-text: #111111;
+          --pip-text-secondary: #777777;
+          --pip-divider: rgba(0, 0, 0, 0.1);
         }
         html, body {
           margin: 0;
@@ -92,7 +92,6 @@ export const useHorizontalPipTimer = (
           overflow: hidden;
         }
         #pip-root {
-          position: relative;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -101,49 +100,10 @@ export const useHorizontalPipTimer = (
           width: 100%;
           box-sizing: border-box;
           padding: clamp(4px, 2vh, 16px) clamp(8px, 4vw, 24px);
-          font-family: -apple-system, system-ui, sans-serif;
-          color: var(--pip-accent);
-          border: 1px solid var(--pip-accent-soft);
+          font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
           overflow: hidden;
         }
-        /* Corner-bracket HUD/viewfinder accents */
-        #pip-root::before,
-        #pip-root::after,
-        .pip-time-stack::before,
-        .pip-time-stack::after {
-          content: '';
-          position: absolute;
-          width: clamp(10px, 3vw, 22px);
-          height: clamp(10px, 3vh, 22px);
-          border: 2px solid var(--pip-accent);
-          opacity: 0.7;
-          pointer-events: none;
-        }
-        #pip-root::before { top: 6px; left: 6px; border-right: none; border-bottom: none; }
-        #pip-root::after { top: 6px; right: 6px; border-left: none; border-bottom: none; }
-        .pip-time-stack::before { bottom: 6px; left: 6px; border-right: none; border-top: none; }
-        .pip-time-stack::after { bottom: 6px; right: 6px; border-left: none; border-top: none; }
-        /* Animated scan line, sweeping behind the time digits */
-        .pip-scanline {
-          position: absolute;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, transparent, var(--pip-accent), transparent);
-          opacity: 0.35;
-          z-index: 0;
-          animation: pip-scan 3s linear infinite;
-        }
-        @keyframes pip-scan {
-          0% { top: 0%; }
-          100% { top: 100%; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .pip-scanline { animation: none; top: 50%; }
-        }
         .pip-time-stack {
-          position: relative;
-          z-index: 1;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -153,48 +113,42 @@ export const useHorizontalPipTimer = (
           min-height: 0;
         }
         .pip-time-unit {
-          font-family: 'JetBrains Mono', 'Courier New', monospace;
+          font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: clamp(1.5rem, 22vh, 12rem);
-          font-weight: 700;
-          letter-spacing: 0.02em;
+          font-weight: 600;
+          letter-spacing: 0.06em;
           line-height: 1;
           white-space: nowrap;
-          color: var(--pip-accent);
-          text-shadow:
-            0 0 4px var(--pip-accent),
-            0 0 14px var(--pip-accent-soft);
+          color: var(--pip-text);
         }
-        .pip-time-unit--seconds {
-          animation: pip-pulse 1s ease-in-out infinite;
-        }
-        @keyframes pip-pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.75; transform: scale(1.04); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .pip-time-unit--seconds { animation: none; }
+        .pip-divider {
+          width: 40%;
+          height: 1px;
+          background: var(--pip-divider);
+          margin: clamp(4px, 1vh, 10px) 0;
+          flex-shrink: 0;
         }
         .pip-meta {
-          position: relative;
-          z-index: 1;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: clamp(6px, 2vw, 16px);
           width: 100%;
-          margin-top: clamp(2px, 1vh, 10px);
         }
         .pip-status {
-          font-family: 'JetBrains Mono', 'Courier New', monospace;
-          font-size: clamp(0.65rem, 2.5vh, 1.1rem);
+          font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-size: clamp(0.6rem, 2.2vh, 1rem);
+          font-weight: 400;
+          letter-spacing: 0.04em;
           color: var(--pip-text-secondary);
           white-space: nowrap;
         }
         .pip-task {
-          font-family: 'JetBrains Mono', 'Courier New', monospace;
-          font-size: clamp(0.65rem, 2.5vh, 1.1rem);
+          font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-size: clamp(0.6rem, 2.2vh, 1rem);
+          font-weight: 400;
+          letter-spacing: 0.04em;
           color: var(--pip-text-secondary);
-          opacity: 0.85;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -272,11 +226,11 @@ export const useHorizontalPipTimer = (
     createPortal(
       <>
         <div className="pip-time-stack">
-          <div className="pip-scanline" />
           <span className="pip-time-unit">{timeParts.hours}</span>
           <span className="pip-time-unit">{timeParts.minutes}</span>
-          <span className="pip-time-unit pip-time-unit--seconds">{timeParts.seconds}</span>
+          <span className="pip-time-unit">{timeParts.seconds}</span>
         </div>
+        <div className="pip-divider" />
         <div className="pip-meta">
           <span className="pip-status">{isActive ? 'En curso' : 'En pausa'}</span>
           {currentTaskText && <span className="pip-task">{currentTaskText}</span>}
