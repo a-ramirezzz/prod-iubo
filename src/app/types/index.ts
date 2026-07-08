@@ -24,6 +24,7 @@ export interface Task {
   id: string;      // Unique identifier for the task.
   text: string;    // The content of the task.
   completed: boolean; // The completion status of the task.
+  position: number;   // Sort order of the task within the user's list.
 }
 
 /**
