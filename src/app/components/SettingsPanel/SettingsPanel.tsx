@@ -395,9 +395,32 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
               </div>
             )}
 
-            {/* Focus Section: read-only Pomodoro stats snapshot */}
+            {/* Focus Section: daily goal setting + read-only Pomodoro stats snapshot */}
             {activeSection === 'Focus' && (
-              !pomodoroStats ? (
+              <>
+                <div className={styles.settingItem}>
+                  <label htmlFor="daily-pomodoro-goal">Meta diaria de Pomodoros</label>
+                  <input
+                    id="daily-pomodoro-goal"
+                    type="number"
+                    min={1}
+                    max={20}
+                    step={1}
+                    className={styles.select}
+                    value={settings.daily_pomodoro_goal}
+                    disabled={settingsLoading}
+                    onChange={(e) => {
+                      const parsed = parseInt(e.target.value, 10);
+                      if (Number.isNaN(parsed)) return;
+                      const clamped = Math.min(20, Math.max(1, parsed));
+                      updateSettings({ daily_pomodoro_goal: clamped });
+                    }}
+                  />
+                </div>
+                <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
+                  Establece cuántos pomodoros quieres completar cada día (1–20).
+                </p>
+              {!pomodoroStats ? (
                 <p className={styles.settingsFocusEmpty}>
                   Las estadísticas estarán disponibles una vez inicies una sesión.
                 </p>
@@ -452,7 +475,8 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                     Gestiona tu sesión desde la pestaña Focus
                   </p>
                 </div>
-              )
+              )}
+              </>
             )}
             </div>
           </main>
