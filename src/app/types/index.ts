@@ -49,4 +49,7 @@ export interface AppSettings {
 
   // --- Notification Settings ---
   enableDesktopNotifications?: boolean; // Enable desktop notifications when timer ends
+
+  // --- Pomodoro Settings ---
+  dailyPomodoroGoal: number; // Daily target of completed pomodoros.
 }

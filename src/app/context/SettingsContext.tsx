@@ -36,6 +36,7 @@ export interface FullAppSettings {
   selected_theme_id: string;
   background_sound: string;
   volume: number;
+  daily_pomodoro_goal: number;
 }
 
 /**
@@ -54,6 +55,7 @@ const DEFAULT_SETTINGS: FullAppSettings = {
   selected_theme_id: 'dark-default',
   background_sound: 'none',
   volume: 0.5,
+  daily_pomodoro_goal: 8,
 };
 
 // =================================================================

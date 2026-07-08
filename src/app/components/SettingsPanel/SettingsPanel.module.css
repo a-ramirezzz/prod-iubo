@@ -263,6 +263,105 @@ input:disabled + .slider {
   margin: auto;
 }
 
+/* --- Focus stats snapshot (read-only view in Settings) --- */
+
+.settingsFocusContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.settingsFocusEmpty {
+  color: var(--text-color-secondary, #a0a0a0);
+  text-align: center;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.settingsFocusPhase {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d1d1d1;
+  font-weight: 500;
+}
+
+.settingsFocusPhaseDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.settingsFocusCycleDots {
+  display: flex;
+  gap: 12px;
+}
+
+.settingsFocusCycleDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color-primary, #555);
+  background-color: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.settingsFocusCycleDotFilled {
+  background-color: var(--brand-color-uibo);
+  border-color: var(--brand-color-uibo);
+}
+
+.settingsFocusStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+.settingsFocusStat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--border-color-primary, #333);
+  border-radius: 10px;
+  background-color: var(--button-primary-bg, rgba(255, 255, 255, 0.04));
+}
+
+.settingsFocusStatLabel {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary, #a0a0a0);
+}
+
+.settingsFocusStatValue {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e9e9e9;
+}
+
+.settingsFocusProgressTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background-color: var(--border-color-primary, #333);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.settingsFocusProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--brand-color-uibo);
+  transition: width 0.3s ease;
+}
+
+.settingsFocusNote {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary, #888);
+  text-align: center;
+}
+
 .subSectionTitle {
   font-size: 1rem;
   font-weight: 600;

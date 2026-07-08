@@ -23,9 +23,10 @@ import { formatTime } from '@/app/lib/time';
  * A custom hook to manage the state and logic for a countdown timer.
  * It depends on `useTimerAlert` to trigger a notification when the timer finishes.
  * @param enableDesktopNotifications - Whether to show browser notifications when the timer ends.
+ * @param onComplete - Optional callback fired when the countdown reaches zero naturally.
  * @returns {object} An object containing the timer's state and control functions.
  */
-export const useTimer = (enableDesktopNotifications: boolean = false) => {
+export const useTimer = (enableDesktopNotifications: boolean = false, onComplete?: () => void) => {
   // -----------------------------------------------------------------
   // State Management
   // -----------------------------------------------------------------
@@ -45,6 +46,13 @@ export const useTimer = (enableDesktopNotifications: boolean = false) => {
 
   // Dependency hook for triggering alerts.
   const { triggerAlert } = useTimerAlert(enableDesktopNotifications);
+
+  // Keep the latest onComplete in a ref so the countdown effect doesn't
+  // restart when the caller passes a new callback identity each render.
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   // -----------------------------------------------------------------
   // Core Timer Logic
@@ -67,6 +75,7 @@ export const useTimer = (enableDesktopNotifications: boolean = false) => {
       clearInterval(intervalRef.current!);
       setIsActive(false);
       triggerAlert();
+      onCompleteRef.current?.();
     }
 
     // Cleanup function: This is essential to prevent memory leaks.

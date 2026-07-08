@@ -21,7 +21,24 @@ import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
 interface SettingsPanelProps {
   isOpen: boolean; // Whether the panel is open
   onClose: () => void; // Function to close the panel
+  // Read-only Pomodoro stats snapshot shown in the Focus section
+  pomodoroStats?: {
+    totalPomodorosToday: number;
+    cycleCount: number;
+    currentPhase: string;
+    dailyPomodoroGoal: number;
+    streak: number;
+    weekTotal: number;
+  };
 }
+
+// Phase indicator labels and dot colors for the Focus stats snapshot
+const PHASE_INFO: Record<string, { label: string; color: string }> = {
+  work: { label: 'Trabajando', color: 'var(--brand-color-uibo, #1e88e5)' },
+  short_break: { label: 'Pausa corta', color: '#f5b942' },
+  long_break: { label: 'Pausa larga', color: '#4caf50' },
+  idle: { label: 'Sin sesión activa', color: '#888' },
+};
 
 // Icon definitions for each section
 const ICONS = {
@@ -48,7 +65,7 @@ const MENU_ITEMS: ActiveSectionType[] = ['General', 'Temas', 'Sonidos', 'Focus']
  * SettingsPanel component
  * Displays a modal panel for user settings, including general options, themes, and sounds.
  */
-export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
+export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: SettingsPanelProps) {
   const supabase = createClient();
   // State for the currently active section
   const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
@@ -378,9 +395,64 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               </div>
             )}
 
-            {/* Focus Section (coming soon placeholder) */}
+            {/* Focus Section: read-only Pomodoro stats snapshot */}
             {activeSection === 'Focus' && (
-              <div className={styles.comingSoon}>PRÓXIMAMENTE</div>
+              !pomodoroStats ? (
+                <p className={styles.settingsFocusEmpty}>
+                  Las estadísticas estarán disponibles una vez inicies una sesión.
+                </p>
+              ) : (
+                <div className={styles.settingsFocusContainer}>
+                  {/* Current phase indicator */}
+                  <div className={styles.settingsFocusPhase}>
+                    <span
+                      className={styles.settingsFocusPhaseDot}
+                      style={{ backgroundColor: (PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).color }}
+                    />
+                    <span>{(PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).label}</span>
+                  </div>
+
+                  {/* Cycle progress dots (4 pomodoros per cycle) */}
+                  <div className={styles.settingsFocusCycleDots}>
+                    {[0, 1, 2, 3].map((i) => (
+                      <span
+                        key={i}
+                        className={`${styles.settingsFocusCycleDot} ${i < pomodoroStats.cycleCount ? styles.settingsFocusCycleDotFilled : ''}`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Stats grid */}
+                  <div className={styles.settingsFocusStatsGrid}>
+                    <div className={styles.settingsFocusStat}>
+                      <span className={styles.settingsFocusStatLabel}>Pomodoros hoy</span>
+                      <span className={styles.settingsFocusStatValue}>
+                        {pomodoroStats.totalPomodorosToday} / {pomodoroStats.dailyPomodoroGoal}
+                      </span>
+                      <div className={styles.settingsFocusProgressTrack}>
+                        <div
+                          className={styles.settingsFocusProgressFill}
+                          style={{
+                            width: `${Math.min(100, (pomodoroStats.totalPomodorosToday / Math.max(1, pomodoroStats.dailyPomodoroGoal)) * 100)}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className={styles.settingsFocusStat}>
+                      <span className={styles.settingsFocusStatLabel}>Esta semana</span>
+                      <span className={styles.settingsFocusStatValue}>{pomodoroStats.weekTotal}</span>
+                    </div>
+                    <div className={styles.settingsFocusStat}>
+                      <span className={styles.settingsFocusStatLabel}>Racha</span>
+                      <span className={styles.settingsFocusStatValue}>{pomodoroStats.streak} días</span>
+                    </div>
+                  </div>
+
+                  <p className={styles.settingsFocusNote}>
+                    Gestiona tu sesión desde la pestaña Focus
+                  </p>
+                </div>
+              )
             )}
             </div>
           </main>

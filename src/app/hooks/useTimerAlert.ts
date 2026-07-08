@@ -56,10 +56,13 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
   /**
    * Shows a native browser notification.
    */
-  const showNotification = useCallback(() => {
-    const notificationTitle = '¡Tiempo cumplido!';
+  const showNotification = useCallback((
+    title: string = '¡Tiempo cumplido!',
+    body: string = 'Tu sesión de productividad ha finalizado.'
+  ) => {
+    const notificationTitle = title;
     const notificationOptions: NotificationOptions = {
-      body: 'Tu sesión de productividad ha finalizado.',
+      body,
       icon: '/favicon.ico',
     };
 
@@ -79,7 +82,7 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
    * Plays the alert sound a fixed number of times with a delay.
    * This uses chained setTimeouts for a more robust sequence than setInterval.
    */
-  const playSound = useCallback(() => {
+  const playSound = useCallback((maxPlays: number = 3) => {
     // Ensure the audio element exists, creating it on the first play.
     if (!audioRef.current) {
       audioRef.current = new Audio('/simple-notification-152054.mp3');
@@ -87,7 +90,6 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
 
     stopAlert(); // Stop any previous alert before starting a new one.
 
-    const maxPlays = 3;
     const delay = 2500; // 2.5 seconds between plays
 
     const playRepeatedly = (playCount: number) => {
@@ -123,7 +125,29 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
       }
     }
   }, [playSound, showNotification, enableDesktopNotifications]);
-  
+
+  /**
+   * Alert for completing a full Pomodoro cycle (4 pomodoros).
+   * Plays the sound once and shows a dedicated long-break notification.
+   */
+  const triggerLongBreakAlert = useCallback(async () => {
+    playSound(1);
+
+    if (!enableDesktopNotifications) return;
+
+    const title = '¡Ciclo completo!';
+    const body = 'Completaste 4 pomodoros. Toma una pausa larga de 15–30 minutos. ¡Lo mereces!';
+
+    if (Notification.permission === 'granted') {
+      showNotification(title, body);
+    } else if (Notification.permission !== 'denied') {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        showNotification(title, body);
+      }
+    }
+  }, [playSound, showNotification, enableDesktopNotifications]);
+
   // -----------------------------------------------------------------
   // Lifecycle Management
   // -----------------------------------------------------------------
@@ -144,5 +168,5 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
   // Public API
   // -----------------------------------------------------------------
 
-  return { triggerAlert };
+  return { triggerAlert, triggerLongBreakAlert };
 };

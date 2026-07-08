@@ -1,0 +1,201 @@
+/* app/components/FocusSection/FocusSection.module.css */
+
+/**
+ * Container for the whole Focus section (three stacked blocks).
+ */
+.focusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 10px 0 30px;
+}
+
+/**
+ * Generic card used by each block (cycle, log, stats).
+ */
+.block {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color-primary);
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+
+.blockTitle {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color, inherit);
+}
+
+/* --- Block A: current cycle --- */
+
+.cycleDots {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.cycleDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color-primary);
+  background-color: transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.cycleDotFilled {
+  background-color: var(--accent-color, var(--brand-color-uibo));
+  border-color: var(--accent-color, var(--brand-color-uibo));
+}
+
+.cycleDotActive {
+  border-color: var(--accent-color, var(--brand-color-uibo));
+  animation: focusPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes focusPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+}
+
+.phaseLabel {
+  text-align: center;
+  margin: 0 0 14px;
+  opacity: 0.85;
+}
+
+.ctaButton {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--button-border-color, var(--border-color-primary));
+  background-color: var(--button-primary-bg);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ctaButton:hover:not(:disabled) {
+  background-color: var(--button-primary-bg-hover);
+}
+
+.ctaButton:disabled {
+  background-color: var(--button-disabled-bg);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* --- Block B: today's log --- */
+
+.logList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 190px; /* ~5 rows visible */
+  overflow-y: auto;
+}
+
+.logItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border-color-primary);
+  font-size: 0.92rem;
+}
+
+.logItem:last-child {
+  border-bottom: none;
+}
+
+.logTime {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.logTask {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logDuration {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.emptyState {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.92rem;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* --- Block C: stats --- */
+
+.statsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+}
+
+.statValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--input-bg, var(--border-color-primary));
+  overflow: hidden;
+  margin-top: -4px;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: var(--accent-color, var(--brand-color-uibo));
+  transition: width 0.4s ease;
+}
+
+/* --- Loading skeletons --- */
+
+.skeleton {
+  height: 14px;
+  border-radius: 4px;
+  background-color: var(--border-color-primary);
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+
+.errorText {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.92rem;
+}
