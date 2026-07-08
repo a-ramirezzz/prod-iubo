@@ -216,3 +216,42 @@
     padding-top: 60px;
   }
 }
+
+/* --- Tab navigation (Temporizador / Focus) --- */
+
+.tabBar {
+  display: flex;
+  align-self: center;
+  margin: 0 auto 18px;
+  width: fit-content;
+  padding: 4px;
+  border-radius: 999px;
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color-primary);
+}
+
+.tabButton {
+  flex: 1;
+  padding: 8px 28px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 999px;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.tabButton:hover {
+  opacity: 1;
+}
+
+.tabButtonActive {
+  opacity: 1;
+  background-color: var(--brand-color-uibo);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}

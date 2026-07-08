@@ -12,6 +12,8 @@ import styles from '@/app/Page.module.css';
 
 // Custom Hooks for Core Logic
 import { useTimer } from '@/hooks/useTimer';
+import { useTimerAlert } from '@/hooks/useTimerAlert';
+import { usePomodoroEngine } from '@/hooks/usePomodoroEngine';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
@@ -31,6 +33,7 @@ import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
 import VisualNotification from '@/components/Notification/Notification';
 import TaskModal from '@/components/TaskList/TaskModal';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
+import FocusSection from '@/components/FocusSection/FocusSection';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -45,6 +48,16 @@ export default function HomePage() {
   // Global settings from context
   const { settings, updateSettings } = useSettings();
 
+  const { user, loading: authLoading } = useAuth();
+
+  // Dedicated alert instance for the "cycle complete" (long break) notification.
+  const { triggerLongBreakAlert } = useTimerAlert(!!settings.enable_desktop_notifications);
+
+  // Pomodoro cycle state machine (tracks phases, cycle count and daily stats).
+  const pomodoroEngine = usePomodoroEngine(user?.id ?? null, {
+    onCycleComplete: triggerLongBreakAlert,
+  });
+
   // Core application logic from custom hooks
   const {
     timeParts,
@@ -55,7 +68,17 @@ export default function HomePage() {
     togglePause,
     resetTimer,
     stopTimer,
-  } = useTimer(!!settings.enable_desktop_notifications);
+  } = useTimer(!!settings.enable_desktop_notifications, () => {
+    // Advance the Pomodoro cycle when the countdown finishes naturally.
+    if (pomodoroEngine.currentPhase === 'work') {
+      pomodoroEngine.completeSession(currentTaskText ?? null);
+    } else if (
+      pomodoroEngine.currentPhase === 'short_break' ||
+      pomodoroEngine.currentPhase === 'long_break'
+    ) {
+      pomodoroEngine.completeBreak();
+    }
+  });
 
   const {
     tasks,
@@ -74,6 +97,8 @@ export default function HomePage() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [showInvalidTimeModal, setShowInvalidTimeModal] = useState(false);
   const [showStopConfirm, setShowStopConfirm] = useState(false);
+  // Active tab: classic timer view or the Focus (Pomodoro cycle) view.
+  const [activeTab, setActiveTab] = useState<'timer' | 'focus'>('timer');
 
   // Mapea settings de snake_case a camelCase para AppSettings
   const settingsCamel = {
@@ -87,7 +112,8 @@ export default function HomePage() {
     backgroundSound: settings.background_sound,
     volume: settings.volume,
     enableDesktopNotifications: settings.enable_desktop_notifications,
-    alwaysOnTop: false, 
+    dailyPomodoroGoal: settings.daily_pomodoro_goal,
+    alwaysOnTop: false,
   };
 
   // Integrate PiP timer hook (returns refs for canvas, video, and background video)
@@ -108,7 +134,6 @@ export default function HomePage() {
     { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
   );
 
-  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   // Redirect to /login if not authenticated
@@ -153,6 +178,36 @@ export default function HomePage() {
   // =================================================================
   
   /**
+   * Starts the countdown and, when appropriate, registers the start of
+   * a Pomodoro work session in the cycle engine.
+   */
+  const handleStartTimer = useCallback((minutes: number) => {
+    startTimer(minutes);
+    if (pomodoroEngine.currentPhase === 'idle' || pomodoroEngine.currentPhase === 'work') {
+      pomodoroEngine.startWorkSession(minutes * 60);
+    }
+  }, [startTimer, pomodoroEngine]);
+
+  /**
+   * CTA from the Focus tab: starts a standard 25-minute Pomodoro.
+   */
+  const handleFocusStartWork = useCallback(() => {
+    pomodoroEngine.startWorkSession(25 * 60);
+    startTimer(25);
+    setActiveTab('timer');
+  }, [pomodoroEngine, startTimer]);
+
+  /**
+   * CTA from the Focus tab: starts the earned break (5 or 15 minutes).
+   */
+  const handleFocusStartBreak = useCallback(() => {
+    const minutes = pomodoroEngine.currentPhase === 'long_break' ? 15 : 5;
+    pomodoroEngine.startBreak();
+    startTimer(minutes);
+    setActiveTab('timer');
+  }, [pomodoroEngine, startTimer]);
+
+  /**
    * Starts the timer with a custom duration provided by the user.
    * Validates the input before starting.
    */
@@ -162,13 +217,13 @@ export default function HomePage() {
     const totalMinutesToStart = (hours * 60) + minutes;
 
     if (totalMinutesToStart > 0) {
-      startTimer(totalMinutesToStart);
+      handleStartTimer(totalMinutesToStart);
       setCustomHoursInput('');
       setCustomMinutesInput('');
     } else {
       setShowInvalidTimeModal(true);
     }
-  }, [customHoursInput, customMinutesInput, startTimer]);
+  }, [customHoursInput, customMinutesInput, handleStartTimer]);
   
   /**
    * Stops and resets the timer, showing a confirmation dialog if the
@@ -191,6 +246,9 @@ export default function HomePage() {
   
   // Boolean to determine if the initial instruction text should be shown.
   const showInstructionText = !isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0;
+
+  // Mini mode is timer-only: it hides the tab bar and locks to the timer view.
+  const showTimerView = isMiniMode || activeTab === 'timer';
 
   return (
     <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
@@ -215,7 +273,46 @@ export default function HomePage() {
         onCancel={() => setShowStopConfirm(false)}
       />
       {showSetupControls && <ProjectBranding />}
-      
+
+      {/* Tab navigation (hidden in mini mode, which is timer-only) */}
+      {!isMiniMode && (
+        <div className={styles.tabBar} role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'timer'}
+            className={`${styles.tabButton} ${activeTab === 'timer' ? styles.tabButtonActive : ''}`}
+            onClick={() => setActiveTab('timer')}
+          >
+            Temporizador
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'focus'}
+            className={`${styles.tabButton} ${activeTab === 'focus' ? styles.tabButtonActive : ''}`}
+            onClick={() => setActiveTab('focus')}
+          >
+            Focus
+          </button>
+        </div>
+      )}
+
+      {/* Focus tab: Pomodoro cycle status, daily log and statistics */}
+      {!isMiniMode && activeTab === 'focus' && (
+        <FocusSection
+          totalPomodorosToday={pomodoroEngine.totalPomodorosToday}
+          cycleCount={pomodoroEngine.cycleCount}
+          currentPhase={pomodoroEngine.currentPhase}
+          dailyPomodoroGoal={settings.daily_pomodoro_goal}
+          userId={user?.id ?? null}
+          onStartWork={handleFocusStartWork}
+          onStartBreak={handleFocusStartBreak}
+        />
+      )}
+
+      {showTimerView && (
+      <>
       {/* Main Timer Display */}
       <div className='timerDisplay'>
         <TimerDisplay timeParts={timeParts} isActive={isActive} remainingSeconds={totalSeconds} />
@@ -225,7 +322,7 @@ export default function HomePage() {
       {showSetupControls && (
         <>
           <div className='presetButtons'>
-            <PresetButtons onSetTime={startTimer} disabled={isActive} />
+            <PresetButtons onSetTime={handleStartTimer} disabled={isActive} />
           </div>
           <div className='customInputContainer'>
             <CustomTimeInput
@@ -257,9 +354,11 @@ export default function HomePage() {
           {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
         </button>
       </div>
+      </>
+      )}
 
       {/* Task Management Section */}
-      {showSetupControls && (
+      {showSetupControls && showTimerView && (
         <div className={styles.taskSection}>
           <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
           {/* Button to open the objectives modal */}
@@ -318,7 +417,7 @@ export default function HomePage() {
       )}
 
       {/* Initial User Instruction */}
-      {showInstructionText && (
+      {showInstructionText && showTimerView && (
         <p className={styles.instructionText}>
           Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar.
         </p>
@@ -329,7 +428,18 @@ export default function HomePage() {
         <SettingsButton onClick={() => setIsSettingsPanelOpen(true)} />
       </div>
       
-      <SettingsPanel isOpen={isSettingsPanelOpen} onClose={() => setIsSettingsPanelOpen(false)} />
+      <SettingsPanel
+        isOpen={isSettingsPanelOpen}
+        onClose={() => setIsSettingsPanelOpen(false)}
+        pomodoroStats={{
+          totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
+          cycleCount: pomodoroEngine.cycleCount,
+          currentPhase: pomodoroEngine.currentPhase,
+          dailyPomodoroGoal: settings.daily_pomodoro_goal,
+          streak: 0,
+          weekTotal: 0,
+        }}
+      />
       {/* Visual notification centered on screen */}
       <VisualNotification
         message={"¡Tiempo cumplido!\nTu sesión de productividad ha finalizado."}
