@@ -82,10 +82,12 @@ export default function HomePage() {
 
   const {
     tasks,
-    setTasks, // Import setTasks to allow global task updates from the modal
+    loading: tasksLoading,
+    handleAddTask,
     handleToggleTask,
     handleDeleteTask,
-  } = useTaskManager();
+    handleReorderTasks,
+  } = useTaskManager(user?.id ?? null);
 
   // Local UI state for this page
   const [customHoursInput, setCustomHoursInput] = useState('');
@@ -390,29 +392,22 @@ export default function HomePage() {
             isOpen={isTaskModalOpen}
             onClose={() => setIsTaskModalOpen(false)}
             tasks={tasks}
-            onAddTask={(text: string) => {
-              // Add a new task to the global task list
-              if (text.trim() === '') return;
-              setTasks(prev => [
-                ...prev,
-                {
-                  id: crypto.randomUUID(),
-                  text: text.trim(),
-                  completed: false,
-                },
-              ]);
-            }}
+            onAddTask={handleAddTask}
             onToggleTask={handleToggleTask}
             onDeleteTask={handleDeleteTask}
-            onReorderTasks={setTasks}
+            onReorderTasks={handleReorderTasks}
           />
           {/* TaskList displays the current session tasks */}
-          <TaskList
-            tasks={tasks}
-            onToggleTask={handleToggleTask}
-            onDeleteTask={handleDeleteTask}
-            inputDisabled={isActive}
-          />
+          {tasksLoading && tasks.length === 0 ? (
+            <p style={{ textAlign: 'center', opacity: 0.6 }}>Cargando tareas...</p>
+          ) : (
+            <TaskList
+              tasks={tasks}
+              onToggleTask={handleToggleTask}
+              onDeleteTask={handleDeleteTask}
+              inputDisabled={isActive}
+            />
+          )}
         </div>
       )}
 
