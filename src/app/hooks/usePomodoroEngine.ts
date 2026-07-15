@@ -22,6 +22,48 @@ const POMODOROS_PER_CYCLE = 4;
 
 export type PomodoroPhase = 'work' | 'short_break' | 'long_break' | 'idle';
 
+// =================================================================
+// SECTION: localStorage persistence helpers
+// =================================================================
+
+const ENGINE_STORAGE_KEY = 'prod-uibo-pomodoro-engine';
+
+interface PersistedEngine {
+  currentPhase: PomodoroPhase;
+  cycleCount: number;
+  sessionStartedAt: string | null; // ISO string
+  initialTimeSet: number; // the engine's initialTimeSetRef value
+}
+
+/** Reads and parses the persisted engine state, or null on any failure. */
+const readPersistedEngine = (): PersistedEngine | null => {
+  try {
+    const raw = localStorage.getItem(ENGINE_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as PersistedEngine;
+  } catch {
+    return null;
+  }
+};
+
+/** Best-effort write of the persisted engine state. Ignores errors. */
+const writePersistedEngine = (data: PersistedEngine): void => {
+  try {
+    localStorage.setItem(ENGINE_STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    // Silent: persistence is a best-effort enhancement.
+  }
+};
+
+/** Best-effort removal of the persisted engine state. Ignores errors. */
+const clearPersistedEngine = (): void => {
+  try {
+    localStorage.removeItem(ENGINE_STORAGE_KEY);
+  } catch {
+    // Silent.
+  }
+};
+
 interface PomodoroEngineOptions {
   /** Fired when the 4th pomodoro of a cycle completes (long break earned). */
   onCycleComplete?: () => void;
@@ -53,6 +95,29 @@ export const usePomodoroEngine = (
   useEffect(() => {
     onCycleCompleteRef.current = options.onCycleComplete;
   }, [options.onCycleComplete]);
+
+  /**
+   * On mount (runs once): restore the cycle state machine (phase, cycle
+   * count, session start, and the initially set duration) from
+   * localStorage so a page refresh at a break pause point is preserved.
+   * If nothing is stored, normal defaults apply (idle, 0, null).
+   */
+  useEffect(() => {
+    const persisted = readPersistedEngine();
+    if (!persisted) return;
+
+    const restoredStart = persisted.sessionStartedAt
+      ? new Date(persisted.sessionStartedAt)
+      : null;
+
+    currentPhaseRef.current = persisted.currentPhase;
+    setCurrentPhase(persisted.currentPhase);
+    cycleCountRef.current = persisted.cycleCount;
+    setCycleCount(persisted.cycleCount);
+    sessionStartedAtRef.current = restoredStart;
+    setSessionStartedAt(restoredStart);
+    initialTimeSetRef.current = persisted.initialTimeSet;
+  }, []);
 
   /**
    * On mount (and when the user changes): restore today's completed
@@ -101,6 +166,12 @@ export const usePomodoroEngine = (
     setSessionStartedAt(now);
     currentPhaseRef.current = 'work';
     setCurrentPhase('work');
+    writePersistedEngine({
+      currentPhase: 'work',
+      cycleCount: cycleCountRef.current,
+      sessionStartedAt: now.toISOString(),
+      initialTimeSet: initialTimeSetRef.current,
+    });
   }, []);
 
   /**
@@ -149,6 +220,15 @@ export const usePomodoroEngine = (
       currentPhaseRef.current = 'short_break';
       setCurrentPhase('short_break');
     }
+
+    writePersistedEngine({
+      currentPhase: currentPhaseRef.current,
+      cycleCount: cycleCountRef.current,
+      sessionStartedAt: sessionStartedAtRef.current
+        ? sessionStartedAtRef.current.toISOString()
+        : null,
+      initialTimeSet: initialTimeSetRef.current,
+    });
   }, [userId, supabase]);
 
   /**
@@ -156,11 +236,18 @@ export const usePomodoroEngine = (
    * only work sessions are saved.
    */
   const startBreak = useCallback(() => {
-    sessionStartedAtRef.current = new Date();
+    const now = new Date();
+    sessionStartedAtRef.current = now;
     const breakType: PomodoroPhase =
       currentPhaseRef.current === 'long_break' ? 'long_break' : 'short_break';
     currentPhaseRef.current = breakType;
     setCurrentPhase(breakType);
+    writePersistedEngine({
+      currentPhase: breakType,
+      cycleCount: cycleCountRef.current,
+      sessionStartedAt: now.toISOString(),
+      initialTimeSet: initialTimeSetRef.current,
+    });
   }, []);
 
   /**
@@ -170,6 +257,9 @@ export const usePomodoroEngine = (
   const completeBreak = useCallback(() => {
     currentPhaseRef.current = 'idle';
     setCurrentPhase('idle');
+    // The cycle pause point is over — a fresh work session will create a
+    // new entry, so drop the persisted state now.
+    clearPersistedEngine();
   }, []);
 
   /**
@@ -182,6 +272,7 @@ export const usePomodoroEngine = (
     setCurrentPhase('idle');
     setSessionStartedAt(null);
     sessionStartedAtRef.current = null;
+    clearPersistedEngine();
   }, []);
 
   return {
