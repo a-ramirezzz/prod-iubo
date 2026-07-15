@@ -67,15 +67,15 @@ export const usePomodoroEngine = (
     let cancelled = false;
     const fetchToday = async () => {
       try {
-        const todayMidnightUTC = new Date();
-        todayMidnightUTC.setUTCHours(0, 0, 0, 0);
+        const todayMidnight = new Date();
+        todayMidnight.setHours(0, 0, 0, 0);
         const { count, error } = await supabase
           .from('pomodoro_sessions')
           .select('id', { count: 'exact', head: true })
           .eq('user_id', userId)
           .eq('session_type', 'work')
           .eq('completed', true)
-          .gte('completed_at', todayMidnightUTC.toISOString());
+          .gte('completed_at', todayMidnight.toISOString());
         if (!cancelled && !error && typeof count === 'number') {
           setTotalPomodorosToday(count);
         }
