@@ -89,10 +89,10 @@ export default function FocusSection({
         const rows = data as SessionRow[];
         const now = new Date();
 
-        const todayMidnightUTC = new Date();
-        todayMidnightUTC.setUTCHours(0, 0, 0, 0);
+        const todayMidnight = new Date();
+        todayMidnight.setHours(0, 0, 0, 0);
         setTodaySessions(
-          rows.filter((r) => new Date(r.completed_at) >= todayMidnightUTC)
+          rows.filter((r) => new Date(r.completed_at) >= todayMidnight)
         );
 
         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -101,13 +101,15 @@ export default function FocusSection({
         );
 
         // Streak: consecutive days (backwards from today) with >= 1 pomodoro.
+        const localDateStr = (d: Date) =>
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         const daysWithSessions = new Set(
-          rows.map((r) => new Date(r.completed_at).toISOString().slice(0, 10))
+          rows.map((r) => localDateStr(new Date(r.completed_at)))
         );
         let streakCount = 0;
         for (let i = 0; i < 30; i++) {
-          const day = new Date(todayMidnightUTC.getTime() - i * 24 * 60 * 60 * 1000);
-          if (daysWithSessions.has(day.toISOString().slice(0, 10))) {
+          const day = new Date(todayMidnight.getTime() - i * 24 * 60 * 60 * 1000);
+          if (daysWithSessions.has(localDateStr(day))) {
             streakCount++;
           } else if (i === 0) {
             continue; // Today without sessions yet doesn't break the streak.
