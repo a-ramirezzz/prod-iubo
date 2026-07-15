@@ -64,6 +64,9 @@ export default function HomePage() {
     isActive,
     totalSeconds,
     initialTimeSet,
+    // Available for future use (e.g. a "Timer restored" toast).
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    timerRestored,
     startTimer,
     togglePause,
     resetTimer,
