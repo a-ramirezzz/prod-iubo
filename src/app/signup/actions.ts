@@ -1,5 +1,5 @@
 "use server";
-import { createClient } from '@/app/lib/supabase/client';
+import { createClient } from '@/app/lib/supabase/server';
 
 /**
  * Server Action: Registers a new user using Supabase Auth.
@@ -18,7 +18,7 @@ export async function signUp(formData: {
   phone: string;
   password: string;
 }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   // Call Supabase Auth to create a new user
   const { data, error } = await supabase.auth.signUp({
     email: formData.email,
