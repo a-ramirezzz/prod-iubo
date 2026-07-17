@@ -185,6 +185,25 @@ export default function HomePage() {
     }
   }, [initialTimeSet, totalSeconds, isActive]);
 
+  // Effect to show the remaining timer time in the browser tab title
+  useEffect(() => {
+    const { hours, minutes, seconds } = timeParts;
+    if (isActive) {
+      document.title =
+        hours === '00'
+          ? `${minutes}:${seconds} — PROD-UIBO`
+          : `${hours}:${minutes}:${seconds} — PROD-UIBO`;
+    } else if (totalSeconds > 0) {
+      document.title = `${minutes}:${seconds} ⏸ PROD-UIBO`;
+    } else {
+      document.title = 'PROD-UIBO';
+    }
+
+    return () => {
+      document.title = 'PROD-UIBO';
+    };
+  }, [timeParts, isActive, totalSeconds]);
+
   // =================================================================
   // SECTION: Event Handlers
   // =================================================================
