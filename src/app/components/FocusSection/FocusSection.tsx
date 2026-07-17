@@ -11,7 +11,7 @@
 'use client';
 
 import type { PomodoroPhase } from '@/app/hooks/usePomodoroEngine';
-import type { SessionRow } from '@/app/hooks/usePomodoroStats';
+import type { SessionRow, TaskBreakdown } from '@/app/hooks/usePomodoroStats';
 import styles from './FocusSection.module.css';
 
 interface FocusSectionProps {
@@ -23,6 +23,7 @@ interface FocusSectionProps {
   weekTotal: number;
   weeklyData: { label: string; count: number; isToday: boolean }[];
   streak: number;
+  taskBreakdown: TaskBreakdown[];
   statsLoading: boolean;
   statsError: boolean;
   onStartWork: () => void;
@@ -45,6 +46,7 @@ export default function FocusSection({
   weekTotal,
   weeklyData,
   streak,
+  taskBreakdown,
   statsLoading,
   statsError,
   onStartWork,
@@ -198,6 +200,42 @@ export default function FocusSection({
               );
             })}
           </div>
+        )}
+      </section>
+
+      {/* BLOCK: task breakdown (last 7 days) */}
+      <section className={styles.block}>
+        <h2 className={styles.blockTitle}>Enfoque por tarea</h2>
+        <p className={styles.taskBreakdownSubtitle}>Últimos 7 días</p>
+        {loading ? (
+          <>
+            <div className={styles.skeleton} />
+            <div className={styles.skeleton} />
+            <div className={styles.skeleton} />
+          </>
+        ) : loadError ? (
+          <p className={styles.errorText}>No se pudieron cargar las estadísticas</p>
+        ) : taskBreakdown.length === 0 ? (
+          <p className={styles.emptyState}>
+            Completa pomodoros con tareas asignadas para ver tu enfoque semanal.
+          </p>
+        ) : (
+          <ul className={styles.taskBreakdownList}>
+            {taskBreakdown.map((t, i) => (
+              <li
+                key={`${t.taskName}-${i}`}
+                className={[
+                  styles.taskBreakdownItem,
+                  i === 0 ? styles.taskBreakdownItemTop : '',
+                ].join(' ')}
+              >
+                <span className={styles.taskBreakdownRank}>{i + 1}</span>
+                <span className={styles.taskBreakdownName}>{t.taskName}</span>
+                <span className={styles.taskBreakdownCount}>{t.count} 🍅</span>
+                <span className={styles.taskBreakdownTime}>{t.totalMinutes} min</span>
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 

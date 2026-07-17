@@ -142,6 +142,66 @@
   padding: 10px 0;
 }
 
+/* --- Block: task breakdown --- */
+
+.taskBreakdownSubtitle {
+  margin: -6px 0 10px;
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.taskBreakdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.taskBreakdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border-color-primary);
+  font-size: 0.92rem;
+}
+
+.taskBreakdownItem:last-child {
+  border-bottom: none;
+}
+
+.taskBreakdownItemTop {
+  border-left: 3px solid var(--accent-color, var(--brand-color-uibo));
+  padding-left: 8px;
+}
+
+.taskBreakdownRank {
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.5;
+}
+
+.taskBreakdownName {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskBreakdownCount {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.taskBreakdownTime {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
 /* --- Block C: stats --- */
 
 .statsGrid {
