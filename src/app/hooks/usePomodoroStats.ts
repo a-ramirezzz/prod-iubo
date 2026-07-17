@@ -20,11 +20,18 @@ export interface SessionRow {
   duration_minutes: number;
 }
 
+export interface TaskBreakdown {
+  taskName: string;
+  count: number;
+  totalMinutes: number;
+}
+
 export interface PomodoroStats {
   todaySessions: SessionRow[];
   weekTotal: number;
   weeklyData: { label: string; count: number; isToday: boolean }[];
   streak: number;
+  taskBreakdown: TaskBreakdown[];
   loading: boolean;
   loadError: boolean;
 }
@@ -39,6 +46,7 @@ export function usePomodoroStats(
   const [weeklyData, setWeeklyData] = useState<
     { label: string; count: number; isToday: boolean }[]
   >([]);
+  const [taskBreakdown, setTaskBreakdown] = useState<TaskBreakdown[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
@@ -85,8 +93,29 @@ export function usePomodoroStats(
         );
 
         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        setWeekTotal(
-          rows.filter((r) => new Date(r.completed_at) >= weekAgo).length
+        const weekRows = rows.filter(
+          (r) => new Date(r.completed_at) >= weekAgo
+        );
+        setWeekTotal(weekRows.length);
+
+        // Task breakdown (last 7 days): top 5 tasks by pomodoro count.
+        const byTask = new Map<string, TaskBreakdown>();
+        weekRows.forEach((r) => {
+          const taskName = r.task_text ?? 'Sin tarea';
+          const entry = byTask.get(taskName);
+          if (entry) {
+            entry.count += 1;
+            entry.totalMinutes += r.duration_minutes;
+          } else {
+            byTask.set(taskName, {
+              taskName,
+              count: 1,
+              totalMinutes: r.duration_minutes,
+            });
+          }
+        });
+        setTaskBreakdown(
+          [...byTask.values()].sort((a, b) => b.count - a.count).slice(0, 5)
         );
 
         // Streak: consecutive days (backwards from today) with >= 1 pomodoro.
@@ -139,5 +168,13 @@ export function usePomodoroStats(
     };
   }, [userId, totalPomodorosToday]);
 
-  return { todaySessions, weekTotal, weeklyData, streak, loading, loadError };
+  return {
+    todaySessions,
+    weekTotal,
+    weeklyData,
+    streak,
+    taskBreakdown,
+    loading,
+    loadError,
+  };
 }

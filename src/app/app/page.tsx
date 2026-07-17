@@ -340,6 +340,7 @@ export default function HomePage() {
           weekTotal={pomodoroStats.weekTotal}
           weeklyData={pomodoroStats.weeklyData}
           streak={pomodoroStats.streak}
+          taskBreakdown={pomodoroStats.taskBreakdown}
           statsLoading={pomodoroStats.loading}
           statsError={pomodoroStats.loadError}
           onStartWork={handleFocusStartWork}
