@@ -50,6 +50,9 @@ export default function FocusSection({
   const [todaySessions, setTodaySessions] = useState<SessionRow[]>([]);
   const [weekTotal, setWeekTotal] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [weeklyData, setWeeklyData] = useState<
+    { label: string; count: number; isToday: boolean }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
@@ -118,6 +121,26 @@ export default function FocusSection({
           }
         }
         setStreak(streakCount);
+
+        // Last 7 days: daily completed pomodoro counts (oldest → today).
+        const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const countByDay = new Map<string, number>();
+        rows.forEach((r) => {
+          const key = localDateStr(new Date(r.completed_at));
+          countByDay.set(key, (countByDay.get(key) ?? 0) + 1);
+        });
+        const todayKey = localDateStr(todayMidnight);
+        const weekly = [];
+        for (let i = 6; i >= 0; i--) {
+          const day = new Date(todayMidnight.getTime() - i * 24 * 60 * 60 * 1000);
+          const key = localDateStr(day);
+          weekly.push({
+            label: dayNames[day.getDay()],
+            count: countByDay.get(key) ?? 0,
+            isToday: key === todayKey,
+          });
+        }
+        setWeeklyData(weekly);
       } catch {
         if (!cancelled) setLoadError(true);
       } finally {
@@ -174,6 +197,8 @@ export default function FocusSection({
     return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   };
 
+  const weeklyMax = Math.max(0, ...weeklyData.map((d) => d.count));
+
   return (
     <div className={styles.focusSection}>
       {/* BLOCK A: current cycle status */}
@@ -224,6 +249,55 @@ export default function FocusSection({
               </li>
             ))}
           </ul>
+        )}
+      </section>
+
+      {/* BLOCK: last 7 days bar chart */}
+      <section className={styles.block}>
+        <h2 className={styles.blockTitle}>Últimos 7 días</h2>
+        {loading ? (
+          <>
+            <div className={styles.skeleton} />
+            <div className={styles.skeleton} />
+            <div className={styles.skeleton} />
+          </>
+        ) : loadError ? (
+          <p className={styles.errorText}>No se pudieron cargar las estadísticas</p>
+        ) : (
+          <div className={styles.weeklyChart}>
+            {weeklyData.map((d, i) => {
+              const heightPct = weeklyMax > 0 ? (d.count / weeklyMax) * 100 : 0;
+              return (
+                <div key={i} className={styles.weeklyColumn}>
+                  <span
+                    className={[
+                      styles.weeklyCount,
+                      d.count === 0 ? styles.weeklyCountZero : '',
+                    ].join(' ')}
+                  >
+                    {d.count}
+                  </span>
+                  <div className={styles.weeklyBarTrack}>
+                    <div
+                      className={[
+                        styles.weeklyBar,
+                        d.isToday ? styles.weeklyBarToday : '',
+                      ].join(' ')}
+                      style={{ height: `max(4px, ${heightPct}%)` }}
+                    />
+                  </div>
+                  <span
+                    className={[
+                      styles.weeklyLabel,
+                      d.isToday ? styles.weeklyLabelToday : '',
+                    ].join(' ')}
+                  >
+                    {d.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </section>
 

@@ -179,6 +179,70 @@
   transition: width 0.4s ease;
 }
 
+/* --- Block: last 7 days bar chart --- */
+
+.weeklyChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  height: 120px;
+}
+
+.weeklyColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 0;
+  height: 100%;
+  min-width: 0;
+}
+
+.weeklyCount {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.weeklyCountZero {
+  opacity: 0.4;
+}
+
+.weeklyBarTrack {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.weeklyBar {
+  width: 100%;
+  max-width: 36px;
+  min-width: 28px;
+  background-color: var(--border-color-primary);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.4s ease;
+}
+
+.weeklyBarToday {
+  background-color: var(--accent-color, var(--brand-color-uibo));
+}
+
+.weeklyLabel {
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 6px;
+  opacity: 0.6;
+}
+
+.weeklyLabelToday {
+  opacity: 1;
+  font-weight: 600;
+}
+
 /* --- Loading skeletons --- */
 
 .skeleton {
