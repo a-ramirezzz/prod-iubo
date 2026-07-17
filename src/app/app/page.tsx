@@ -14,6 +14,7 @@ import styles from '@/app/Page.module.css';
 import { useTimer } from '@/hooks/useTimer';
 import { useTimerAlert } from '@/hooks/useTimerAlert';
 import { usePomodoroEngine } from '@/hooks/usePomodoroEngine';
+import { usePomodoroStats } from '@/hooks/usePomodoroStats';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
@@ -57,6 +58,12 @@ export default function HomePage() {
   const pomodoroEngine = usePomodoroEngine(user?.id ?? null, {
     onCycleComplete: triggerLongBreakAlert,
   });
+
+  // Productivity statistics shared between the Focus tab and Settings panel.
+  const pomodoroStats = usePomodoroStats(
+    user?.id ?? null,
+    pomodoroEngine.totalPomodorosToday
+  );
 
   // Core application logic from custom hooks
   const {
@@ -310,7 +317,12 @@ export default function HomePage() {
           cycleCount={pomodoroEngine.cycleCount}
           currentPhase={pomodoroEngine.currentPhase}
           dailyPomodoroGoal={settings.daily_pomodoro_goal}
-          userId={user?.id ?? null}
+          todaySessions={pomodoroStats.todaySessions}
+          weekTotal={pomodoroStats.weekTotal}
+          weeklyData={pomodoroStats.weeklyData}
+          streak={pomodoroStats.streak}
+          statsLoading={pomodoroStats.loading}
+          statsError={pomodoroStats.loadError}
           onStartWork={handleFocusStartWork}
           onStartBreak={handleFocusStartBreak}
         />
@@ -434,8 +446,8 @@ export default function HomePage() {
           cycleCount: pomodoroEngine.cycleCount,
           currentPhase: pomodoroEngine.currentPhase,
           dailyPomodoroGoal: settings.daily_pomodoro_goal,
-          streak: 0,
-          weekTotal: 0,
+          streak: pomodoroStats.streak,
+          weekTotal: pomodoroStats.weekTotal,
         }}
       />
       {/* Visual notification centered on screen */}
