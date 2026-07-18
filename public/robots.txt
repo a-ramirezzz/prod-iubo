@@ -3,5 +3,7 @@ User-agent: *
 Allow: /
 Disallow: /app
 Disallow: /api
+Disallow: /forgot-password
+Disallow: /reset-password
 
 Sitemap: https://prod-uibo.vercel.app/sitemap.xml

@@ -126,6 +126,23 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
           required
           autoComplete="current-password"
         />
+        {/* Forgot password link (always visible) */}
+        <Link
+          href="/forgot-password"
+          style={{
+            fontSize: "0.85rem",
+            color: "rgba(255,255,255,0.5)",
+            textAlign: "right",
+            alignSelf: "flex-end",
+            textDecoration: "none",
+            marginTop: "-0.25rem",
+            marginBottom: "0.5rem",
+          }}
+          onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
+          onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
+        >
+          ¿Olvidaste tu contraseña?
+        </Link>
         {/* Submit button */}
         <button className={styles.button} type="submit" disabled={loading}>
           {loading ? "Ingresando..." : "Ingresar"}
