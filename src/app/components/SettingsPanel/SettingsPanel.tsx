@@ -399,16 +399,19 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
 
             {/* Focus Section: daily goal setting + read-only Pomodoro stats snapshot */}
             {activeSection === 'Focus' && (
-              <>
-                <div className={styles.settingItem}>
-                  <label htmlFor="daily-pomodoro-goal">Meta diaria de Pomodoros</label>
+              <div className={styles.settingsFocusContainer}>
+                {/* Daily goal card */}
+                <div className={styles.settingsFocusGoalCard}>
+                  <label htmlFor="daily-pomodoro-goal" className={styles.settingsFocusGoalLabel}>
+                    Meta diaria de Pomodoros
+                  </label>
                   <input
                     id="daily-pomodoro-goal"
                     type="number"
                     min={1}
                     max={20}
                     step={1}
-                    className={styles.select}
+                    className={styles.settingsFocusGoalInput}
                     value={settings.daily_pomodoro_goal}
                     disabled={settingsLoading}
                     onChange={(e) => {
@@ -418,67 +421,71 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                       updateSettings({ daily_pomodoro_goal: clamped });
                     }}
                   />
-                </div>
-                <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
-                  Establece cuántos pomodoros quieres completar cada día (1–20).
-                </p>
-              {!pomodoroStats ? (
-                <p className={styles.settingsFocusEmpty}>
-                  Las estadísticas estarán disponibles una vez inicies una sesión.
-                </p>
-              ) : (
-                <div className={styles.settingsFocusContainer}>
-                  {/* Current phase indicator */}
-                  <div className={styles.settingsFocusPhase}>
-                    <span
-                      className={styles.settingsFocusPhaseDot}
-                      style={{ backgroundColor: (PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).color }}
-                    />
-                    <span>{(PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).label}</span>
-                  </div>
-
-                  {/* Cycle progress dots (4 pomodoros per cycle) */}
-                  <div className={styles.settingsFocusCycleDots}>
-                    {[0, 1, 2, 3].map((i) => (
-                      <span
-                        key={i}
-                        className={`${styles.settingsFocusCycleDot} ${i < pomodoroStats.cycleCount ? styles.settingsFocusCycleDotFilled : ''}`}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Stats grid */}
-                  <div className={styles.settingsFocusStatsGrid}>
-                    <div className={styles.settingsFocusStat}>
-                      <span className={styles.settingsFocusStatLabel}>Pomodoros hoy</span>
-                      <span className={styles.settingsFocusStatValue}>
-                        {pomodoroStats.totalPomodorosToday} / {pomodoroStats.dailyPomodoroGoal}
-                      </span>
-                      <div className={styles.settingsFocusProgressTrack}>
-                        <div
-                          className={styles.settingsFocusProgressFill}
-                          style={{
-                            width: `${Math.min(100, (pomodoroStats.totalPomodorosToday / Math.max(1, pomodoroStats.dailyPomodoroGoal)) * 100)}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className={styles.settingsFocusStat}>
-                      <span className={styles.settingsFocusStatLabel}>Esta semana</span>
-                      <span className={styles.settingsFocusStatValue}>{pomodoroStats.weekTotal}</span>
-                    </div>
-                    <div className={styles.settingsFocusStat}>
-                      <span className={styles.settingsFocusStatLabel}>Racha</span>
-                      <span className={styles.settingsFocusStatValue}>{pomodoroStats.streak} días</span>
-                    </div>
-                  </div>
-
-                  <p className={styles.settingsFocusNote}>
-                    Gestiona tu sesión desde la pestaña Focus
+                  <p className={styles.settingsFocusHelperText}>
+                    Establece cuántos pomodoros quieres completar cada día (1–20).
                   </p>
                 </div>
-              )}
-              </>
+
+                {!pomodoroStats ? (
+                  <p className={styles.settingsFocusEmpty}>
+                    Las estadísticas estarán disponibles una vez inicies una sesión.
+                  </p>
+                ) : (
+                  <>
+                    {/* Current session card */}
+                    <div className={styles.settingsFocusSessionCard}>
+                      <span className={styles.settingsFocusCardTitle}>Sesión actual</span>
+                      <div className={styles.settingsFocusPhase}>
+                        <span
+                          className={styles.settingsFocusPhaseDot}
+                          style={{ backgroundColor: (PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).color }}
+                        />
+                        <span>{(PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).label}</span>
+                      </div>
+
+                      {/* Cycle progress dots (4 pomodoros per cycle) */}
+                      <div className={styles.settingsFocusCycleDots}>
+                        {[0, 1, 2, 3].map((i) => (
+                          <span
+                            key={i}
+                            className={`${styles.settingsFocusCycleDot} ${i < pomodoroStats.cycleCount ? styles.settingsFocusCycleDotFilled : ''}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Stats grid */}
+                    <div className={styles.settingsFocusStatsGrid}>
+                      <div className={`${styles.settingsFocusStat} ${styles.settingsFocusStatPrimary}`}>
+                        <span className={styles.settingsFocusStatLabel}>🍅 Pomodoros hoy</span>
+                        <span className={`${styles.settingsFocusStatValue} ${styles.settingsFocusStatValuePrimary}`}>
+                          {pomodoroStats.totalPomodorosToday} / {pomodoroStats.dailyPomodoroGoal}
+                        </span>
+                        <div className={styles.settingsFocusProgressTrack}>
+                          <div
+                            className={styles.settingsFocusProgressFill}
+                            style={{
+                              width: `${Math.min(100, (pomodoroStats.totalPomodorosToday / Math.max(1, pomodoroStats.dailyPomodoroGoal)) * 100)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className={styles.settingsFocusStat}>
+                        <span className={styles.settingsFocusStatLabel}>📅 Esta semana</span>
+                        <span className={styles.settingsFocusStatValue}>{pomodoroStats.weekTotal}</span>
+                      </div>
+                      <div className={styles.settingsFocusStat}>
+                        <span className={styles.settingsFocusStatLabel}>🔥 Racha</span>
+                        <span className={styles.settingsFocusStatValue}>{pomodoroStats.streak} días</span>
+                      </div>
+                    </div>
+
+                    <p className={styles.settingsFocusCta}>
+                      Gestiona tu sesión desde la pestaña Focus →
+                    </p>
+                  </>
+                )}
+              </div>
             )}
             </div>
           </main>
