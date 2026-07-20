@@ -140,6 +140,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     };
     fetchSettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
 
   /**
@@ -165,6 +166,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     } else {
       console.log('[SettingsContext] Settings updated successfully in Supabase');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, settings]);
 
   /**
@@ -188,6 +190,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     } else {
       console.log('[SettingsContext] Settings reset successfully in Supabase');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   /**
