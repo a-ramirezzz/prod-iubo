@@ -12,6 +12,7 @@ import styles from '@/app/Page.module.css';
 
 // Custom Hooks for Core Logic
 import { useTimerController } from '@/hooks/useTimerController';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { usePomodoroStats } from '@/hooks/usePomodoroStats';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSettings } from '@/context/SettingsContext';
@@ -132,6 +133,24 @@ export default function HomePage() {
     settingsCamel.themeMode,
     { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
   );
+
+  // Global keyboard shortcuts for power-user productivity.
+  useKeyboardShortcuts({
+    isActive,
+    totalSeconds,
+    initialTimeSet,
+    togglePause,
+    resetTimer,
+    handleStopWithConfirmation,
+    isSettingsPanelOpen,
+    setIsSettingsPanelOpen,
+    isTaskModalOpen,
+    setIsTaskModalOpen,
+    activeTab,
+    setActiveTab,
+    isMiniMode,
+    setIsMiniMode,
+  });
 
   const router = useRouter();
 
