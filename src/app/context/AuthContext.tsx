@@ -1,18 +1,29 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from '@/app/lib/supabase/client';
 import type { User } from "@supabase/supabase-js";
 
 /**
  * AuthContext provides the authenticated user object (or null if not logged in)
  * and listens to authentication state changes globally.
+ *
+ * It also distinguishes a session that died on its own (token expired and could
+ * not be refreshed) from a voluntary logout, exposing `sessionExpired` so the UI
+ * can surface an appropriate message.
  */
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  sessionExpired: boolean;
+  signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+  sessionExpired: false,
+  signOut: async () => {},
+});
 
 /**
  * AuthProvider wraps the app and manages authentication state using Supabase.
@@ -22,6 +33,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  // Tracks whether the user had an active session, so a later SIGNED_OUT can be
+  // recognized as a session that ended (rather than a never-authenticated state).
+  const wasAuthenticatedRef = useRef(false);
+  // Set immediately before a user-initiated signOut so the resulting SIGNED_OUT
+  // event is not misread as an expiration.
+  const isVoluntaryLogoutRef = useRef(false);
+
+  /**
+   * Ends the current session voluntarily. Flags the logout as user-initiated so
+   * the SIGNED_OUT event it triggers does not set `sessionExpired`.
+   */
+  const signOut = async () => {
+    isVoluntaryLogoutRef.current = true;
+    await supabase.auth.signOut();
+  };
 
   useEffect(() => {
     // Fast initial hydration from localStorage — no network round-trip
@@ -29,18 +57,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(session.user);
+        wasAuthenticatedRef.current = true;
       } else {
         setUser(null);
       }
       setLoading(false);
-      console.log('[AuthContext] Initial user (from session):', session?.user ?? null);
     };
     getSession();
 
     // Keep session updated on login, logout, and token refresh
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        // Session ended without the user asking for it, while a session existed:
+        // treat it as an expiration (token expired and couldn't be refreshed).
+        if (wasAuthenticatedRef.current && !isVoluntaryLogoutRef.current) {
+          setSessionExpired(true);
+        }
+        isVoluntaryLogoutRef.current = false;
+        wasAuthenticatedRef.current = false;
+        setUser(null);
+        return;
+      }
+
+      // Any event carrying a valid session means we're authenticated again.
+      if (session?.user) {
+        wasAuthenticatedRef.current = true;
+        setSessionExpired(false);
+      }
       setUser(session?.user ?? null);
-      console.log('[AuthContext] Auth state changed:', _event, session?.user);
     });
 
     // Cleanup listener on unmount
@@ -49,12 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  useEffect(() => {
-    console.log('[AuthContext] user state changed:', user, 'loading:', loading);
-  }, [user, loading]);
-
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, sessionExpired, signOut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -62,8 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 /**
  * useAuth hook for accessing the authenticated user and loading state.
- * @returns { user, loading }
+ * @returns { user, loading, sessionExpired, signOut }
  */
 export function useAuth() {
   return useContext(AuthContext);
-} 
+}

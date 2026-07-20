@@ -49,6 +49,9 @@ export async function updateSession(request: NextRequest) {
   if (!user && request.nextUrl.pathname.startsWith('/app')) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    // Full-navigation counterpart of the client redirect: the token was expired
+    // and could not be refreshed, so tell the login page why.
+    url.searchParams.set('reason', 'expired');
     return NextResponse.redirect(url);
   }
 
