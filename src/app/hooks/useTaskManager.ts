@@ -100,6 +100,7 @@ export const useTaskManager = (userId: string | null) => {
     // Realtime: keep this tab in sync with changes from other
     // tabs/devices. Self-originated INSERTs are deduplicated because
     // optimistic updates already added the task locally.
+    let hasSubscribedOnce = false;
     const channel = supabase
       .channel(`tasks-sync-${userId}`)
       .on(
@@ -156,7 +157,23 @@ export const useTaskManager = (userId: string | null) => {
           setTasks((prev) => prev.filter((t) => t.id !== row.id));
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        if (status === 'SUBSCRIBED') {
+          // On initial subscription or reconnection after a drop,
+          // refetch all tasks to reconcile any changes missed while offline.
+          // Skip the very first SUBSCRIBED (the mount fetch already ran).
+          if (hasSubscribedOnce) {
+            fetchTasks();
+          }
+          hasSubscribedOnce = true;
+        }
+        if (status === 'CHANNEL_ERROR') {
+          console.error('[useTaskManager] Realtime channel error:', err);
+        }
+        if (status === 'TIMED_OUT') {
+          console.error('[useTaskManager] Realtime channel timed out — will auto-retry');
+        }
+      });
 
     return () => {
       cancelled = true;
