@@ -41,7 +41,7 @@ export default function HomePage() {
   // Global settings from context
   const { settings, updateSettings } = useSettings();
 
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, sessionExpired } = useAuth();
 
   // Task management for the current session.
   const {
@@ -135,12 +135,13 @@ export default function HomePage() {
 
   const router = useRouter();
 
-  // Redirect to /login if not authenticated
+  // Redirect to /login if not authenticated. If the session expired on its own,
+  // pass ?reason=expired so the login page can explain what happened.
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace('/login');
+      router.replace(sessionExpired ? '/login?reason=expired' : '/login');
     }
-  }, [authLoading, user, router]);
+  }, [authLoading, user, sessionExpired, router]);
 
   // =================================================================
   // SECTION: Effects

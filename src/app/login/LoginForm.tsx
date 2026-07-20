@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from '@/app/lib/supabase/client';
 import { translateSupabaseError } from '@/app/lib/errors';
 import landingStyles from "@/app/LandingPage.module.css";
@@ -22,6 +22,9 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
   const [loading, setLoading] = useState(false);
   const [showAppLoading, setShowAppLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Shown when the user landed here because their session expired on its own.
+  const sessionExpired = searchParams.get('reason') === 'expired';
   const [notification, setNotification] = useState<{ visible: boolean; message: string; icon: React.ReactNode }>({ visible: false, message: '', icon: null });
 
   // SVG icons
@@ -105,6 +108,24 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
       )}
       <form className={styles.formContainer} onSubmit={handleSubmit}>
         <div className={styles.formTitle}>Iniciar Sesión</div>
+        {/* Persistent, informational banner shown when the session expired */}
+        {sessionExpired && (
+          <div
+            role="status"
+            style={{
+              background: "rgba(245, 185, 66, 0.15)",
+              border: "1px solid rgba(245, 185, 66, 0.3)",
+              borderRadius: "8px",
+              padding: "0.6rem 0.75rem",
+              textAlign: "center",
+              fontSize: "0.85rem",
+              color: "rgba(255,255,255,0.85)",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Tu sesión ha expirado. Por favor, inicia sesión de nuevo.
+          </div>
+        )}
         {/* Error message display */}
         {/* Email input */}
         <input

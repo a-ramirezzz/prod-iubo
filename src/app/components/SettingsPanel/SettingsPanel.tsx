@@ -8,11 +8,11 @@ import { useState, useEffect } from 'react';
 import styles from './SettingsPanel.module.css';
 // Context for global settings
 import { useSettings } from '../../context/SettingsContext';
+import { useAuth } from '../../context/AuthContext';
 // Theme and sound data
 import { themes } from '../../lib/themes';
 import ThemeCard from '../ThemeCard/ThemeCard';
 import { sounds, noSound } from '../../lib/sounds';
-import { createClient } from '@/app/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
@@ -66,7 +66,7 @@ const MENU_ITEMS: ActiveSectionType[] = ['General', 'Temas', 'Sonidos', 'Focus']
  * Displays a modal panel for user settings, including general options, themes, and sounds.
  */
 export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: SettingsPanelProps) {
-  const supabase = createClient();
+  const { signOut } = useAuth();
   // State for the currently active section
   const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
   // Access settings and update functions from context
@@ -120,7 +120,9 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
   // Handler for logging out the user
   const handleLogout = async () => {
     setLoggingOut(true);
-    await supabase.auth.signOut();
+    // Voluntary logout: routed through the context so it is flagged as
+    // user-initiated and not mistaken for a session expiration.
+    await signOut();
     await resetSettings(); // Optionally reset settings state
     setLoggingOut(false);
     router.push('/');
