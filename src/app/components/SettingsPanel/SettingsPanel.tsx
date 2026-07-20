@@ -37,7 +37,7 @@ const PHASE_INFO: Record<string, { label: string; color: string }> = {
   work: { label: 'Trabajando', color: 'var(--brand-color-uibo, #1e88e5)' },
   short_break: { label: 'Pausa corta', color: '#f5b942' },
   long_break: { label: 'Pausa larga', color: '#4caf50' },
-  idle: { label: 'Sin sesión activa', color: '#888' },
+  idle: { label: 'Sin sesión activa', color: 'var(--text-color-disabled, #888)' },
 };
 
 // Icon definitions for each section
