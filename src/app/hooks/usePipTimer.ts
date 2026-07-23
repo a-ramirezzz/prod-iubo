@@ -69,7 +69,7 @@ export const usePipTimer = (
     // Determine background and text color based on theme mode
     let backgroundColor = '#000';
     let textColor = '#fff';
-    if (settings.themeMode === 'light') {
+    if (settings.theme_mode === 'light') {
       backgroundColor = '#fff';
       textColor = '#111';
     }
@@ -83,7 +83,7 @@ export const usePipTimer = (
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textColor;
     ctx.save();
-    if (settings.themeMode === 'light') {
+    if (settings.theme_mode === 'light') {
       ctx.shadowColor = 'rgba(0,0,0,0.18)';
       ctx.shadowBlur = 16;
     } else {
@@ -105,7 +105,7 @@ export const usePipTimer = (
       console.log('[PiP] Canvas or video not found');
       return;
     }
-    if (settings.pipModeEnabled) {
+    if (settings.pip_mode_enabled) {
       try {
         if (!streamRef.current) {
           streamRef.current = canvas.captureStream();
@@ -174,7 +174,7 @@ export const usePipTimer = (
     // Cleanup: remove event listener and stop stream if needed
     return () => {
       video.removeEventListener('leavepictureinpicture', handleLeavePiP);
-      if (!settings.pipModeEnabled && streamRef.current) {
+      if (!settings.pip_mode_enabled && streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
         streamRef.current = null;
         video.srcObject = null;
