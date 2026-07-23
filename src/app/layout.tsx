@@ -5,6 +5,7 @@ import { LocaleProvider } from '@/app/lib/i18n';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -112,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </AuthProvider>
         </LocaleProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
