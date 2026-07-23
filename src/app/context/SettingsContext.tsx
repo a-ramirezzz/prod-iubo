@@ -15,6 +15,7 @@
 import { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { useAuth } from './AuthContext';
+import { useLocale } from '@/app/lib/i18n';
 import Notification from '@/app/components/Notification/Notification';
 import { AppSettings } from '../types';
 
@@ -39,6 +40,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   background_sound: 'none',
   volume: 0.5,
   daily_pomodoro_goal: 8,
+  has_seen_onboarding: false,
 };
 
 // =================================================================
@@ -77,6 +79,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const supabase = createClient();
   const { user, loading: authLoading } = useAuth();
+  const { t } = useLocale();
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +113,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       if (error) {
         setSettings(DEFAULT_SETTINGS);
         console.error('[SettingsContext] Error loading settings:', error);
-        setNotification({ visible: true, message: 'No se pudieron cargar los ajustes. Usando valores predeterminados.', icon: iconError });
+        setNotification({ visible: true, message: t('settings.errors.loadFailed'), icon: iconError });
       } else if (!data) {
         setSettings(DEFAULT_SETTINGS);
         console.log('[SettingsContext] No settings found, using defaults.');
@@ -143,7 +146,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (error) {
       setError('Error updating settings: ' + error.message);
       console.error('[SettingsContext] Error updating settings:', error);
-      setNotification({ visible: true, message: 'No se pudieron guardar los ajustes. Verifica tu conexión.', icon: iconError });
+      setNotification({ visible: true, message: t('settings.errors.saveFailed'), icon: iconError });
     } else {
       console.log('[SettingsContext] Settings updated successfully in Supabase');
     }
@@ -157,22 +160,25 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const resetSettings = useCallback(async () => {
     if (!user) return;
     setError(null);
-    setSettings(DEFAULT_SETTINGS);
+    // Preserve whether the user already completed the onboarding tour — a
+    // settings reset should not make the tour reappear.
+    const preservedOnboarding = settings.has_seen_onboarding;
+    const resetValues: AppSettings = { ...DEFAULT_SETTINGS, has_seen_onboarding: preservedOnboarding };
+    setSettings(resetValues);
     console.log('[SettingsContext] resetSettings called');
-  
-    const defaultSettings = { ...DEFAULT_SETTINGS };
+
     const { error } = await supabase
       .from('user_settings')
-      .upsert([{ id: user.id, ...defaultSettings }], { onConflict: 'id' });
+      .upsert([{ id: user.id, ...resetValues }], { onConflict: 'id' });
     if (error) {
       setError('Error resetting settings: ' + error.message);
       console.error('[SettingsContext] Error resetting settings:', error);
-      setNotification({ visible: true, message: 'No se pudieron restablecer los ajustes. Verifica tu conexión.', icon: iconError });
+      setNotification({ visible: true, message: t('settings.errors.resetFailed'), icon: iconError });
     } else {
       console.log('[SettingsContext] Settings reset successfully in Supabase');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, settings]);
 
   /**
    * Memoize the context value to prevent unnecessary re-renders in consumers.

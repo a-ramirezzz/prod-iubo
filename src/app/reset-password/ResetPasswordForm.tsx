@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from '@/app/lib/supabase/client';
 import { translateSupabaseError } from '@/app/lib/errors';
+import { useLocale } from "@/app/lib/i18n";
+import LanguageSwitch from "@/app/components/LanguageSwitch/LanguageSwitch";
 import Notification from "@/app/components/Notification/Notification";
 
 /**
@@ -19,6 +21,7 @@ import Notification from "@/app/components/Notification/Notification";
  */
 export default function ResetPasswordForm() {
   const supabase = createClient();
+  const { t } = useLocale();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -79,9 +82,9 @@ export default function ResetPasswordForm() {
    * @returns Error message string or null if valid
    */
   const validate = () => {
-    if (!password || !confirmPassword) return "Ambos campos son obligatorios.";
-    if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres.";
-    if (password !== confirmPassword) return "Las contraseñas no coinciden.";
+    if (!password || !confirmPassword) return t("auth.resetPassword.errors.bothRequired");
+    if (password.length < 6) return t("auth.resetPassword.errors.passwordTooShort");
+    if (password !== confirmPassword) return t("auth.resetPassword.errors.passwordMismatch");
     return null;
   };
 
@@ -105,7 +108,7 @@ export default function ResetPasswordForm() {
       setDone(true);
       setNotification({
         visible: true,
-        message: "Contraseña actualizada correctamente.",
+        message: t("auth.resetPassword.success"),
         icon: iconSuccess,
       });
       setTimeout(() => {
@@ -121,15 +124,23 @@ export default function ResetPasswordForm() {
     justifyContent: "center",
     background: "linear-gradient(135deg, #111827 0%, #1F2937 100%)",
     padding: "2rem 1rem",
+    position: "relative",
   };
+
+  const languageSwitch = (
+    <div style={{ position: "absolute", top: "1.25rem", right: "1.25rem", zIndex: 2 }}>
+      <LanguageSwitch />
+    </div>
+  );
 
   // Verifying the recovery token.
   if (recoveryReady === null) {
     return (
       <div style={pageWrapperStyle}>
+        {languageSwitch}
         <div className={styles.formContainer}>
-          <div className={styles.formTitle}>Verificando enlace…</div>
-          <div className={styles.formSubtitle}>Un momento, por favor.</div>
+          <div className={styles.formTitle}>{t("auth.resetPassword.verifyingTitle")}</div>
+          <div className={styles.formSubtitle}>{t("auth.resetPassword.verifyingSubtitle")}</div>
         </div>
       </div>
     );
@@ -139,13 +150,14 @@ export default function ResetPasswordForm() {
   if (recoveryReady === false) {
     return (
       <div style={pageWrapperStyle}>
+        {languageSwitch}
         <div className={styles.formContainer}>
-          <div className={styles.formTitle}>Enlace no válido</div>
+          <div className={styles.formTitle}>{t("auth.resetPassword.invalidTitle")}</div>
           <div className={styles.formSubtitle}>
-            Este enlace ha expirado o no es válido. Solicita uno nuevo.
+            {t("auth.resetPassword.invalidSubtitle")}
           </div>
           <Link className={styles.link} href="/forgot-password">
-            Solicitar un nuevo enlace
+            {t("auth.resetPassword.requestNewLink")}
           </Link>
         </div>
       </div>
@@ -154,6 +166,7 @@ export default function ResetPasswordForm() {
 
   return (
     <div style={pageWrapperStyle}>
+      {languageSwitch}
       <Notification
         message={notification.message}
         visible={notification.visible}
@@ -162,15 +175,15 @@ export default function ResetPasswordForm() {
         onClose={() => setNotification({ ...notification, visible: false })}
       />
       <form className={styles.formContainer} onSubmit={handleSubmit}>
-        <div className={styles.formTitle}>Nueva contraseña</div>
+        <div className={styles.formTitle}>{t("auth.resetPassword.title")}</div>
         <div className={styles.formSubtitle}>
-          Ingresa y confirma tu nueva contraseña.
+          {t("auth.resetPassword.subtitle")}
         </div>
         {/* New password input */}
         <input
           className={styles.input}
           type="password"
-          placeholder="Nueva contraseña"
+          placeholder={t("auth.resetPassword.newPasswordPlaceholder")}
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
@@ -182,7 +195,7 @@ export default function ResetPasswordForm() {
         <input
           className={styles.input}
           type="password"
-          placeholder="Confirmar contraseña"
+          placeholder={t("auth.resetPassword.confirmPasswordPlaceholder")}
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)}
           required
@@ -192,11 +205,11 @@ export default function ResetPasswordForm() {
         />
         {/* Submit button */}
         <button className={styles.button} type="submit" disabled={loading || done}>
-          {loading ? "Actualizando..." : "Actualizar contraseña"}
+          {loading ? t("auth.resetPassword.submitting") : t("auth.resetPassword.submit")}
         </button>
         {/* Link back to login */}
         <Link className={styles.link} href="/login">
-          Volver a iniciar sesión
+          {t("auth.resetPassword.backToLogin")}
         </Link>
       </form>
     </div>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from './Notification.module.css';
+import { useLocale } from '@/app/lib/i18n';
 
 interface NotificationProps {
   message: string;
@@ -19,6 +20,7 @@ interface NotificationProps {
  * @param icon - Optional icon to display before the message
  */
 const Notification: React.FC<NotificationProps> = ({ message, visible, onClose, duration = 8000, icon }) => {
+  const { t } = useLocale();
   useEffect(() => {
     if (!visible) return;
     const timer = setTimeout(onClose, duration);
@@ -35,10 +37,10 @@ const Notification: React.FC<NotificationProps> = ({ message, visible, onClose, 
         className={styles.buttonAccept}
         onClick={onClose}
         tabIndex={0}
-        aria-label="Aceptar y cerrar notificación"
+        aria-label={t('app.notification.acceptAria')}
         autoFocus
       >
-        Aceptar
+        {t('app.notification.accept')}
       </button>
     </div>
   );

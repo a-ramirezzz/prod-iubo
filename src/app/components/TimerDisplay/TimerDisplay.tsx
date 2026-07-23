@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import type { TimeParts } from '@/app/types'
 import styles from '@/app/components/TimerDisplay/TimerDisplay.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 /**
  * Defines the props for the TimerDisplay component
@@ -26,13 +27,14 @@ export default function TimerDisplay({ timeParts, isActive = false, remainingSec
   // Screen-reader announcement text, updated only at meaningful thresholds so the
   // live region does not announce the countdown every single second.
   const [liveText, setLiveText] = useState('')
+  const { t } = useLocale()
 
   useEffect(() => {
     const totalSeconds = (Number(timeParts.hours) * 3600) + (Number(timeParts.minutes) * 60) + Number(timeParts.seconds)
-    if (totalSeconds === 60) setLiveText('1 minuto restante')
-    else if (totalSeconds === 10) setLiveText('10 segundos restantes')
-    else if (totalSeconds === 0) setLiveText('Tiempo terminado')
-  }, [timeParts])
+    if (totalSeconds === 60) setLiveText(t('app.timer.display.oneMinute'))
+    else if (totalSeconds === 10) setLiveText(t('app.timer.display.tenSeconds'))
+    else if (totalSeconds === 0) setLiveText(t('app.timer.display.timeUp'))
+  }, [timeParts, t])
 
   const timerStateClass =
     isActive && remainingSeconds <= 10

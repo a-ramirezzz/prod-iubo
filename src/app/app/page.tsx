@@ -7,7 +7,7 @@
 // SECTION: Imports
 // =================================================================
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styles from '@/app/Page.module.css';
 
 // Custom Hooks for Core Logic
@@ -19,6 +19,7 @@ import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
 import { useHorizontalPipTimer } from '@/hooks/useHorizontalPipTimer';
 import { useAuth } from '@/context/AuthContext';
+import { useLocale } from '@/app/lib/i18n';
 import { useRouter } from 'next/navigation';
 
 // UI Component Imports
@@ -28,6 +29,8 @@ import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
 import VisualNotification from '@/components/Notification/Notification';
 import FocusSection from '@/components/FocusSection/FocusSection';
 import TimerView from '@/components/TimerView/TimerView';
+import OnboardingTour from '@/app/components/OnboardingTour/OnboardingTour';
+import LocaleSync from './LocaleSync';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -40,7 +43,14 @@ export default function HomePage() {
   // =================================================================
 
   // Global settings from context
-  const { settings, updateSettings } = useSettings();
+  const { settings, updateSettings, loading: settingsLoading } = useSettings();
+
+  // Mark the onboarding tour as seen so it never shows again (persists to Supabase).
+  const handleOnboardingComplete = useCallback(() => {
+    updateSettings({ has_seen_onboarding: true });
+  }, [updateSettings]);
+
+  const { t } = useLocale();
 
   const { user, loading: authLoading, sessionExpired } = useAuth();
 
@@ -191,6 +201,7 @@ export default function HomePage() {
 
   return (
     <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
+      <LocaleSync />
       {showSetupControls && <ProjectBranding />}
 
       {/* Tab navigation (hidden in mini mode, which is timer-only) */}
@@ -203,16 +214,17 @@ export default function HomePage() {
             className={`${styles.tabButton} ${activeTab === 'timer' ? styles.tabButtonActive : ''}`}
             onClick={() => setActiveTab('timer')}
           >
-            Temporizador
+            {t('app.tabs.timer')}
           </button>
           <button
             type="button"
+            id="onboarding-focus"
             role="tab"
             aria-selected={activeTab === 'focus'}
             className={`${styles.tabButton} ${activeTab === 'focus' ? styles.tabButtonActive : ''}`}
             onClick={() => setActiveTab('focus')}
           >
-            Focus
+            {t('app.tabs.focus')}
           </button>
         </div>
       )}
@@ -288,7 +300,7 @@ export default function HomePage() {
       />
       {/* Visual notification centered on screen */}
       <VisualNotification
-        message={"¡Tiempo cumplido!\nTu sesión de productividad ha finalizado."}
+        message={t('app.notification.timeUp')}
         visible={showVisualNotification}
         onClose={() => setShowVisualNotification(false)}
         duration={3500}
@@ -335,6 +347,11 @@ export default function HomePage() {
       />
       {/* Portal target lives inside the separate Document PiP window, not in this DOM tree */}
       {horizontalPipPortal}
+
+      {/* First-run onboarding tour: only for authenticated users who haven't seen it yet */}
+      {!authLoading && user && !settingsLoading && !settings.has_seen_onboarding && (
+        <OnboardingTour onComplete={handleOnboardingComplete} />
+      )}
     </main>
   );
 }

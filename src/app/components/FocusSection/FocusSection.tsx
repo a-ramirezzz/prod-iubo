@@ -13,6 +13,7 @@
 import type { PomodoroPhase } from '@/app/hooks/usePomodoroEngine';
 import type { SessionRow, TaskBreakdown } from '@/app/hooks/usePomodoroStats';
 import styles from './FocusSection.module.css';
+import { useLocale } from '@/app/lib/i18n';
 
 interface FocusSectionProps {
   totalPomodorosToday: number;
@@ -30,13 +31,6 @@ interface FocusSectionProps {
   onStartBreak: () => void;
 }
 
-const PHASE_LABELS: Record<PomodoroPhase, string> = {
-  work: 'Trabajando',
-  short_break: 'Pausa corta',
-  long_break: 'Pausa larga',
-  idle: 'Listo para comenzar',
-};
-
 export default function FocusSection({
   totalPomodorosToday,
   cycleCount,
@@ -52,8 +46,16 @@ export default function FocusSection({
   onStartWork,
   onStartBreak,
 }: FocusSectionProps) {
+  const { t } = useLocale();
   const loading = statsLoading;
   const loadError = statsError;
+
+  const PHASE_LABELS: Record<PomodoroPhase, string> = {
+    work: t('focus.cycle.phases.work'),
+    short_break: t('focus.cycle.phases.short_break'),
+    long_break: t('focus.cycle.phases.long_break'),
+    idle: t('focus.cycle.phases.idle'),
+  };
 
   // ---------------------------------------------------------------
   // Block A helpers
@@ -65,26 +67,26 @@ export default function FocusSection({
         return (
           <button className={styles.ctaButton} onClick={onStartWork} type="button">
             {totalPomodorosToday > 0 || cycleCount > 0
-              ? 'Iniciar siguiente Pomodoro'
-              : 'Iniciar Pomodoro'}
+              ? t('focus.cycle.cta.startNext')
+              : t('focus.cycle.cta.start')}
           </button>
         );
       case 'work':
         return (
           <button className={styles.ctaButton} disabled type="button">
-            En sesión de trabajo...
+            {t('focus.cycle.cta.working')}
           </button>
         );
       case 'short_break':
         return (
           <button className={styles.ctaButton} onClick={onStartBreak} type="button">
-            Iniciar Pausa Corta (5 min)
+            {t('focus.cycle.cta.shortBreak')}
           </button>
         );
       case 'long_break':
         return (
           <button className={styles.ctaButton} onClick={onStartBreak} type="button">
-            Iniciar Pausa Larga (15 min)
+            {t('focus.cycle.cta.longBreak')}
           </button>
         );
     }
@@ -105,7 +107,7 @@ export default function FocusSection({
     <div className={styles.focusSection}>
       {/* BLOCK A: current cycle status */}
       <section className={styles.block}>
-        <h2 className={styles.blockTitle}>Ciclo actual</h2>
+        <h2 className={styles.blockTitle}>{t('focus.cycle.title')}</h2>
         <div className={styles.cycleDots}>
           {[0, 1, 2, 3].map((i) => {
             const filled = i < cycleCount;
@@ -128,7 +130,7 @@ export default function FocusSection({
 
       {/* BLOCK B: today's log */}
       <section className={styles.block}>
-        <h2 className={styles.blockTitle}>Hoy</h2>
+        <h2 className={styles.blockTitle}>{t('focus.log.title')}</h2>
         {loading ? (
           <>
             <div className={styles.skeleton} />
@@ -136,17 +138,17 @@ export default function FocusSection({
             <div className={styles.skeleton} />
           </>
         ) : loadError ? (
-          <p className={styles.errorText}>No se pudieron cargar las estadísticas</p>
+          <p className={styles.errorText}>{t('focus.log.error')}</p>
         ) : todaySessions.length === 0 ? (
           <p className={styles.emptyState}>
-            Aún no has completado ningún pomodoro hoy. ¡Empieza tu primera sesión!
+            {t('focus.log.empty')}
           </p>
         ) : (
           <ul className={styles.logList}>
             {todaySessions.map((s, i) => (
               <li key={`${s.completed_at}-${i}`} className={styles.logItem}>
                 <span className={styles.logTime}>{formatHHMM(s.completed_at)}</span>
-                <span className={styles.logTask}>{s.task_text ?? 'Sin tarea'}</span>
+                <span className={styles.logTask}>{s.task_text ?? t('focus.log.noTask')}</span>
                 <span className={styles.logDuration}>{s.duration_minutes} min</span>
               </li>
             ))}
@@ -156,7 +158,7 @@ export default function FocusSection({
 
       {/* BLOCK: last 7 days bar chart */}
       <section className={styles.block}>
-        <h2 className={styles.blockTitle}>Últimos 7 días</h2>
+        <h2 className={styles.blockTitle}>{t('focus.chart.title')}</h2>
         {loading ? (
           <>
             <div className={styles.skeleton} />
@@ -164,7 +166,7 @@ export default function FocusSection({
             <div className={styles.skeleton} />
           </>
         ) : loadError ? (
-          <p className={styles.errorText}>No se pudieron cargar las estadísticas</p>
+          <p className={styles.errorText}>{t('focus.log.error')}</p>
         ) : (
           <div className={styles.weeklyChart}>
             {weeklyData.map((d, i) => {
@@ -205,8 +207,8 @@ export default function FocusSection({
 
       {/* BLOCK: task breakdown (last 7 days) */}
       <section className={styles.block}>
-        <h2 className={styles.blockTitle}>Enfoque por tarea</h2>
-        <p className={styles.taskBreakdownSubtitle}>Últimos 7 días</p>
+        <h2 className={styles.blockTitle}>{t('focus.taskBreakdown.title')}</h2>
+        <p className={styles.taskBreakdownSubtitle}>{t('focus.taskBreakdown.subtitle')}</p>
         {loading ? (
           <>
             <div className={styles.skeleton} />
@@ -214,10 +216,10 @@ export default function FocusSection({
             <div className={styles.skeleton} />
           </>
         ) : loadError ? (
-          <p className={styles.errorText}>No se pudieron cargar las estadísticas</p>
+          <p className={styles.errorText}>{t('focus.log.error')}</p>
         ) : taskBreakdown.length === 0 ? (
           <p className={styles.emptyState}>
-            Completa pomodoros con tareas asignadas para ver tu enfoque semanal.
+            {t('focus.taskBreakdown.empty')}
           </p>
         ) : (
           <ul className={styles.taskBreakdownList}>
@@ -241,7 +243,7 @@ export default function FocusSection({
 
       {/* BLOCK C: stats */}
       <section className={styles.block}>
-        <h2 className={styles.blockTitle}>Estadísticas</h2>
+        <h2 className={styles.blockTitle}>{t('focus.stats.title')}</h2>
         {loading ? (
           <>
             <div className={styles.skeleton} />
@@ -250,11 +252,11 @@ export default function FocusSection({
             <div className={styles.skeleton} />
           </>
         ) : loadError ? (
-          <p className={styles.errorText}>No se pudieron cargar las estadísticas</p>
+          <p className={styles.errorText}>{t('focus.log.error')}</p>
         ) : (
           <div className={styles.statsGrid}>
             <div className={styles.statRow}>
-              <span>Hoy</span>
+              <span>{t('focus.stats.today')}</span>
               <span className={styles.statValue}>
                 {totalPomodorosToday} / {dailyPomodoroGoal}
               </span>
@@ -263,17 +265,17 @@ export default function FocusSection({
               <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
             </div>
             <div className={styles.statRow}>
-              <span>Esta semana</span>
+              <span>{t('focus.stats.thisWeek')}</span>
               <span className={styles.statValue}>{weekTotal}</span>
             </div>
             <div className={styles.statRow}>
-              <span>Promedio diario</span>
+              <span>{t('focus.stats.dailyAverage')}</span>
               <span className={styles.statValue}>{dailyAverage}</span>
             </div>
             <div className={styles.statRow}>
-              <span>Racha actual</span>
+              <span>{t('focus.stats.currentStreak')}</span>
               <span className={styles.statValue}>
-                {streak} {streak === 1 ? 'día' : 'días'}
+                {streak} {streak === 1 ? t('focus.stats.day') : t('focus.stats.days')}
               </span>
             </div>
           </div>

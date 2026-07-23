@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from "react";
 import LoginForm from "../../login/LoginForm";
 import SignupForm from "../../signup/SignupForm";
+import LanguageSwitch from "../LanguageSwitch/LanguageSwitch";
+import { useLocale } from "@/app/lib/i18n";
 import styles from "./AuthTabs.module.css";
 
 /**
@@ -15,6 +17,7 @@ import styles from "./AuthTabs.module.css";
 const TAB_KEY = "authTabActive";
 
 export default function AuthTabs() {
+  const { t } = useLocale();
   // 0 = Login, 1 = Signup
   const [activeTab, setActiveTab] = useState(0);
 
@@ -33,6 +36,9 @@ export default function AuthTabs() {
     <div className={styles.pageWrapper}>
       <div className={styles.orb1} aria-hidden="true" />
       <div className={styles.orb2} aria-hidden="true" />
+      <div style={{ position: "absolute", top: "1.25rem", right: "1.25rem", zIndex: 2 }}>
+        <LanguageSwitch />
+      </div>
       <div className={styles.authCardWrapper}>
       <div className={styles.tabsContainer}>
         <button
@@ -40,14 +46,14 @@ export default function AuthTabs() {
           onClick={() => setActiveTab(0)}
           type="button"
         >
-          Iniciar sesión
+          {t("auth.tabs.login")}
         </button>
         <button
           className={activeTab === 1 ? styles.tabActive : styles.tab}
           onClick={() => setActiveTab(1)}
           type="button"
         >
-          Registrarse
+          {t("auth.tabs.signup")}
         </button>
       </div>
       <div className={styles.tabContent}>

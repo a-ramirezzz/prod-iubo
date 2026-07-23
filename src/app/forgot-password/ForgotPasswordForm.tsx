@@ -6,6 +6,8 @@ import styles from "../login/LoginForm.module.css";
 import Link from "next/link";
 import { createClient } from '@/app/lib/supabase/client';
 import { translateSupabaseError } from '@/app/lib/errors';
+import { useLocale } from "@/app/lib/i18n";
+import LanguageSwitch from "@/app/components/LanguageSwitch/LanguageSwitch";
 import Notification from "@/app/components/Notification/Notification";
 
 /**
@@ -17,6 +19,7 @@ import Notification from "@/app/components/Notification/Notification";
  */
 export default function ForgotPasswordForm() {
   const supabase = createClient();
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -41,8 +44,8 @@ export default function ForgotPasswordForm() {
    * @returns Error message string or null if valid
    */
   const validate = () => {
-    if (!email.trim()) return "El correo electrónico es obligatorio.";
-    if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return "Correo electrónico inválido.";
+    if (!email.trim()) return t("auth.forgotPassword.errors.emailRequired");
+    if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return t("auth.forgotPassword.errors.invalidEmail");
     return null;
   };
 
@@ -70,7 +73,7 @@ export default function ForgotPasswordForm() {
       setSent(true);
       setNotification({
         visible: true,
-        message: "Te enviamos un enlace de recuperación. Revisa tu correo electrónico.",
+        message: t("auth.forgotPassword.linkSent"),
         icon: iconSuccess,
       });
     }
@@ -85,8 +88,12 @@ export default function ForgotPasswordForm() {
         justifyContent: "center",
         background: "linear-gradient(135deg, #111827 0%, #1F2937 100%)",
         padding: "2rem 1rem",
+        position: "relative",
       }}
     >
+      <div style={{ position: "absolute", top: "1.25rem", right: "1.25rem", zIndex: 2 }}>
+        <LanguageSwitch />
+      </div>
       <Notification
         message={notification.message}
         visible={notification.visible}
@@ -95,15 +102,15 @@ export default function ForgotPasswordForm() {
         onClose={() => setNotification({ ...notification, visible: false })}
       />
       <form className={styles.formContainer} onSubmit={handleSubmit}>
-        <div className={styles.formTitle}>Recuperar contraseña</div>
+        <div className={styles.formTitle}>{t("auth.forgotPassword.title")}</div>
         <div className={styles.formSubtitle}>
-          Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+          {t("auth.forgotPassword.subtitle")}
         </div>
         {/* Email input */}
         <input
           className={styles.input}
           type="email"
-          placeholder="Correo electrónico"
+          placeholder={t("auth.forgotPassword.emailPlaceholder")}
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
@@ -112,11 +119,11 @@ export default function ForgotPasswordForm() {
         />
         {/* Submit button */}
         <button className={styles.button} type="submit" disabled={loading || sent}>
-          {loading ? "Enviando..." : sent ? "Enlace enviado" : "Enviar enlace"}
+          {loading ? t("auth.forgotPassword.submitting") : sent ? t("auth.forgotPassword.sent") : t("auth.forgotPassword.submit")}
         </button>
         {/* Link back to login */}
         <Link className={styles.link} href="/login">
-          Volver a iniciar sesión
+          {t("auth.forgotPassword.backToLogin")}
         </Link>
       </form>
     </div>

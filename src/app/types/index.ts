@@ -45,4 +45,5 @@ export interface AppSettings {
   background_sound: string;
   volume: number;
   daily_pomodoro_goal: number;
+  has_seen_onboarding: boolean;
 }

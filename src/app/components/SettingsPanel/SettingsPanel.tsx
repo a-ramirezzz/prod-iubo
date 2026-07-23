@@ -16,6 +16,7 @@ import { sounds, noSound } from '../../lib/sounds';
 import { useRouter } from 'next/navigation';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
+import { useLocale } from '@/app/lib/i18n';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -32,34 +33,35 @@ interface SettingsPanelProps {
   };
 }
 
-// Phase indicator labels and dot colors for the Focus stats snapshot
-const PHASE_INFO: Record<string, { label: string; color: string }> = {
-  work: { label: 'Trabajando', color: 'var(--brand-color-uibo, #1e88e5)' },
-  short_break: { label: 'Pausa corta', color: '#f5b942' },
-  long_break: { label: 'Pausa larga', color: '#4caf50' },
-  idle: { label: 'Sin sesión activa', color: 'var(--text-color-disabled, #888)' },
+// Phase indicator dot colors for the Focus stats snapshot (labels are localized in-component)
+const PHASE_COLORS: Record<string, string> = {
+  work: 'var(--brand-color-uibo, #1e88e5)',
+  short_break: '#f5b942',
+  long_break: '#4caf50',
+  idle: 'var(--text-color-disabled, #888)',
 };
 
-// Icon definitions for each section
-const ICONS = {
-  General: (
+// Type for the active section — English keys used as logic identifiers
+type SectionKey = 'general' | 'themes' | 'sounds' | 'focus';
+
+// Icon definitions for each section, keyed by SectionKey
+const ICONS: Record<SectionKey, React.ReactNode> = {
+  general: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" /><path d="M5 14H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1" /></svg>
   ),
-  Temas: (
+  themes: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" /></svg>
   ),
-  Sonidos: (
+  sounds: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></svg>
   ),
-  Focus: (
+  focus: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
   ),
 };
 
-// Type for the active section
-type ActiveSectionType = 'General' | 'Temas' | 'Sonidos' | 'Focus';
 // Menu items for the sidebar
-const MENU_ITEMS: ActiveSectionType[] = ['General', 'Temas', 'Sonidos', 'Focus'];
+const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus'];
 
 /**
  * SettingsPanel component
@@ -67,8 +69,17 @@ const MENU_ITEMS: ActiveSectionType[] = ['General', 'Temas', 'Sonidos', 'Focus']
  */
 export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: SettingsPanelProps) {
   const { signOut } = useAuth();
+  const { t } = useLocale();
   // State for the currently active section
-  const [activeSection, setActiveSection] = useState<ActiveSectionType>('General');
+  const [activeSection, setActiveSection] = useState<SectionKey>('general');
+
+  // Localized phase labels for the Focus stats snapshot
+  const PHASE_LABELS: Record<string, string> = {
+    work: t('settings.focus.phases.work'),
+    short_break: t('settings.focus.phases.short_break'),
+    long_break: t('settings.focus.phases.long_break'),
+    idle: t('settings.focus.phases.idle'),
+  };
   // Access settings and update functions from context
   const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
   const router = useRouter();
@@ -147,11 +158,11 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
       <div className={styles.backdrop} onClick={onClose}></div>
       <div className={`${styles.settingsPanel} ${isOpen ? styles.open : ''}`}>
         {/* Close button */}
-        <button className={styles.closeButton} onClick={onClose} aria-label="Cerrar configuración">✕</button>
+        <button className={styles.closeButton} onClick={onClose} aria-label={t('settings.closeAria')}>✕</button>
         <div className={styles.panelContent}>
           {/* Sidebar navigation */}
           <aside className={styles.sidebar}>
-            <h3 className={styles.sidebarTitle}>CONFIGURACIÓN</h3>
+            <h3 className={styles.sidebarTitle}>{t('settings.title')}</h3>
             <nav>
               <ul>
                 {MENU_ITEMS.map((item) => (
@@ -161,7 +172,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                       onClick={() => setActiveSection(item)}
                     >
                       <span className={styles.sidebarIcon}>{ICONS[item]}</span>
-                      <span>{item}</span>
+                      <span>{t(`settings.sections.${item}`)}</span>
                     </button>
                   </li>
                 ))}
@@ -170,15 +181,15 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
           </aside>
           {/* Main content area */}
           <main className={styles.mainContentArea}>
-            <h2 className={styles.sectionTitle}>{activeSection}</h2>
+            <h2 className={styles.sectionTitle}>{t(`settings.sections.${activeSection}`)}</h2>
             <div key={activeSection} className={styles.sectionContent}>
 
             {/* General Settings Section */}
-            {activeSection === 'General' && (
+            {activeSection === 'general' && (
               <div className={styles.settingsContainer}>
                 {/* Start in Mini Mode toggle */}
                 <div className={styles.settingItem}>
-                  <label htmlFor="start-mini">Iniciar en Modo Mini</label>
+                  <label htmlFor="start-mini">{t('settings.general.miniMode')}</label>
                   <label className={styles.toggleSwitch}>
                     <input
                       id="start-mini"
@@ -191,7 +202,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 </div>
                 {/* Confirm on Stop toggle */}
                 <div className={styles.settingItem}>
-                  <label htmlFor="confirm-stop">Confirmación al Detener</label>
+                  <label htmlFor="confirm-stop">{t('settings.general.confirmStop')}</label>
                   <label className={styles.toggleSwitch}>
                     <input
                       id="confirm-stop"
@@ -205,7 +216,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 {/* PiP Floating Timer toggle */}
                 <div className={styles.settingItem}>
                   <label htmlFor="pip-mode" className={!!settings.horizontal_pip_enabled ? styles.disabledLabel : undefined}>
-                    Activar Contador Flotante (PiP)
+                    {t('settings.general.pipClassic')}
                   </label>
                   <label className={styles.toggleSwitch}>
                     <input
@@ -225,7 +236,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 </div>
                 {!!settings.horizontal_pip_enabled && (
                   <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
-                    Desactiva la vista horizontal flotante para usar esta opción
+                    {t('settings.general.pipClassicDisabledHint')}
                   </p>
                 )}
                 {/* Horizontal Document PiP Floating Timer toggle */}
@@ -234,7 +245,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                     htmlFor="horizontal-pip-mode"
                     className={(!isHorizontalPipSupported || !!settings.pip_mode_enabled) ? styles.disabledLabel : undefined}
                   >
-                    Activar Vista Horizontal Flotante
+                    {t('settings.general.pipHorizontal')}
                   </label>
                   <label className={styles.toggleSwitch}>
                     <input
@@ -254,30 +265,30 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 </div>
                 {!isHorizontalPipSupported && (
                   <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
-                    Disponible solo en Chrome/Edge de escritorio
+                    {t('settings.general.pipHorizontalBrowser')}
                   </p>
                 )}
                 {isHorizontalPipSupported && !!settings.pip_mode_enabled && (
                   <p className={styles.disabledLabel} style={{ fontSize: '0.8em', margin: '-8px 0 8px' }}>
-                    Desactiva el contador flotante (PiP) para usar esta opción
+                    {t('settings.general.pipHorizontalDisabledHint')}
                   </p>
                 )}
                 {/* Language selector */}
                 <div className={styles.settingItem}>
-                  <label htmlFor="language">Idioma</label>
+                  <label htmlFor="language">{t('settings.general.language')}</label>
                   <select
                     id="language"
                     value={settings.language}
                     onChange={(e) => updateSettings({ language: e.target.value as 'es' | 'en' })}
                     className={styles.select}
                   >
-                    <option value="es">Español</option>
-                    <option value="en" disabled>English (Próximamente)</option>
+                    <option value="es">{t('settings.general.languageEs')}</option>
+                    <option value="en">{t('settings.general.languageEn')}</option>
                   </select>
                 </div>
                 {/* Desktop Notifications toggle */}
                 <div className={styles.settingItem}>
-                  <label htmlFor="desktop-notifications">Habilitar Notificaciones de Escritorio</label>
+                  <label htmlFor="desktop-notifications">{t('settings.general.desktopNotifications')}</label>
                   <label className={styles.toggleSwitch}>
                     <input
                       id="desktop-notifications"
@@ -291,7 +302,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 {/* Reset settings button */}
                 <div className={styles.resetSection} style={{ flexDirection: 'column', alignItems: 'center' }}>
                   <button onClick={handleResetClick} className={`${styles.resetButton} button button-stop`}>
-                    Restablecer Ajustes
+                    {t('settings.general.resetSettings')}
                   </button>
                   {/* Logout button for ending the user session */}
                   <button
@@ -300,20 +311,20 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                     style={{ marginTop: 16 }}
                     disabled={loggingOut}
                   >
-                    {loggingOut ? 'Cerrando sesión...' : 'Cerrar sesión'}
+                    {loggingOut ? t('settings.general.loggingOut') : t('settings.general.logout')}
                   </button>
                 </div>
               </div>
             )}
             
             {/* Themes Section */}
-            {activeSection === 'Temas' && (
+            {activeSection === 'themes' && (
               <div className={styles.settingsContainer}>
                 {/* Theme mode switcher */}
                 <div className={styles.settingItem}>
-                  <label>Apariencia</label>
+                  <label>{t('settings.themes.appearance')}</label>
                   <div className={styles.themeSwitcher}>
-                    <span className={styles.themeSwitcherLabel}>Claro</span>
+                    <span className={styles.themeSwitcherLabel}>{t('settings.themes.light')}</span>
                     <label className={styles.toggleSwitch}>
                       <input
                         type="checkbox"
@@ -322,12 +333,12 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                       />
                       <span className={styles.slider}></span>
                     </label>
-                    <span className={styles.themeSwitcherLabel}>Oscuro</span>
+                    <span className={styles.themeSwitcherLabel}>{t('settings.themes.dark')}</span>
                   </div>
                 </div>
 
                 {/* Static themes */}
-                <h3 className={styles.subSectionTitle}>Temas Estáticos</h3>
+                <h3 className={styles.subSectionTitle}>{t('settings.themes.static')}</h3>
                 <div className={styles.themeGrid}>
                   {themes
                     .filter(theme => theme.mode === settings.theme_mode && theme.type === 'static')
@@ -342,7 +353,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 </div>
 
                 {/* Animated themes */}
-                <h3 className={styles.subSectionTitle}>Temas Animados</h3>
+                <h3 className={styles.subSectionTitle}>{t('settings.themes.animated')}</h3>
                 <div className={styles.themeGrid}>
                    {themes
                     .filter(theme => theme.mode === settings.theme_mode && theme.type === 'animated')
@@ -359,10 +370,10 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
             )}
 
             {/* Sounds Section */}
-            {activeSection === 'Sonidos' && (
+            {activeSection === 'sounds' && (
               <div className={styles.settingsContainer}>
                 {/* Background sound selection */}
-                <h3 className={styles.subSectionTitle}>Sonido de fondo</h3>
+                <h3 className={styles.subSectionTitle}>{t('settings.sounds.background')}</h3>
 
                 <div className={styles.soundList}>
                   {[noSound, ...sounds].map((sound) => (
@@ -379,7 +390,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                 </div>
 
                 {/* Volume control */}
-                <h3 className={styles.subSectionTitle}>Volumen</h3>
+                <h3 className={styles.subSectionTitle}>{t('settings.sounds.volume')}</h3>
                 <div className={styles.volumeControl}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
                     <input
@@ -398,12 +409,12 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
             )}
 
             {/* Focus Section: daily goal setting + read-only Pomodoro stats snapshot */}
-            {activeSection === 'Focus' && (
+            {activeSection === 'focus' && (
               <div className={styles.settingsFocusContainer}>
                 {/* Daily goal card */}
                 <div className={styles.settingsFocusGoalCard}>
                   <label htmlFor="daily-pomodoro-goal" className={styles.settingsFocusGoalLabel}>
-                    Meta diaria de Pomodoros
+                    {t('settings.focus.dailyGoal')}
                   </label>
                   <input
                     id="daily-pomodoro-goal"
@@ -422,25 +433,25 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                     }}
                   />
                   <p className={styles.settingsFocusHelperText}>
-                    Establece cuántos pomodoros quieres completar cada día (1–20).
+                    {t('settings.focus.dailyGoalHelper')}
                   </p>
                 </div>
 
                 {!pomodoroStats ? (
                   <p className={styles.settingsFocusEmpty}>
-                    Las estadísticas estarán disponibles una vez inicies una sesión.
+                    {t('settings.focus.statsUnavailable')}
                   </p>
                 ) : (
                   <>
                     {/* Current session card */}
                     <div className={styles.settingsFocusSessionCard}>
-                      <span className={styles.settingsFocusCardTitle}>Sesión actual</span>
+                      <span className={styles.settingsFocusCardTitle}>{t('settings.focus.currentSession')}</span>
                       <div className={styles.settingsFocusPhase}>
                         <span
                           className={styles.settingsFocusPhaseDot}
-                          style={{ backgroundColor: (PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).color }}
+                          style={{ backgroundColor: PHASE_COLORS[pomodoroStats.currentPhase] ?? PHASE_COLORS.idle }}
                         />
-                        <span>{(PHASE_INFO[pomodoroStats.currentPhase] ?? PHASE_INFO.idle).label}</span>
+                        <span>{PHASE_LABELS[pomodoroStats.currentPhase] ?? PHASE_LABELS.idle}</span>
                       </div>
 
                       {/* Cycle progress dots (4 pomodoros per cycle) */}
@@ -457,7 +468,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                     {/* Stats grid */}
                     <div className={styles.settingsFocusStatsGrid}>
                       <div className={`${styles.settingsFocusStat} ${styles.settingsFocusStatPrimary}`}>
-                        <span className={styles.settingsFocusStatLabel}>🍅 Pomodoros hoy</span>
+                        <span className={styles.settingsFocusStatLabel}>{t('settings.focus.pomodorosToday')}</span>
                         <span className={`${styles.settingsFocusStatValue} ${styles.settingsFocusStatValuePrimary}`}>
                           {pomodoroStats.totalPomodorosToday} / {pomodoroStats.dailyPomodoroGoal}
                         </span>
@@ -471,17 +482,17 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                         </div>
                       </div>
                       <div className={styles.settingsFocusStat}>
-                        <span className={styles.settingsFocusStatLabel}>📅 Esta semana</span>
+                        <span className={styles.settingsFocusStatLabel}>{t('settings.focus.thisWeek')}</span>
                         <span className={styles.settingsFocusStatValue}>{pomodoroStats.weekTotal}</span>
                       </div>
                       <div className={styles.settingsFocusStat}>
-                        <span className={styles.settingsFocusStatLabel}>🔥 Racha</span>
-                        <span className={styles.settingsFocusStatValue}>{pomodoroStats.streak} días</span>
+                        <span className={styles.settingsFocusStatLabel}>{t('settings.focus.streak')}</span>
+                        <span className={styles.settingsFocusStatValue}>{pomodoroStats.streak} {t('settings.focus.streakDays')}</span>
                       </div>
                     </div>
 
                     <p className={styles.settingsFocusCta}>
-                      Gestiona tu sesión desde la pestaña Focus →
+                      {t('settings.focus.manageFocus')}
                     </p>
                   </>
                 )}
@@ -493,10 +504,10 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
       </div>
       <ConfirmModal
         visible={showResetConfirm}
-        message="¿Estás seguro de que quieres restablecer todos los ajustes a sus valores predeterminados?"
+        message={t('settings.general.resetConfirmMessage')}
         icon="🔄"
         mode="confirm"
-        confirmLabel="Restablecer"
+        confirmLabel={t('settings.general.resetConfirmLabel')}
         destructive={true}
         onConfirm={async () => {
           await resetSettings();

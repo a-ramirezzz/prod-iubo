@@ -12,6 +12,7 @@ import TimerControls from '@/components/TimerControls/TimerControls';
 import TaskList from '@/components/TaskList/TaskList';
 import TaskModal from '@/components/TaskList/TaskModal';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
+import { useLocale } from '@/app/lib/i18n';
 
 import type { Task } from '@/app/types';
 
@@ -92,6 +93,8 @@ export default function TimerView({
   showStopConfirm,
   setShowStopConfirm,
 }: TimerViewProps) {
+  const { t } = useLocale();
+
   // Boolean to determine if the timer setup controls should be shown.
   const showSetupControls = !isMiniMode;
 
@@ -103,17 +106,17 @@ export default function TimerView({
     <>
       <ConfirmModal
         visible={showInvalidTimeModal}
-        message="Por favor, ingresa un tiempo válido."
+        message={t('app.timer.invalidTime')}
         icon="⏱️"
         mode="alert"
         onConfirm={() => setShowInvalidTimeModal(false)}
       />
       <ConfirmModal
         visible={showStopConfirm}
-        message="¿Estás seguro de que quieres detener y reiniciar el temporizador?"
+        message={t('app.timer.confirmStop.message')}
         icon="⏹️"
         mode="confirm"
-        confirmLabel="Detener"
+        confirmLabel={t('app.timer.confirmStop.confirm')}
         destructive={true}
         onConfirm={() => {
           stopTimer();
@@ -123,7 +126,7 @@ export default function TimerView({
       />
 
       {/* Main Timer Display */}
-      <div className='timerDisplay'>
+      <div id="onboarding-timer" className='timerDisplay'>
         <TimerDisplay timeParts={timeParts} isActive={isActive} remainingSeconds={totalSeconds} />
       </div>
 
@@ -160,19 +163,19 @@ export default function TimerView({
       {/* UI Mode Toggles */}
       <div className={styles.miniModeButtonContainer}>
         <button onClick={() => setIsMiniMode(!isMiniMode)} className="button">
-          {isMiniMode ? 'Vista Completa' : 'Modo Mini'}
+          {isMiniMode ? t('app.timer.fullView') : t('app.timer.miniMode')}
         </button>
       </div>
 
       {/* Task Management Section */}
       {showSetupControls && (
-        <div className={styles.taskSection}>
-          <h2 className={styles.taskSectionTitle}>Tareas de la Sesión</h2>
+        <div id="onboarding-tasks" className={styles.taskSection}>
+          <h2 className={styles.taskSectionTitle}>{t('app.tasks.sectionTitle')}</h2>
           {/* Button to open the objectives modal */}
           <button
             className={styles.openTaskModalButton}
             onClick={() => setIsTaskModalOpen(true)}
-            aria-label="Abrir objetivos de hoy"
+            aria-label={t('app.tasks.openModalAria')}
             type="button"
           >
             <span className={styles.pulse}></span>
@@ -204,7 +207,7 @@ export default function TimerView({
           />
           {/* TaskList displays the current session tasks */}
           {tasksLoading && tasks.length === 0 ? (
-            <p style={{ textAlign: 'center', opacity: 0.6 }}>Cargando tareas...</p>
+            <p style={{ textAlign: 'center', opacity: 0.6 }}>{t('app.tasks.loading')}</p>
           ) : (
             <TaskList
               tasks={tasks}
@@ -219,7 +222,7 @@ export default function TimerView({
       {/* Initial User Instruction */}
       {showInstructionText && (
         <p className={styles.instructionText}>
-          Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar.
+          {t('app.timer.instruction')}
         </p>
       )}
     </>

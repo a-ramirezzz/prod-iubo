@@ -1,6 +1,7 @@
 import './globals.css'; 
 import { SettingsProvider } from '@/context/SettingsContext'; 
 import { AuthProvider } from '@/context/AuthContext';
+import { LocaleProvider } from '@/app/lib/i18n';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next";
@@ -86,7 +87,7 @@ export const metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={inter.variable} suppressHydrationWarning>
+    <html className={inter.variable} suppressHydrationWarning>
       {/* Head section with favicon links for maximum browser compatibility */}
       <head>
         <link rel="icon" href="/favicon.png" />
@@ -96,17 +97,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       
       {/* Body with context providers and theme wrapper */}
       <body>
-        {/* Auth Provider - Manages authentication state globally */}
-        <AuthProvider>
-          {/* Settings Provider - Manages application-wide settings state */}
-          <SettingsProvider>
-            {/* Theme Wrapper - Handles dynamic theme switching and styling */}
-            <ThemeWrapper>
-              {/* Page content - Rendered children components */}
-              {children}
-            </ThemeWrapper>
-          </SettingsProvider>
-        </AuthProvider>
+        {/* Locale Provider - Manages i18n locale (landing + app) */}
+        <LocaleProvider>
+          {/* Auth Provider - Manages authentication state globally */}
+          <AuthProvider>
+            {/* Settings Provider - Manages application-wide settings state */}
+            <SettingsProvider>
+              {/* Theme Wrapper - Handles dynamic theme switching and styling */}
+              <ThemeWrapper>
+                {/* Page content - Rendered children components */}
+                {children}
+              </ThemeWrapper>
+            </SettingsProvider>
+          </AuthProvider>
+        </LocaleProvider>
         <Analytics />
       </body>
     </html>

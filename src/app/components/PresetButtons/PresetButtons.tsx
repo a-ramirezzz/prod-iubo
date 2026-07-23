@@ -3,6 +3,7 @@
 // app/components/PresetButtons/PresetButtons.tsx
 import type React from 'react'
 import styles from '@/app/components/PresetButtons/PresetButtons.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 interface PresetButtonsProps {
   onSetTime: (minutes: number) => void
@@ -25,6 +26,7 @@ function addRipple(e: React.MouseEvent<HTMLButtonElement>) {
 }
 
 export default function PresetButtons({ onSetTime, disabled }: PresetButtonsProps) {
+  const { t } = useLocale()
   return (
     <div className={styles.presetsContainer}>
       {PRESET_MINUTES.map((minutes) => (
@@ -33,7 +35,7 @@ export default function PresetButtons({ onSetTime, disabled }: PresetButtonsProp
           onClick={(e) => { addRipple(e); onSetTime(minutes) }}
           className={`button ${styles.presetBtn} ${minutes === 25 ? styles.presetBtnPomodoro : ''}`}
           disabled={disabled}
-          aria-label={`Fijar temporizador en ${minutes} minutos`}
+          aria-label={t('app.timer.presets.ariaLabel').replace('{minutes}', String(minutes))}
         >
           {minutes} min
         </button>
