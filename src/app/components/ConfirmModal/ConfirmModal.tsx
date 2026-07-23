@@ -4,6 +4,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import styles from './ConfirmModal.module.css';
+import { useLocale } from '@/app/lib/i18n';
 
 interface ConfirmModalProps {
   /** Whether the modal is visible */
@@ -35,12 +36,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   message,
   icon,
   mode = 'alert',
-  confirmLabel = 'Aceptar',
-  cancelLabel = 'Cancelar',
+  confirmLabel,
+  cancelLabel,
   destructive = false,
   onConfirm,
   onCancel,
 }) => {
+  const { t } = useLocale();
+  const resolvedConfirmLabel = confirmLabel ?? t('app.confirmModal.defaultConfirm');
+  const resolvedCancelLabel = cancelLabel ?? t('app.confirmModal.defaultCancel');
   const confirmRef = useRef<HTMLButtonElement>(null);
 
   // Auto-focus the confirm button when the modal opens
@@ -76,7 +80,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className={styles.actions}>
           {mode === 'confirm' && (
             <button className={styles.btnCancel} onClick={onCancel}>
-              {cancelLabel}
+              {resolvedCancelLabel}
             </button>
           )}
           <button
@@ -84,7 +88,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             className={destructive ? styles.btnDestructive : styles.btnConfirm}
             onClick={onConfirm}
           >
-            {confirmLabel}
+            {resolvedConfirmLabel}
           </button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import styles from "./SignupForm.module.css";
 import Link from "next/link";
 import { signUp } from "./actions";
 import { translateSupabaseError } from '@/app/lib/errors';
+import { useLocale } from "@/app/lib/i18n";
 import Notification from "@/app/components/Notification/Notification";
 
 /**
@@ -13,6 +14,7 @@ import Notification from "@/app/components/Notification/Notification";
  * with a server action to create the user in Supabase Auth and the database.
  */
 export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean }) {
+  const { t } = useLocale();
   // Form state hooks for each input field
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -52,13 +54,13 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
    * @returns Error message string or null if valid
    */
   const validate = () => {
-    if (username.length < 3) return "El usuario debe tener al menos 3 caracteres.";
-    if (!firstName.trim()) return "El nombre es obligatorio.";
-    if (!lastName.trim()) return "El apellido es obligatorio.";
-    if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return "Correo electrónico inválido.";
-    if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres.";
-    if (password !== confirmPassword) return "Las contraseñas no coinciden.";
-    if (phone && !/^\+?[1-9]\d{6,14}$/.test(phone)) return "Teléfono inválido. Usa formato internacional, ej: +5215551234567";
+    if (username.length < 3) return t("auth.signup.errors.usernameTooShort");
+    if (!firstName.trim()) return t("auth.signup.errors.firstNameRequired");
+    if (!lastName.trim()) return t("auth.signup.errors.lastNameRequired");
+    if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return t("auth.signup.errors.invalidEmail");
+    if (password.length < 6) return t("auth.signup.errors.passwordTooShort");
+    if (password !== confirmPassword) return t("auth.signup.errors.passwordMismatch");
+    if (phone && !/^\+?[1-9]\d{6,14}$/.test(phone)) return t("auth.signup.errors.invalidPhone");
     return null;
   };
 
@@ -96,7 +98,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       }
 
       if (responseData.exists) {
-        setNotification({ visible: true, message: 'El correo electrónico ya está registrado.', icon: iconWarning });
+        setNotification({ visible: true, message: t("auth.signup.errors.emailAlreadyRegistered"), icon: iconWarning });
         setLoading(false);
         return; // Stop the submission process.
       }
@@ -108,7 +110,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
         console.error("An unexpected API error occurred during email check:", apiError);
       }
       // Show a generic error to the user and stop the submission.
-      setNotification({ visible: true, message: 'No se pudo verificar el correo en este momento. Inténtalo de nuevo.', icon: iconError });
+      setNotification({ visible: true, message: t("auth.signup.errors.emailCheckFailed"), icon: iconError });
       setLoading(false);
       return;
     }
@@ -136,7 +138,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       setSuccess(result.success);
       setNotification({
         visible: true,
-        message: "¡Registro exitoso! Por favor, revisa tu correo electrónico para confirmar el email.",
+        message: t("auth.signup.success"),
         icon: iconSuccess,
       });
       // Reset form fields on success
@@ -160,7 +162,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
         onClose={() => setNotification({ ...notification, visible: false })}
       />
     <form className={styles.formContainer} onSubmit={handleSubmit}>
-      <div className={styles.formTitle}>Registro</div>
+      <div className={styles.formTitle}>{t("auth.signup.title")}</div>
       {/* Error message display */}
       {error && <div className={styles.error}>{error}</div>}
       {/* Success message display */}
@@ -169,7 +171,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="text"
-        placeholder="Usuario"
+        placeholder={t("auth.signup.usernamePlaceholder")}
         value={username}
         onChange={e => setUsername(e.target.value)}
         required
@@ -180,7 +182,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="text"
-        placeholder="Primer nombre(s)"
+        placeholder={t("auth.signup.firstNamePlaceholder")}
         value={firstName}
         onChange={e => setFirstName(e.target.value)}
         required
@@ -190,7 +192,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="text"
-        placeholder="Apellido"
+        placeholder={t("auth.signup.lastNamePlaceholder")}
         value={lastName}
         onChange={e => setLastName(e.target.value)}
         required
@@ -200,7 +202,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="email"
-        placeholder="Correo electrónico"
+        placeholder={t("auth.signup.emailPlaceholder")}
         value={email}
         onChange={e => setEmail(e.target.value)}
         required
@@ -210,7 +212,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="tel"
-        placeholder="Teléfono (opcional)"
+        placeholder={t("auth.signup.phonePlaceholder")}
         value={phone}
         onChange={e => setPhone(e.target.value)}
         autoComplete="tel"
@@ -219,7 +221,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="password"
-        placeholder="Contraseña"
+        placeholder={t("auth.signup.passwordPlaceholder")}
         value={password}
         onChange={e => setPassword(e.target.value)}
         required
@@ -230,7 +232,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       <input
         className={styles.input}
         type="password"
-        placeholder="Confirmar contraseña"
+        placeholder={t("auth.signup.confirmPasswordPlaceholder")}
         value={confirmPassword}
         onChange={e => setConfirmPassword(e.target.value)}
         required
@@ -239,12 +241,12 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
       />
       {/* Submit button */}
         <button className={styles.button} type="submit" disabled={loading}>
-          {loading ? "Registrando..." : "Registrarse"}
+          {loading ? t("auth.signup.submitting") : t("auth.signup.submit")}
       </button>
       {/* Link to login page */}
         {!hideLinks && (
       <Link className={styles.link} href="/login">
-        ¿Ya tienes cuenta? Inicia sesión
+        {t("auth.signup.loginLink")}
       </Link>
         )}
     </form>

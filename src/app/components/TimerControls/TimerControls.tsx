@@ -2,6 +2,7 @@
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // app/components/TimerControls/TimerControls.tsx
 import styles from '@/app/components/TimerControls/TimerControls.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 /**
  * Defines the props for the TimerControls component
@@ -26,6 +27,8 @@ export default function TimerControls({
   onReset,
   onStop
 }: TimerControlsProps) {
+  const { t } = useLocale()
+
   // Do not render the controls if no initial time has been set
   if (initialTimeSet === 0) {
     return null
@@ -34,7 +37,7 @@ export default function TimerControls({
   // Determine if the timer has finished to disable the pause/resume button
   const isTimerFinished = totalSeconds === 0 && !isActive
   // Dynamically set the text for the main action button
-  const pauseResumeText = isActive ? 'Pausar' : 'Reanudar'
+  const pauseResumeText = isActive ? t('app.timer.controls.pause') : t('app.timer.controls.resume')
 
   return (
     <div className={styles.controlsContainer}>
@@ -42,7 +45,7 @@ export default function TimerControls({
         onClick={onTogglePause}
         className={`button ${styles.btnPause}`}
         disabled={isTimerFinished}
-        aria-label={isActive ? 'Pausar temporizador' : 'Reanudar temporizador'}
+        aria-label={isActive ? t('app.timer.controls.pauseAria') : t('app.timer.controls.resumeAria')}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
@@ -52,22 +55,22 @@ export default function TimerControls({
       <button
         onClick={onReset}
         className={`button button-reset ${styles.btnReset}`}
-        aria-label="Reiniciar temporizador"
+        aria-label={t('app.timer.controls.resetAria')}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
           <path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/>
         </svg>
-        Reiniciar
+        {t('app.timer.controls.reset')}
       </button>
       <button
         onClick={onStop}
         className={`button button-stop ${styles.btnStop}`}
-        aria-label="Detener temporizador"
+        aria-label={t('app.timer.controls.stopAria')}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <rect x="4" y="4" width="16" height="16" rx="2"/>
         </svg>
-        Detener
+        {t('app.timer.controls.stop')}
       </button>
     </div>
   )

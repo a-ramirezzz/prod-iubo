@@ -1,0 +1,412 @@
+{
+  "common": {
+    "appName": "PROD-UIBO",
+    "languageSwitch": {
+      "es": "ES",
+      "en": "EN"
+    }
+  },
+  "landing": {
+    "hero": {
+      "badge": "BETA",
+      "badgeTooltip": "Esta aplicación está en fase BETA y aún no ha sido lanzada oficialmente.",
+      "subtitle": "Un temporizador de productividad personalizable para máxima concentración.",
+      "cta": "Comenzar Ahora",
+      "stats": {
+        "themes": "⚡ 20+ temas visuales",
+        "sounds": "🎵 Sonidos ambientales",
+        "free": "✅ Gratis y sin anuncios"
+      },
+      "scrollIndicator": "Descubre más",
+      "scrollIndicatorAria": "Explorar más información sobre el proyecto"
+    },
+    "intro": {
+      "title": "¿Qué es y por qué existe?",
+      "paragraph1": "Prod-UIBO es un temporizador de productividad basado en la web, diseñado para ayudar a los usuarios a gestionar su tiempo y mantener el enfoque durante sesiones de trabajo o estudio. A diferencia de otros temporizadores, su núcleo es la personalización, permitiendo al usuario adaptar completamente el entorno visual y sonoro para crear un espacio de concentración ideal.",
+      "paragraph2": "La mayoría de las herramientas de productividad son funcionales pero visualmente aburridas, o son estéticas pero carecen de flexibilidad. Prod-UIBO nace de la necesidad de tener una herramienta que no obligue a elegir. El objetivo era crear un temporizador que no solo fuera un cronómetro, sino un verdadero entorno de trabajo personalizable que el usuario realmente disfrute usar, combinando un diseño moderno con una configuración detallada.",
+      "highlightPrefix": "Prod-UIBO no es solo un cronómetro — es un ",
+      "highlightStrong": "entorno de trabajo completo",
+      "highlightSuffix": " que se adapta a ti, no al revés."
+    },
+    "pomodoro": {
+      "title": "La Técnica Pomodoro",
+      "intro": "Prod-UIBO implementa la famosa técnica Pomodoro, un método probado para maximizar la productividad y mantener el enfoque mental.",
+      "steps": [
+        {
+          "title": "Elige una tarea",
+          "description": "Selecciona una actividad específica que requiera tu atención completa"
+        },
+        {
+          "title": "25 minutos de concentración",
+          "description": "Ajusta el temporizador y trabaja sin interrupciones hasta que suene"
+        },
+        {
+          "title": "Pausa de 5 minutos",
+          "description": "Toma un descanso corto para recargar tu energía mental"
+        },
+        {
+          "title": "Repite el ciclo",
+          "description": "Después de 4 pomodoros, toma una pausa larga de 15-30 minutos"
+        }
+      ],
+      "benefitsTitle": "Beneficios de la Técnica Pomodoro:",
+      "benefits": [
+        "Mejora el enfoque",
+        "Gestión del tiempo",
+        "Reduce la fatiga mental",
+        "Aumenta la productividad"
+      ]
+    },
+    "features": {
+      "title": "Características Principales",
+      "cards": [
+        {
+          "title": "Personalización Inmersiva",
+          "description": "Elige entre temas estáticos y fondos de video animados. Cada tema ajusta los colores de la interfaz y del texto para garantizar la legibilidad y crear una atmósfera única."
+        },
+        {
+          "title": "Sonidos Ambientales",
+          "description": "Integra un reproductor de sonidos de fondo (lluvia, música, etc.) con control de volumen para bloquear distracciones y mejorar la concentración."
+        },
+        {
+          "title": "Flexibilidad Total",
+          "description": "Desde temporizadores predefinidos hasta entrada manual y una lista de tareas integrada. Incluye un Modo Mini para una vista compacta y sin distracciones."
+        }
+      ]
+    },
+    "gallery": {
+      "title": "El Proyecto en Acción",
+      "staticTheme": "Tema Estático",
+      "staticThemeAlt": "Captura de pantalla - Tema Estático",
+      "animatedTheme": "Tema Animado",
+      "videoFallback": "Tu navegador no soporta el elemento de video."
+    },
+    "status": {
+      "title": "Estado Actual",
+      "betaBadge": "BETA",
+      "betaNotice": "Esta aplicación está en fase de prueba y aún no ha sido lanzada oficialmente. Puede contener errores o cambios frecuentes.",
+      "items": [
+        "Software: Versión 1.0 funcional y desplegada. La aplicación web es completamente operativa.",
+        "Características Implementadas: Sistema de temporizador completo (iniciar, pausar, resetear, detener), gestión de tareas, y un panel de configuración robusto con ajustes generales, sistema de temas (estáticos y animados) y control de sonidos de fondo con volumen.",
+        "Próximamente: Sincronización en la nube para guardar tus tareas y configuraciones, y aplicación móvil para acceder a Prod-UIBO desde cualquier lugar."
+      ]
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "items": [
+        {
+          "title": "Temporizador Pomodoro",
+          "status": "done"
+        },
+        {
+          "title": "Sonidos ambientales",
+          "status": "done"
+        },
+        {
+          "title": "Sincronización en la nube",
+          "status": "next"
+        },
+        {
+          "title": "App móvil",
+          "status": "next"
+        }
+      ]
+    },
+    "footer": {
+      "brand": "PROD-UIBO",
+      "brandBy": "by Alan Rodrigo Ramírez",
+      "logoAlt": "Prod-UIBO Logo",
+      "description": "El compañero de productividad definitivo para quienes buscan lograr más, reducir el estrés y dominar su tiempo con la técnica Pomodoro y un entorno visual y sonoro totalmente personalizable.",
+      "miniRoadmapTitle": "Mini Roadmap",
+      "miniRoadmapItems": [
+        "Pomodoro",
+        "Sonidos",
+        "Nube",
+        "App móvil"
+      ],
+      "navLinks": {
+        "inicio": "Inicio",
+        "informacion": "Información",
+        "caracteristicas": "Características",
+        "galeria": "Galería",
+        "estado": "Estado",
+        "roadmap": "Roadmap",
+        "app": "Usar la Aplicación"
+      },
+      "navAria": "Navegación del pie de página",
+      "copyright": "© 2024 Alan Rodrigo Ramírez Luna",
+      "legal": {
+        "privacy": "Política de Privacidad",
+        "terms": "Términos de Servicio",
+        "cookies": "Política de Cookies"
+      }
+    }
+  },
+  "app": {
+    "tabs": {
+      "timer": "Temporizador",
+      "focus": "Focus"
+    },
+    "notification": {
+      "timeUp": "¡Tiempo cumplido!\nTu sesión de productividad ha finalizado.",
+      "accept": "Aceptar",
+      "acceptAria": "Aceptar y cerrar notificación"
+    },
+    "timer": {
+      "controls": {
+        "pause": "Pausar",
+        "resume": "Reanudar",
+        "pauseAria": "Pausar temporizador",
+        "resumeAria": "Reanudar temporizador",
+        "reset": "Reiniciar",
+        "resetAria": "Reiniciar temporizador",
+        "stop": "Detener",
+        "stopAria": "Detener temporizador"
+      },
+      "display": {
+        "oneMinute": "1 minuto restante",
+        "tenSeconds": "10 segundos restantes",
+        "timeUp": "Tiempo terminado"
+      },
+      "presets": {
+        "ariaLabel": "Fijar temporizador en {minutes} minutos"
+      },
+      "customInput": {
+        "hoursAria": "Horas",
+        "hoursTitle": "Horas (0-72)",
+        "minutesAria": "Minutos",
+        "minutesTitle": "Minutos (0-59)",
+        "start": "Iniciar",
+        "startAria": "Iniciar temporizador personalizado"
+      },
+      "invalidTime": "Por favor, ingresa un tiempo válido.",
+      "confirmStop": {
+        "message": "¿Estás seguro de que quieres detener y reiniciar el temporizador?",
+        "confirm": "Detener"
+      },
+      "miniMode": "Modo Mini",
+      "fullView": "Vista Completa",
+      "instruction": "Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar."
+    },
+    "tasks": {
+      "sectionTitle": "Tareas de la Sesión",
+      "openModalAria": "Abrir objetivos de hoy",
+      "loading": "Cargando tareas...",
+      "empty": "Aún no hay tareas. ¡Agrega una para comenzar!",
+      "deleteAria": "Eliminar tarea: {text}",
+      "modal": {
+        "closeAria": "Cerrar",
+        "title": "¿Cuáles son los objetivos de hoy?",
+        "placeholder": "Agregar un nuevo objetivo...",
+        "empty": "Aún no hay objetivos. ¡Agrega uno para comenzar!",
+        "deleteAria": "Eliminar objetivo"
+      }
+    },
+    "settings": {
+      "openButton": "Abrir configuración",
+      "tooltip": "Configuración"
+    },
+    "confirmModal": {
+      "defaultConfirm": "Aceptar",
+      "defaultCancel": "Cancelar"
+    }
+  },
+  "auth": {
+    "tabs": {
+      "login": "Iniciar sesión",
+      "signup": "Registrarse"
+    },
+    "loadingApp": "Cargando aplicación…",
+    "login": {
+      "title": "Iniciar Sesión",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Ingresar",
+      "submitting": "Ingresando...",
+      "signupLink": "¿No tienes cuenta? Regístrate",
+      "sessionExpired": "Tu sesión ha expirado. Por favor, inicia sesión de nuevo.",
+      "errors": {
+        "invalidEmail": "Correo electrónico inválido.",
+        "passwordTooShort": "La contraseña debe tener al menos 6 caracteres."
+      }
+    },
+    "signup": {
+      "title": "Registro",
+      "usernamePlaceholder": "Usuario",
+      "firstNamePlaceholder": "Primer nombre(s)",
+      "lastNamePlaceholder": "Apellido",
+      "emailPlaceholder": "Correo electrónico",
+      "phonePlaceholder": "Teléfono (opcional)",
+      "passwordPlaceholder": "Contraseña",
+      "confirmPasswordPlaceholder": "Confirmar contraseña",
+      "submit": "Registrarse",
+      "submitting": "Registrando...",
+      "loginLink": "¿Ya tienes cuenta? Inicia sesión",
+      "success": "¡Registro exitoso! Por favor, revisa tu correo electrónico para confirmar el email.",
+      "errors": {
+        "usernameTooShort": "El usuario debe tener al menos 3 caracteres.",
+        "firstNameRequired": "El nombre es obligatorio.",
+        "lastNameRequired": "El apellido es obligatorio.",
+        "invalidEmail": "Correo electrónico inválido.",
+        "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+        "passwordMismatch": "Las contraseñas no coinciden.",
+        "invalidPhone": "Teléfono inválido. Usa formato internacional, ej: +5215551234567",
+        "emailAlreadyRegistered": "El correo electrónico ya está registrado.",
+        "emailCheckFailed": "No se pudo verificar el correo en este momento. Inténtalo de nuevo."
+      }
+    },
+    "forgotPassword": {
+      "title": "Recuperar contraseña",
+      "subtitle": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+      "emailPlaceholder": "Correo electrónico",
+      "submit": "Enviar enlace",
+      "submitting": "Enviando...",
+      "sent": "Enlace enviado",
+      "linkSent": "Te enviamos un enlace de recuperación. Revisa tu correo electrónico.",
+      "backToLogin": "Volver a iniciar sesión",
+      "errors": {
+        "emailRequired": "El correo electrónico es obligatorio.",
+        "invalidEmail": "Correo electrónico inválido."
+      }
+    },
+    "resetPassword": {
+      "verifyingTitle": "Verificando enlace…",
+      "verifyingSubtitle": "Un momento, por favor.",
+      "invalidTitle": "Enlace no válido",
+      "invalidSubtitle": "Este enlace ha expirado o no es válido. Solicita uno nuevo.",
+      "requestNewLink": "Solicitar un nuevo enlace",
+      "title": "Nueva contraseña",
+      "subtitle": "Ingresa y confirma tu nueva contraseña.",
+      "newPasswordPlaceholder": "Nueva contraseña",
+      "confirmPasswordPlaceholder": "Confirmar contraseña",
+      "submit": "Actualizar contraseña",
+      "submitting": "Actualizando...",
+      "success": "Contraseña actualizada correctamente.",
+      "backToLogin": "Volver a iniciar sesión",
+      "errors": {
+        "bothRequired": "Ambos campos son obligatorios.",
+        "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+        "passwordMismatch": "Las contraseñas no coinciden."
+      }
+    }
+  },
+  "settings": {
+    "title": "CONFIGURACIÓN",
+    "closeAria": "Cerrar configuración",
+    "sections": {
+      "general": "General",
+      "themes": "Temas",
+      "sounds": "Sonidos",
+      "focus": "Focus"
+    },
+    "general": {
+      "miniMode": "Iniciar en Modo Mini",
+      "confirmStop": "Confirmación al Detener",
+      "pipClassic": "Activar Contador Flotante (PiP)",
+      "pipClassicDisabledHint": "Desactiva la vista horizontal flotante para usar esta opción",
+      "pipHorizontal": "Activar Vista Horizontal Flotante",
+      "pipHorizontalBrowser": "Disponible solo en Chrome/Edge de escritorio",
+      "pipHorizontalDisabledHint": "Desactiva el contador flotante (PiP) para usar esta opción",
+      "language": "Idioma",
+      "languageEs": "Español",
+      "languageEn": "English",
+      "desktopNotifications": "Habilitar Notificaciones de Escritorio",
+      "resetSettings": "Restablecer Ajustes",
+      "resetConfirmMessage": "¿Estás seguro de que quieres restablecer todos los ajustes a sus valores predeterminados?",
+      "resetConfirmLabel": "Restablecer",
+      "logout": "Cerrar sesión",
+      "loggingOut": "Cerrando sesión..."
+    },
+    "themes": {
+      "appearance": "Apariencia",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "static": "Temas Estáticos",
+      "animated": "Temas Animados"
+    },
+    "sounds": {
+      "background": "Sonido de fondo",
+      "volume": "Volumen"
+    },
+    "focus": {
+      "dailyGoal": "Meta diaria de Pomodoros",
+      "dailyGoalHelper": "Establece cuántos pomodoros quieres completar cada día (1–20).",
+      "statsUnavailable": "Las estadísticas estarán disponibles una vez inicies una sesión.",
+      "currentSession": "Sesión actual",
+      "pomodorosToday": "🍅 Pomodoros hoy",
+      "thisWeek": "📅 Esta semana",
+      "streak": "🔥 Racha",
+      "streakDays": "días",
+      "manageFocus": "Gestiona tu sesión desde la pestaña Focus →",
+      "phases": {
+        "work": "Trabajando",
+        "short_break": "Pausa corta",
+        "long_break": "Pausa larga",
+        "idle": "Sin sesión activa"
+      }
+    },
+    "errors": {
+      "loadFailed": "No se pudieron cargar los ajustes. Usando valores predeterminados.",
+      "saveFailed": "No se pudieron guardar los ajustes. Verifica tu conexión.",
+      "resetFailed": "No se pudieron restablecer los ajustes. Verifica tu conexión."
+    }
+  },
+  "focus": {
+    "cycle": {
+      "title": "Ciclo actual",
+      "phases": {
+        "work": "Trabajando",
+        "short_break": "Pausa corta",
+        "long_break": "Pausa larga",
+        "idle": "Listo para comenzar"
+      },
+      "cta": {
+        "start": "Iniciar Pomodoro",
+        "startNext": "Iniciar siguiente Pomodoro",
+        "working": "En sesión de trabajo...",
+        "shortBreak": "Iniciar Pausa Corta (5 min)",
+        "longBreak": "Iniciar Pausa Larga (15 min)"
+      }
+    },
+    "log": {
+      "title": "Hoy",
+      "error": "No se pudieron cargar las estadísticas",
+      "empty": "Aún no has completado ningún pomodoro hoy. ¡Empieza tu primera sesión!",
+      "noTask": "Sin tarea"
+    },
+    "chart": {
+      "title": "Últimos 7 días"
+    },
+    "taskBreakdown": {
+      "title": "Enfoque por tarea",
+      "subtitle": "Últimos 7 días",
+      "empty": "Completa pomodoros con tareas asignadas para ver tu enfoque semanal."
+    },
+    "stats": {
+      "title": "Estadísticas",
+      "today": "Hoy",
+      "thisWeek": "Esta semana",
+      "dailyAverage": "Promedio diario",
+      "currentStreak": "Racha actual",
+      "day": "día",
+      "days": "días"
+    }
+  },
+  "onboarding": {
+    "steps": [
+      {
+        "message": "Este es tu temporizador Pomodoro. Configura un tiempo e inicia una sesión de concentración."
+      },
+      {
+        "message": "Gestiona tus objetivos aquí. Agrega tareas, sigue tu progreso y mantente organizado."
+      },
+      {
+        "message": "Revisa tus estadísticas en la pestaña Focus: progreso diario, racha y desglose por tarea."
+      }
+    ],
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "finish": "Finalizar"
+  }
+}

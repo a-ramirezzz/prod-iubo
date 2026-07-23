@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Task } from '@/app/types'
 import styles from '@/app/components/TaskList/TaskList.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 interface TaskListProps {
   tasks: Task[]
@@ -13,6 +14,7 @@ interface TaskListProps {
 }
 
 export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisabled }: TaskListProps) {
+  const { t } = useLocale()
   const [enteredIds, setEnteredIds] = useState<Set<string>>(new Set())
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set())
   const [completingIds, setCompletingIds] = useState<Set<string>>(new Set())
@@ -52,7 +54,7 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisab
     return (
       <div className={styles.emptyState}>
         <span className={styles.emptyStateIcon}>📋</span>
-        <span>Aún no hay tareas. ¡Agrega una para comenzar!</span>
+        <span>{t('app.tasks.empty')}</span>
       </div>
     )
   }
@@ -94,7 +96,7 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisab
               onClick={() => handleDelete(task.id)}
               className={styles.deleteButton}
               disabled={inputDisabled || isDeleting}
-              aria-label={`Delete task: ${task.text}`}
+              aria-label={t('app.tasks.deleteAria').replace('{text}', task.text)}
             >
               ✕
             </button>

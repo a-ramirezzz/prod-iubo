@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './TaskModal.module.css';
 import type { Task } from '@/app/types';
 import CelebrationEffect from './CelebrationEffect';
+import { useLocale } from '@/app/lib/i18n';
 import {
   DndContext,
   closestCenter,
@@ -42,6 +43,7 @@ interface SortableTaskItemProps {
 }
 
 function SortableTaskItem({ task, onToggle, onDelete }: SortableTaskItemProps) {
+  const { t } = useLocale();
   const {
     attributes,
     listeners,
@@ -77,7 +79,7 @@ function SortableTaskItem({ task, onToggle, onDelete }: SortableTaskItemProps) {
       <button
         className={styles.deleteButton}
         onClick={() => onDelete(task.id)}
-        aria-label="Eliminar objetivo"
+        aria-label={t('app.tasks.modal.deleteAria')}
         type="button"
       >
         ✕
@@ -87,6 +89,7 @@ function SortableTaskItem({ task, onToggle, onDelete }: SortableTaskItemProps) {
 }
 
 export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleTask, onDeleteTask, onReorderTasks }: TaskModalProps) {
+  const { t } = useLocale();
   // Local state for the new task input
   const [newTask, setNewTask] = useState('');
   const [showCelebration, setShowCelebration] = useState(false);
@@ -159,9 +162,9 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
       <div className={styles.backdrop} onClick={onClose} />
       <div className={styles.modal}>
         {/* Close button for the modal */}
-        <button className={styles.closeButton} onClick={onClose} aria-label="Cerrar">✕</button>
+        <button className={styles.closeButton} onClick={onClose} aria-label={t('app.tasks.modal.closeAria')}>✕</button>
         {/* Modal title */}
-        <h2 className={styles.title}>¿Cuáles son los objetivos de hoy?</h2>
+        <h2 className={styles.title}>{t('app.tasks.modal.title')}</h2>
         {/* Progress bar section */}
         <div className={styles.progressBarContainer}>
           <span>0%</span>
@@ -184,7 +187,7 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
               type="text"
               value={newTask}
               onChange={e => setNewTask(e.target.value)}
-              placeholder="Agregar un nuevo objetivo..."
+              placeholder={t('app.tasks.modal.placeholder')}
               className={styles.addTaskInput}
               maxLength={80}
             />
@@ -203,7 +206,7 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
                 {tasks.length === 0 && (
                   <li className={styles.noTasks} style={{ listStyle: 'none', textAlign: 'center', padding: '1.5rem 0' }}>
                     <span style={{ display: 'block', fontSize: '2rem', opacity: 0.4, marginBottom: '0.5rem' }}>🎯</span>
-                    Aún no hay objetivos. ¡Agrega uno para comenzar!
+                    {t('app.tasks.modal.empty')}
                   </li>
                 )}
                 {tasks.map(task => (

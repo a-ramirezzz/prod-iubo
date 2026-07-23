@@ -1,5 +1,6 @@
 // app/components/CustomTimeInput/CustomTimeInput.tsx
 import styles from '@/app/components/CustomTimeInput/CustomTimeInput.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 /**
  * Interface for the CustomTimeInput component's props
@@ -27,6 +28,7 @@ export default function CustomTimeInput({
   disabled,
   inputsDisabled
 }: CustomTimeInputProps) {
+  const { t } = useLocale()
   // Handles changes for a given time input (hours or minutes)
   const handleTimeChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -63,8 +65,8 @@ export default function CustomTimeInput({
         onChange={(e) => handleTimeChange(e, 72, onHoursChange)}
         className={`${styles.customInput} ${styles.customInputHours}`}
         disabled={inputsDisabled}
-        aria-label="Horas"
-        title="Horas (0-72)"
+        aria-label={t('app.timer.customInput.hoursAria')}
+        title={t('app.timer.customInput.hoursTitle')}
       />
       <span className={styles.customInputSeparator} aria-hidden="true">:</span>
       <input
@@ -75,16 +77,16 @@ export default function CustomTimeInput({
         onChange={(e) => handleTimeChange(e, 59, onMinutesChange)}
         className={`${styles.customInput} ${styles.customInputMinutes}`}
         disabled={inputsDisabled}
-        aria-label="Minutos"
-        title="Minutos (0-59)"
+        aria-label={t('app.timer.customInput.minutesAria')}
+        title={t('app.timer.customInput.minutesTitle')}
       />
       <button
         onClick={onStart}
         className="button"
         disabled={disabled}
-        aria-label="Iniciar temporizador personalizado"
+        aria-label={t('app.timer.customInput.startAria')}
       >
-        Iniciar
+        {t('app.timer.customInput.start')}
       </button>
     </div>
   )

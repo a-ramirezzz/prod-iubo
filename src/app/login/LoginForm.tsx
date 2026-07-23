@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from '@/app/lib/supabase/client';
 import { translateSupabaseError } from '@/app/lib/errors';
+import { useLocale } from "@/app/lib/i18n";
 import landingStyles from "@/app/LandingPage.module.css";
 import Notification from "@/app/components/Notification/Notification";
 
@@ -16,6 +17,7 @@ import Notification from "@/app/components/Notification/Notification";
  */
 export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }) {
   const supabase = createClient();
+  const { t } = useLocale();
   // Form state hooks for each input field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,8 +49,8 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
    * @returns Error message string or null if valid
    */
   const validate = () => {
-    if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return "Correo electrónico inválido.";
-    if (password.length < 6) return "La contraseña debe tener al menos 6 caracteres.";
+    if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) return t("auth.login.errors.invalidEmail");
+    if (password.length < 6) return t("auth.login.errors.passwordTooShort");
     return null;
   };
 
@@ -102,12 +104,12 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
         <div className={landingStyles.loadingOverlay}>
           <div className={landingStyles.spinnerWrapper}>
             <div className={landingStyles.spinner}></div>
-            <span className={landingStyles.loadingText}>Cargando aplicación…</span>
+            <span className={landingStyles.loadingText}>{t("auth.loadingApp")}</span>
           </div>
         </div>
       )}
       <form className={styles.formContainer} onSubmit={handleSubmit}>
-        <div className={styles.formTitle}>Iniciar Sesión</div>
+        <div className={styles.formTitle}>{t("auth.login.title")}</div>
         {/* Persistent, informational banner shown when the session expired */}
         {sessionExpired && (
           <div
@@ -123,7 +125,7 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
               marginBottom: "0.75rem",
             }}
           >
-            Tu sesión ha expirado. Por favor, inicia sesión de nuevo.
+            {t("auth.login.sessionExpired")}
           </div>
         )}
         {/* Error message display */}
@@ -131,7 +133,7 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
         <input
           className={styles.input}
           type="email"
-          placeholder="Correo electrónico"
+          placeholder={t("auth.login.emailPlaceholder")}
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
@@ -141,7 +143,7 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
         <input
           className={styles.input}
           type="password"
-          placeholder="Contraseña"
+          placeholder={t("auth.login.passwordPlaceholder")}
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
@@ -162,16 +164,16 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
           onMouseOver={e => (e.currentTarget.style.textDecoration = "underline")}
           onMouseOut={e => (e.currentTarget.style.textDecoration = "none")}
         >
-          ¿Olvidaste tu contraseña?
+          {t("auth.login.forgotPassword")}
         </Link>
         {/* Submit button */}
         <button className={styles.button} type="submit" disabled={loading}>
-          {loading ? "Ingresando..." : "Ingresar"}
+          {loading ? t("auth.login.submitting") : t("auth.login.submit")}
         </button>
         {/* Link to signup page */}
         {!hideLinks && (
         <Link className={styles.link} href="/signup">
-          ¿No tienes cuenta? Regístrate
+          {t("auth.login.signupLink")}
         </Link>
         )}
       </form>

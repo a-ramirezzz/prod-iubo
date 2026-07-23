@@ -1,0 +1,412 @@
+{
+  "common": {
+    "appName": "PROD-UIBO",
+    "languageSwitch": {
+      "es": "ES",
+      "en": "EN"
+    }
+  },
+  "landing": {
+    "hero": {
+      "badge": "BETA",
+      "badgeTooltip": "This app is in BETA and has not been officially released yet.",
+      "subtitle": "A customizable productivity timer for maximum focus and deep concentration.",
+      "cta": "Get Started Now",
+      "stats": {
+        "themes": "⚡ 20+ visual themes",
+        "sounds": "🎵 Ambient sounds",
+        "free": "✅ Free and ad-free"
+      },
+      "scrollIndicator": "Discover more",
+      "scrollIndicatorAria": "Explore more information about the project"
+    },
+    "intro": {
+      "title": "What is it and why does it exist?",
+      "paragraph1": "Prod-UIBO is a web-based productivity timer designed to help users manage their time and stay focused during work or study sessions. Unlike other timers, its core is personalization, letting users fully adapt the visual and audio environment to create an ideal space for concentration.",
+      "paragraph2": "Most productivity tools are functional but visually dull, or beautiful but lacking flexibility. Prod-UIBO was born from the need for a tool that doesn't force you to choose. The goal was to build a timer that isn't just a stopwatch, but a truly customizable workspace that users actually enjoy using, combining modern design with detailed configuration.",
+      "highlightPrefix": "Prod-UIBO isn't just a stopwatch — it's a ",
+      "highlightStrong": "complete work environment",
+      "highlightSuffix": " that adapts to you, not the other way around."
+    },
+    "pomodoro": {
+      "title": "The Pomodoro Technique",
+      "intro": "Prod-UIBO implements the famous Pomodoro technique, a proven method to maximize productivity and keep your mind focused.",
+      "steps": [
+        {
+          "title": "Choose a task",
+          "description": "Pick a specific activity that requires your full attention"
+        },
+        {
+          "title": "25 minutes of focus",
+          "description": "Set the timer and work without interruptions until it rings"
+        },
+        {
+          "title": "5-minute break",
+          "description": "Take a short break to recharge your mental energy"
+        },
+        {
+          "title": "Repeat the cycle",
+          "description": "After 4 pomodoros, take a long break of 15-30 minutes"
+        }
+      ],
+      "benefitsTitle": "Benefits of the Pomodoro Technique:",
+      "benefits": [
+        "Improves focus",
+        "Time management",
+        "Reduces mental fatigue",
+        "Boosts productivity"
+      ]
+    },
+    "features": {
+      "title": "Key Features",
+      "cards": [
+        {
+          "title": "Immersive Personalization",
+          "description": "Choose between static themes and animated video backgrounds. Each theme adjusts the interface and text colors to ensure readability and create a unique atmosphere."
+        },
+        {
+          "title": "Ambient Sounds",
+          "description": "Includes a background sound player (rain, music, etc.) with volume control to block out distractions and improve concentration."
+        },
+        {
+          "title": "Total Flexibility",
+          "description": "From preset timers to manual input and a built-in task list. Includes a Mini Mode for a compact, distraction-free view."
+        }
+      ]
+    },
+    "gallery": {
+      "title": "The Project in Action",
+      "staticTheme": "Static Theme",
+      "staticThemeAlt": "Screenshot - Static Theme",
+      "animatedTheme": "Animated Theme",
+      "videoFallback": "Your browser does not support the video element."
+    },
+    "status": {
+      "title": "Current Status",
+      "betaBadge": "BETA",
+      "betaNotice": "This app is in testing and has not been officially released yet. It may contain bugs or frequent changes.",
+      "items": [
+        "Software: Version 1.0 functional and deployed. The web app is fully operational.",
+        "Implemented Features: Complete timer system (start, pause, reset, stop), task management, and a robust settings panel with general options, a theme system (static and animated) and background sound control with volume.",
+        "Coming Soon: Cloud sync to save your tasks and settings, and a mobile app to access Prod-UIBO from anywhere."
+      ]
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "items": [
+        {
+          "title": "Pomodoro Timer",
+          "status": "done"
+        },
+        {
+          "title": "Ambient sounds",
+          "status": "done"
+        },
+        {
+          "title": "Cloud sync",
+          "status": "next"
+        },
+        {
+          "title": "Mobile app",
+          "status": "next"
+        }
+      ]
+    },
+    "footer": {
+      "brand": "PROD-UIBO",
+      "brandBy": "by Alan Rodrigo Ramírez",
+      "logoAlt": "Prod-UIBO Logo",
+      "description": "The ultimate productivity companion for those who want to achieve more, reduce stress, and master their time with the Pomodoro technique and a fully customizable visual and audio environment.",
+      "miniRoadmapTitle": "Mini Roadmap",
+      "miniRoadmapItems": [
+        "Pomodoro",
+        "Sounds",
+        "Cloud",
+        "Mobile app"
+      ],
+      "navLinks": {
+        "inicio": "Home",
+        "informacion": "Information",
+        "caracteristicas": "Features",
+        "galeria": "Gallery",
+        "estado": "Status",
+        "roadmap": "Roadmap",
+        "app": "Use the App"
+      },
+      "navAria": "Footer Navigation",
+      "copyright": "© 2024 Alan Rodrigo Ramírez Luna",
+      "legal": {
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "cookies": "Cookie Policy"
+      }
+    }
+  },
+  "app": {
+    "tabs": {
+      "timer": "Timer",
+      "focus": "Focus"
+    },
+    "notification": {
+      "timeUp": "Time's up!\nYour productivity session has ended.",
+      "accept": "Accept",
+      "acceptAria": "Accept and close notification"
+    },
+    "timer": {
+      "controls": {
+        "pause": "Pause",
+        "resume": "Resume",
+        "pauseAria": "Pause timer",
+        "resumeAria": "Resume timer",
+        "reset": "Reset",
+        "resetAria": "Reset timer",
+        "stop": "Stop",
+        "stopAria": "Stop timer"
+      },
+      "display": {
+        "oneMinute": "1 minute remaining",
+        "tenSeconds": "10 seconds remaining",
+        "timeUp": "Time's up"
+      },
+      "presets": {
+        "ariaLabel": "Set timer to {minutes} minutes"
+      },
+      "customInput": {
+        "hoursAria": "Hours",
+        "hoursTitle": "Hours (0-72)",
+        "minutesAria": "Minutes",
+        "minutesTitle": "Minutes (0-59)",
+        "start": "Start",
+        "startAria": "Start custom timer"
+      },
+      "invalidTime": "Please enter a valid time.",
+      "confirmStop": {
+        "message": "Are you sure you want to stop and reset the timer?",
+        "confirm": "Stop"
+      },
+      "miniMode": "Mini Mode",
+      "fullView": "Full View",
+      "instruction": "Select a preset time or enter a custom time to begin."
+    },
+    "tasks": {
+      "sectionTitle": "Session Tasks",
+      "openModalAria": "Open today's objectives",
+      "loading": "Loading tasks...",
+      "empty": "No tasks yet. Add one to get started!",
+      "deleteAria": "Delete task: {text}",
+      "modal": {
+        "closeAria": "Close",
+        "title": "What are today's objectives?",
+        "placeholder": "Add a new objective...",
+        "empty": "No objectives yet. Add one to get started!",
+        "deleteAria": "Delete objective"
+      }
+    },
+    "settings": {
+      "openButton": "Open settings",
+      "tooltip": "Settings"
+    },
+    "confirmModal": {
+      "defaultConfirm": "Accept",
+      "defaultCancel": "Cancel"
+    }
+  },
+  "auth": {
+    "tabs": {
+      "login": "Log in",
+      "signup": "Sign up"
+    },
+    "loadingApp": "Loading app…",
+    "login": {
+      "title": "Log In",
+      "emailPlaceholder": "Email address",
+      "passwordPlaceholder": "Password",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "signupLink": "Don't have an account? Sign up",
+      "sessionExpired": "Your session has expired. Please log in again.",
+      "errors": {
+        "invalidEmail": "Invalid email address.",
+        "passwordTooShort": "Password must be at least 6 characters."
+      }
+    },
+    "signup": {
+      "title": "Sign Up",
+      "usernamePlaceholder": "Username",
+      "firstNamePlaceholder": "First name(s)",
+      "lastNamePlaceholder": "Last name",
+      "emailPlaceholder": "Email address",
+      "phonePlaceholder": "Phone (optional)",
+      "passwordPlaceholder": "Password",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "submit": "Sign up",
+      "submitting": "Signing up...",
+      "loginLink": "Already have an account? Log in",
+      "success": "Registration successful! Please check your email to confirm your account.",
+      "errors": {
+        "usernameTooShort": "Username must be at least 3 characters.",
+        "firstNameRequired": "First name is required.",
+        "lastNameRequired": "Last name is required.",
+        "invalidEmail": "Invalid email address.",
+        "passwordTooShort": "Password must be at least 6 characters.",
+        "passwordMismatch": "Passwords do not match.",
+        "invalidPhone": "Invalid phone number. Use international format, e.g. +5215551234567",
+        "emailAlreadyRegistered": "This email address is already registered.",
+        "emailCheckFailed": "We couldn't verify the email right now. Please try again."
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter your email and we'll send you a link to reset your password.",
+      "emailPlaceholder": "Email address",
+      "submit": "Send link",
+      "submitting": "Sending...",
+      "sent": "Link sent",
+      "linkSent": "We've sent you a recovery link. Please check your email.",
+      "backToLogin": "Back to log in",
+      "errors": {
+        "emailRequired": "Email address is required.",
+        "invalidEmail": "Invalid email address."
+      }
+    },
+    "resetPassword": {
+      "verifyingTitle": "Verifying link…",
+      "verifyingSubtitle": "One moment, please.",
+      "invalidTitle": "Invalid link",
+      "invalidSubtitle": "This link has expired or is not valid. Please request a new one.",
+      "requestNewLink": "Request a new link",
+      "title": "New password",
+      "subtitle": "Enter and confirm your new password.",
+      "newPasswordPlaceholder": "New password",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "submit": "Update password",
+      "submitting": "Updating...",
+      "success": "Password updated successfully.",
+      "backToLogin": "Back to log in",
+      "errors": {
+        "bothRequired": "Both fields are required.",
+        "passwordTooShort": "Password must be at least 6 characters.",
+        "passwordMismatch": "Passwords do not match."
+      }
+    }
+  },
+  "settings": {
+    "title": "SETTINGS",
+    "closeAria": "Close settings",
+    "sections": {
+      "general": "General",
+      "themes": "Themes",
+      "sounds": "Sounds",
+      "focus": "Focus"
+    },
+    "general": {
+      "miniMode": "Start in Mini Mode",
+      "confirmStop": "Confirm on Stop",
+      "pipClassic": "Enable Floating Timer (PiP)",
+      "pipClassicDisabledHint": "Turn off the floating horizontal view to use this option",
+      "pipHorizontal": "Enable Floating Horizontal View",
+      "pipHorizontalBrowser": "Available only on desktop Chrome/Edge",
+      "pipHorizontalDisabledHint": "Turn off the floating timer (PiP) to use this option",
+      "language": "Language",
+      "languageEs": "Español",
+      "languageEn": "English",
+      "desktopNotifications": "Enable Desktop Notifications",
+      "resetSettings": "Reset Settings",
+      "resetConfirmMessage": "Are you sure you want to reset all settings to their default values?",
+      "resetConfirmLabel": "Reset",
+      "logout": "Log out",
+      "loggingOut": "Logging out..."
+    },
+    "themes": {
+      "appearance": "Appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "static": "Static Themes",
+      "animated": "Animated Themes"
+    },
+    "sounds": {
+      "background": "Background sound",
+      "volume": "Volume"
+    },
+    "focus": {
+      "dailyGoal": "Daily Pomodoro Goal",
+      "dailyGoalHelper": "Set how many pomodoros you want to complete each day (1–20).",
+      "statsUnavailable": "Statistics will be available once you start a session.",
+      "currentSession": "Current session",
+      "pomodorosToday": "🍅 Pomodoros today",
+      "thisWeek": "📅 This week",
+      "streak": "🔥 Streak",
+      "streakDays": "days",
+      "manageFocus": "Manage your session from the Focus tab →",
+      "phases": {
+        "work": "Working",
+        "short_break": "Short break",
+        "long_break": "Long break",
+        "idle": "No active session"
+      }
+    },
+    "errors": {
+      "loadFailed": "Could not load your settings. Using default values.",
+      "saveFailed": "Could not save your settings. Check your connection.",
+      "resetFailed": "Could not reset your settings. Check your connection."
+    }
+  },
+  "focus": {
+    "cycle": {
+      "title": "Current cycle",
+      "phases": {
+        "work": "Working",
+        "short_break": "Short break",
+        "long_break": "Long break",
+        "idle": "Ready to start"
+      },
+      "cta": {
+        "start": "Start Pomodoro",
+        "startNext": "Start next Pomodoro",
+        "working": "In work session...",
+        "shortBreak": "Start Short Break (5 min)",
+        "longBreak": "Start Long Break (15 min)"
+      }
+    },
+    "log": {
+      "title": "Today",
+      "error": "Could not load statistics",
+      "empty": "You haven't completed any pomodoros today. Start your first session!",
+      "noTask": "No task"
+    },
+    "chart": {
+      "title": "Last 7 days"
+    },
+    "taskBreakdown": {
+      "title": "Focus by task",
+      "subtitle": "Last 7 days",
+      "empty": "Complete pomodoros with assigned tasks to see your weekly focus."
+    },
+    "stats": {
+      "title": "Statistics",
+      "today": "Today",
+      "thisWeek": "This week",
+      "dailyAverage": "Daily average",
+      "currentStreak": "Current streak",
+      "day": "day",
+      "days": "days"
+    }
+  },
+  "onboarding": {
+    "steps": [
+      {
+        "message": "This is your Pomodoro timer. Set a time and start a focused session."
+      },
+      {
+        "message": "Manage your goals here. Add tasks, track progress, and stay organized."
+      },
+      {
+        "message": "Check your stats in the Focus tab: daily progress, streaks, and task breakdown."
+      }
+    ],
+    "skip": "Skip",
+    "next": "Next",
+    "finish": "Finish"
+  }
+}

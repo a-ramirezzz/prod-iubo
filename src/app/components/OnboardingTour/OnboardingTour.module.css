@@ -1,0 +1,121 @@
+/* Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz) — CC BY-NC-ND 4.0 */
+/* components/OnboardingTour/OnboardingTour.module.css */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+}
+
+/* The highlight is the dimmed backdrop AND the cutout at once: the massive
+   box-shadow fills the whole screen with a translucent dark layer, leaving the
+   element bounds as a clear "hole". */
+.highlight {
+  position: fixed;
+  z-index: 9999;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+  outline: 2px solid var(--accent-color, #3b82f6);
+  outline-offset: 2px;
+  pointer-events: auto;
+  transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 10000;
+  box-sizing: border-box;
+  max-width: 320px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--panel-bg, #242526);
+  color: var(--text-color-primary, #f0f0f0);
+  border: 1px solid var(--border-color-primary, #555);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.message {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-color-primary, #f0f0f0);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-color-primary, #555);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dotActive {
+  background: var(--accent-color, #3b82f6);
+  transform: scale(1.25);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skipBtn {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-color-secondary, #aaa);
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.skipBtn:hover {
+  color: var(--text-color-primary, #f0f0f0);
+  background: var(--highlight-color, rgba(255, 255, 255, 0.06));
+}
+
+.nextBtn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-color, #3b82f6);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.nextBtn:hover {
+  background: var(--accent-hover, #2563eb);
+}
+
+.skipBtn:focus-visible,
+.nextBtn:focus-visible {
+  outline: 2px solid var(--accent-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight,
+  .dot,
+  .dotActive {
+    transition: none;
+  }
+}

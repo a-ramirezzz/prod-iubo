@@ -1,5 +1,6 @@
 // app/components/SettingsButton/SettingsButton.tsx
 import styles from '@/app/components/SettingsButton/SettingsButton.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 /**
  * Defines the props for the SettingsButton component
@@ -13,12 +14,13 @@ interface SettingsButtonProps {
  * An icon button used to trigger an action, such as opening a settings panel
  */
 export default function SettingsButton({ onClick }: SettingsButtonProps) {
+  const { t } = useLocale()
   return (
     <button
       className={styles.settingsButton}
       onClick={onClick}
-      aria-label="Abrir configuración" // Provides a clear action description for screen readers
-      title="Configuración" // Provides a standard tooltip for mouse users
+      aria-label={t('app.settings.openButton')} // Provides a clear action description for screen readers
+      title={t('app.settings.tooltip')} // Provides a standard tooltip for mouse users
     >
       {/* The following line disables a Next.js-specific linting rule
         This is necessary because the standard <Image> component is not available in this environment
