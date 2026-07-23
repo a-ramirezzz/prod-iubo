@@ -29,28 +29,20 @@ export interface Task {
 
 /**
  * Defines the complete structure for all user-configurable settings.
- * This object is persisted in localStorage to remember user preferences.
+ * This object is persisted in Supabase to remember user preferences.
+ * All fields use snake_case to match the database schema.
  */
 export interface AppSettings {
-  // --- General Settings ---
-  startInMiniMode: boolean; // Should the app launch in mini mode?
-  confirmOnStop: boolean;   // Ask for confirmation before stopping the timer.
-  alwaysOnTop: boolean;     // For future desktop app: keep window on top.
-  pipModeEnabled: boolean; // Show floating timer using Picture-in-Picture (PiP) mode.
-  horizontalPipEnabled: boolean; // Show floating timer using Document Picture-in-Picture (horizontal layout).
-  language: 'es' | 'en';    // Application language.
-
-  // --- Theme & Appearance Settings ---
-  themeMode: 'light' | 'dark'; // The current color mode (light or dark).
-  selectedThemeId: string;     // The ID of the currently active theme (static or animated).
-
-  // --- Audio Settings ---
-  backgroundSound: string; // The ID of the selected background sound ('none' for no sound).
-  volume: number;          // The volume level for background audio (0.0 to 1.0).
-
-  // --- Notification Settings ---
-  enableDesktopNotifications?: boolean; // Enable desktop notifications when timer ends
-
-  // --- Pomodoro Settings ---
-  dailyPomodoroGoal: number; // Daily target of completed pomodoros.
+  is_pro: boolean;
+  start_in_mini_mode: boolean;
+  confirm_on_stop: boolean;
+  pip_mode_enabled: boolean;
+  horizontal_pip_enabled: boolean;
+  language: 'es' | 'en';
+  enable_desktop_notifications: boolean;
+  theme_mode: 'light' | 'dark';
+  selected_theme_id: string;
+  background_sound: string;
+  volume: number;
+  daily_pomodoro_goal: number;
 }

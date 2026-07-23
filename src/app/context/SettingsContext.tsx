@@ -16,36 +16,17 @@ import { createContext, useState, useContext, useEffect, ReactNode, useCallback,
 import { createClient } from '@/app/lib/supabase/client';
 import { useAuth } from './AuthContext';
 import Notification from '@/app/components/Notification/Notification';
+import { AppSettings } from '../types';
 
 // =================================================================
 // SECTION: Constants
 // =================================================================
 
 /**
- * Defines the complete structure for all user-configurable settings.
- * This object is persisted in Supabase to remember user preferences.
- * All fields use snake_case to match the database schema.
- */
-export interface FullAppSettings {
-  is_pro: boolean;
-  start_in_mini_mode: boolean;
-  confirm_on_stop: boolean;
-  pip_mode_enabled: boolean;
-  horizontal_pip_enabled: boolean;
-  language: 'es' | 'en';
-  enable_desktop_notifications: boolean;
-  theme_mode: 'light' | 'dark';
-  selected_theme_id: string;
-  background_sound: string;
-  volume: number;
-  daily_pomodoro_goal: number;
-}
-
-/**
  * The default state for application settings.
  * Used on the very first launch or after a settings reset.
  */
-const DEFAULT_SETTINGS: FullAppSettings = {
+const DEFAULT_SETTINGS: AppSettings = {
   is_pro: false,
   start_in_mini_mode: false,
   confirm_on_stop: true,
@@ -68,8 +49,8 @@ const DEFAULT_SETTINGS: FullAppSettings = {
  * Defines the shape of the data that the SettingsContext will provide.
  */
 interface SettingsContextType {
-  settings: FullAppSettings;
-  updateSettings: (newSettings: Partial<FullAppSettings>) => Promise<void>;
+  settings: AppSettings;
+  updateSettings: (newSettings: Partial<AppSettings>) => Promise<void>;
   resetSettings: () => Promise<void>;
   loading: boolean;
   error: string | null;
@@ -96,7 +77,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const supabase = createClient();
   const { user, loading: authLoading } = useAuth();
-  const [settings, setSettings] = useState<FullAppSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ visible: boolean; message: string; icon: React.ReactNode }>({ visible: false, message: '', icon: null });
@@ -147,18 +128,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
    * Updates one or more settings and persists them to Supabase.
    * Uses upsert to ensure the row exists. Only snake_case fields are sent.
    */
-  const updateSettings = useCallback(async (newSettings: Partial<FullAppSettings>) => {
+  const updateSettings = useCallback(async (newSettings: Partial<AppSettings>) => {
     if (!user) return;
     setError(null);
 
-    const updated: FullAppSettings = { ...settings, ...newSettings };
+    const updated: AppSettings = { ...settings, ...newSettings };
     setSettings(updated);
     console.log('[SettingsContext] updateSettings called:', newSettings, 'Full object:', updated);
- 
-    const snakeCaseSettings = { ...updated };
+
+    const updatedSettings = { ...updated };
     const { error } = await supabase
       .from('user_settings')
-      .upsert([{ id: user.id, ...snakeCaseSettings }], { onConflict: 'id' });
+      .upsert([{ id: user.id, ...updatedSettings }], { onConflict: 'id' });
     if (error) {
       setError('Error updating settings: ' + error.message);
       console.error('[SettingsContext] Error updating settings:', error);
@@ -179,10 +160,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings(DEFAULT_SETTINGS);
     console.log('[SettingsContext] resetSettings called');
   
-    const snakeCaseDefaults = { ...DEFAULT_SETTINGS };
+    const defaultSettings = { ...DEFAULT_SETTINGS };
     const { error } = await supabase
       .from('user_settings')
-      .upsert([{ id: user.id, ...snakeCaseDefaults }], { onConflict: 'id' });
+      .upsert([{ id: user.id, ...defaultSettings }], { onConflict: 'id' });
     if (error) {
       setError('Error resetting settings: ' + error.message);
       console.error('[SettingsContext] Error resetting settings:', error);

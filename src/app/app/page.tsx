@@ -103,34 +103,18 @@ export default function HomePage() {
   // Active tab: classic timer view or the Focus (Pomodoro cycle) view.
   const [activeTab, setActiveTab] = useState<'timer' | 'focus'>('timer');
 
-  // Mapea settings de snake_case a camelCase para AppSettings
-  const settingsCamel = {
-    startInMiniMode: settings.start_in_mini_mode,
-    confirmOnStop: settings.confirm_on_stop,
-    pipModeEnabled: settings.pip_mode_enabled,
-    horizontalPipEnabled: settings.horizontal_pip_enabled,
-    language: settings.language,
-    themeMode: settings.theme_mode,
-    selectedThemeId: settings.selected_theme_id,
-    backgroundSound: settings.background_sound,
-    volume: settings.volume,
-    enableDesktopNotifications: settings.enable_desktop_notifications,
-    dailyPomodoroGoal: settings.daily_pomodoro_goal,
-    alwaysOnTop: false,
-  };
-
   // Integrate PiP timer hook (returns refs for canvas, video, and background video)
-  const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settingsCamel, {
+  const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settings, {
     onPipModeDisabled: () => updateSettings({ pip_mode_enabled: false }),
   });
 
   // Integrate the Document Picture-in-Picture horizontal timer hook (separate, real-HTML floating window)
   const { portal: horizontalPipPortal } = useHorizontalPipTimer(
-    settingsCamel.horizontalPipEnabled,
+    settings.horizontal_pip_enabled,
     timeParts,
     isActive,
     currentTaskText,
-    settingsCamel.themeMode,
+    settings.theme_mode,
     { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
   );
 
