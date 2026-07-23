@@ -86,6 +86,11 @@
   letter-spacing: 0.03em;
 }
 
+.tab:focus-visible {
+  outline: 2px solid #60A5FA;
+  outline-offset: 2px;
+}
+
 .tabActive {
   background: linear-gradient(135deg, #3B82F6, #60A5FA);
   color: #fff;

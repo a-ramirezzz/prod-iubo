@@ -147,7 +147,7 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
       <div className={styles.backdrop} onClick={onClose}></div>
       <div className={`${styles.settingsPanel} ${isOpen ? styles.open : ''}`}>
         {/* Close button */}
-        <button className={styles.closeButton} onClick={onClose}>✕</button>
+        <button className={styles.closeButton} onClick={onClose} aria-label="Cerrar configuración">✕</button>
         <div className={styles.panelContent}>
           {/* Sidebar navigation */}
           <aside className={styles.sidebar}>

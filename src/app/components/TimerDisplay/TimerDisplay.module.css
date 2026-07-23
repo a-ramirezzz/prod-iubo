@@ -92,3 +92,14 @@
   25%       { transform: translateX(-3px) scale(1.02); }
   75%       { transform: translateX(3px) scale(1.02); }
 }
+
+/* Disable timerTick, warningPulse, criticalShake and the segment fade-in for
+ * users who have requested reduced motion in their OS settings. */
+@media (prefers-reduced-motion: reduce) {
+  .timerActive,
+  .timerWarning,
+  .timerCritical,
+  .timeSegment {
+    animation: none !important;
+  }
+}

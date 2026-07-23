@@ -17,7 +17,7 @@ export default function SettingsButton({ onClick }: SettingsButtonProps) {
     <button
       className={styles.settingsButton}
       onClick={onClick}
-      aria-label="Open settings" // Provides a clear action description for screen readers
+      aria-label="Abrir configuración" // Provides a clear action description for screen readers
       title="Configuración" // Provides a standard tooltip for mouse users
     >
       {/* The following line disables a Next.js-specific linting rule

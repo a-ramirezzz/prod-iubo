@@ -1,6 +1,7 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // src/app/components/TimerDisplay/TimerDisplay.tsx
+import { useEffect, useState } from 'react'
 import type { TimeParts } from '@/app/types'
 import styles from '@/app/components/TimerDisplay/TimerDisplay.module.css'
 
@@ -22,6 +23,17 @@ export default function TimerDisplay({ timeParts, isActive = false, remainingSec
   // This provides a machine-readable format for assistive technologies
   const dateTimeString = `PT${timeParts.hours}H${timeParts.minutes}M${timeParts.seconds}S`
 
+  // Screen-reader announcement text, updated only at meaningful thresholds so the
+  // live region does not announce the countdown every single second.
+  const [liveText, setLiveText] = useState('')
+
+  useEffect(() => {
+    const totalSeconds = (Number(timeParts.hours) * 3600) + (Number(timeParts.minutes) * 60) + Number(timeParts.seconds)
+    if (totalSeconds === 60) setLiveText('1 minuto restante')
+    else if (totalSeconds === 10) setLiveText('10 segundos restantes')
+    else if (totalSeconds === 0) setLiveText('Tiempo terminado')
+  }, [timeParts])
+
   const timerStateClass =
     isActive && remainingSeconds <= 10
       ? styles.timerCritical
@@ -32,11 +44,10 @@ export default function TimerDisplay({ timeParts, isActive = false, remainingSec
           : ''
 
   return (
+    <>
     <time
       className={`${styles.timerDisplay} ${timerStateClass}`}
       dateTime={dateTimeString}
-      aria-live="polite" // Announces updates to screen readers without interrupting
-      aria-atomic="true" // Ensures the entire time is announced, not just the changed part
     >
       {/* Hours segment */}
       {/* The unique key forces a re-render, which can be used to trigger animations */}
@@ -58,5 +69,16 @@ export default function TimerDisplay({ timeParts, isActive = false, remainingSec
         {timeParts.seconds}
       </span>
     </time>
+
+    {/* Visually hidden live region: announces only at thresholds (see effect above) */}
+    <span
+      role="status"
+      aria-live="assertive"
+      aria-atomic="true"
+      className="sr-only"
+    >
+      {liveText}
+    </span>
+    </>
   )
 }

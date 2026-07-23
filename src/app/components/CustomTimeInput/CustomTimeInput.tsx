@@ -63,7 +63,7 @@ export default function CustomTimeInput({
         onChange={(e) => handleTimeChange(e, 72, onHoursChange)}
         className={`${styles.customInput} ${styles.customInputHours}`}
         disabled={inputsDisabled}
-        aria-label="Hours input"
+        aria-label="Horas"
         title="Horas (0-72)"
       />
       <span className={styles.customInputSeparator} aria-hidden="true">:</span>
@@ -75,14 +75,14 @@ export default function CustomTimeInput({
         onChange={(e) => handleTimeChange(e, 59, onMinutesChange)}
         className={`${styles.customInput} ${styles.customInputMinutes}`}
         disabled={inputsDisabled}
-        aria-label="Minutes input"
+        aria-label="Minutos"
         title="Minutos (0-59)"
       />
       <button
         onClick={onStart}
         className="button"
         disabled={disabled}
-        aria-label="Start custom timer"
+        aria-label="Iniciar temporizador personalizado"
       >
         Iniciar
       </button>
