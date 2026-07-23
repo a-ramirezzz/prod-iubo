@@ -159,7 +159,7 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
       <div className={styles.backdrop} onClick={onClose} />
       <div className={styles.modal}>
         {/* Close button for the modal */}
-        <button className={styles.closeButton} onClick={onClose}>✕</button>
+        <button className={styles.closeButton} onClick={onClose} aria-label="Cerrar">✕</button>
         {/* Modal title */}
         <h2 className={styles.title}>¿Cuáles son los objetivos de hoy?</h2>
         {/* Progress bar section */}

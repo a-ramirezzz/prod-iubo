@@ -238,6 +238,11 @@ input:disabled + .slider {
   outline: none;
 }
 
+.select:focus-visible {
+  outline: 2px solid var(--brand-color-uibo);
+  outline-offset: 2px;
+}
+
 .select:disabled {
   opacity: 0.5;
 }
@@ -530,6 +535,11 @@ input:disabled + .slider {
   border-radius: 5px;
   outline: none;
   border: 1px solid var(--border-color-primary);
+}
+
+.volumeSlider:focus-visible {
+  outline: 2px solid var(--brand-color-uibo);
+  outline-offset: 2px;
 }
 
 .volumeSlider::-webkit-slider-thumb {

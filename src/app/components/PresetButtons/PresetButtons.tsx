@@ -33,7 +33,7 @@ export default function PresetButtons({ onSetTime, disabled }: PresetButtonsProp
           onClick={(e) => { addRipple(e); onSetTime(minutes) }}
           className={`button ${styles.presetBtn} ${minutes === 25 ? styles.presetBtnPomodoro : ''}`}
           disabled={disabled}
-          aria-label={`Set timer for ${minutes} minutes`}
+          aria-label={`Fijar temporizador en ${minutes} minutos`}
         >
           {minutes} min
         </button>
