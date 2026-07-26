@@ -3,6 +3,7 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { LocaleProvider } from '@/app/lib/i18n';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
+import { ErrorBoundary, ErrorFallback } from '@/app/components/ErrorBoundary';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -106,8 +107,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <SettingsProvider>
               {/* Theme Wrapper - Handles dynamic theme switching and styling */}
               <ThemeWrapper>
-                {/* Page content - Rendered children components */}
-                {children}
+                {/* Root-level catch-all boundary. Inside providers so the
+                    fallback can access i18n; ErrorFallback also self-guards
+                    with hardcoded Spanish if context is unavailable. */}
+                <ErrorBoundary
+                  fallback={<ErrorFallback error={null} level="root" />}
+                >
+                  {/* Page content - Rendered children components */}
+                  {children}
+                </ErrorBoundary>
               </ThemeWrapper>
             </SettingsProvider>
           </AuthProvider>
