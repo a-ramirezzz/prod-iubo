@@ -209,6 +209,15 @@
     "confirmModal": {
       "defaultConfirm": "Aceptar",
       "defaultCancel": "Cancelar"
+    },
+    "errorBoundary": {
+      "rootTitle": "Algo salió mal",
+      "rootMessage": "Ocurrió un error inesperado. Por favor, recarga la página.",
+      "reloadButton": "Recargar página",
+      "sectionTitle": "Esta sección tuvo un problema",
+      "sectionMessage": "Ocurrió un error, pero el resto de la app sigue funcionando.",
+      "retryButton": "Reintentar",
+      "errorDetailsLabel": "Detalles del error"
     }
   },
   "auth": {

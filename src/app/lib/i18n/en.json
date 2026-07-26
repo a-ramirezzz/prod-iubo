@@ -209,6 +209,15 @@
     "confirmModal": {
       "defaultConfirm": "Accept",
       "defaultCancel": "Cancel"
+    },
+    "errorBoundary": {
+      "rootTitle": "Something went wrong",
+      "rootMessage": "An unexpected error occurred. Please reload the page.",
+      "reloadButton": "Reload page",
+      "sectionTitle": "This section had a problem",
+      "sectionMessage": "An error occurred, but the rest of the app is still working.",
+      "retryButton": "Retry",
+      "errorDetailsLabel": "Error details"
     }
   },
   "auth": {
