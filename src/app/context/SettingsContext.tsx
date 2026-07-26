@@ -18,6 +18,7 @@ import { useAuth } from './AuthContext';
 import { useLocale } from '@/app/lib/i18n';
 import Notification from '@/app/components/Notification/Notification';
 import { AppSettings } from '../types';
+import { logError } from '@/app/lib/logger';
 
 // =================================================================
 // SECTION: Constants
@@ -129,24 +130,32 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   /**
    * Updates one or more settings and persists them to Supabase.
-   * Uses upsert to ensure the row exists. Only snake_case fields are sent.
+   * Applies an optimistic full-object update locally, but persists ONLY the
+   * changed fields via `.update()` so concurrent tabs don't clobber each
+   * other and unknown columns can't fail the entire save. Reverts the
+   * optimistic update if the persist fails.
    */
   const updateSettings = useCallback(async (newSettings: Partial<AppSettings>) => {
     if (!user) return;
     setError(null);
 
+    // 1. Optimistic local update — merge the full object for the UI.
+    const previous = settings;
     const updated: AppSettings = { ...settings, ...newSettings };
     setSettings(updated);
     console.log('[SettingsContext] updateSettings called:', newSettings, 'Full object:', updated);
 
-    const updatedSettings = { ...updated };
+    // 2. Persist ONLY the changed fields to Supabase.
     const { error } = await supabase
       .from('user_settings')
-      .upsert([{ id: user.id, ...updatedSettings }], { onConflict: 'id' });
+      .update(newSettings)
+      .eq('id', user.id);
     if (error) {
       setError('Error updating settings: ' + error.message);
-      console.error('[SettingsContext] Error updating settings:', error);
+      logError(error, { operation: 'updateSettings', userId: user.id, metadata: { fields: Object.keys(newSettings) } });
       setNotification({ visible: true, message: t('settings.errors.saveFailed'), icon: iconError });
+      // Revert the optimistic update on failure.
+      setSettings(previous);
     } else {
       console.log('[SettingsContext] Settings updated successfully in Supabase');
     }
