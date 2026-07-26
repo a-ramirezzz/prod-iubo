@@ -27,8 +27,8 @@ import ProjectBranding from '@/components/ProjectBranding/ProjectBranding';
 import SettingsButton from '@/components/SettingsButton/SettingsButton';
 import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
 import VisualNotification from '@/components/Notification/Notification';
-import FocusSection from '@/components/FocusSection/FocusSection';
-import TimerView from '@/components/TimerView/TimerView';
+import TimerTab from './TimerTab';
+import FocusTab from './FocusTab';
 import OnboardingTour from '@/app/components/OnboardingTour/OnboardingTour';
 import LocaleSync from './LocaleSync';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
@@ -233,7 +233,7 @@ export default function HomePage() {
       {/* Focus tab: Pomodoro cycle status, daily log and statistics */}
       {!isMiniMode && activeTab === 'focus' && (
         <ErrorBoundary>
-        <FocusSection
+        <FocusTab
           totalPomodorosToday={pomodoroEngine.totalPomodorosToday}
           cycleCount={pomodoroEngine.cycleCount}
           currentPhase={pomodoroEngine.currentPhase}
@@ -253,7 +253,7 @@ export default function HomePage() {
 
       {showTimerView && (
         <ErrorBoundary>
-        <TimerView
+        <TimerTab
           timeParts={timeParts}
           isActive={isActive}
           totalSeconds={totalSeconds}
