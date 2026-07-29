@@ -22,6 +22,8 @@ import { useLocale } from '@/app/lib/i18n';
 interface SettingsPanelProps {
   isOpen: boolean; // Whether the panel is open
   onClose: () => void; // Function to close the panel
+  // Opens the keyboard shortcuts help modal (owned by the page)
+  onOpenShortcuts?: () => void;
   // Read-only Pomodoro stats snapshot shown in the Focus section
   pomodoroStats?: {
     totalPomodorosToday: number;
@@ -67,7 +69,7 @@ const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus'];
  * SettingsPanel component
  * Displays a modal panel for user settings, including general options, themes, and sounds.
  */
-export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: SettingsPanelProps) {
+export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodoroStats }: SettingsPanelProps) {
   const { signOut } = useAuth();
   const { t } = useLocale();
   // State for the currently active section
@@ -299,6 +301,21 @@ export default function SettingsPanel({ isOpen, onClose, pomodoroStats }: Settin
                     <span className={styles.slider}></span>
                   </label>
                 </div>
+                {/* Keyboard shortcuts help launcher */}
+                {onOpenShortcuts && (
+                  <div className={styles.settingItem}>
+                    <label>{t('app.shortcuts.openShortcuts')}</label>
+                    <button
+                      type="button"
+                      onClick={onOpenShortcuts}
+                      className={styles.select}
+                      style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10" /></svg>
+                      <span>⇧ /</span>
+                    </button>
+                  </div>
+                )}
                 {/* Reset settings button */}
                 <div className={styles.resetSection} style={{ flexDirection: 'column', alignItems: 'center' }}>
                   <button onClick={handleResetClick} className={`${styles.resetButton} button button-stop`}>

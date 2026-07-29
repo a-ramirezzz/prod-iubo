@@ -223,6 +223,21 @@
       "disconnected": "Connection lost — changes are not syncing",
       "reconnecting": "Reconnecting...",
       "reconnected": "Connection restored"
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "categoryTimer": "Timer",
+      "categoryNavigation": "Navigation",
+      "categoryGeneral": "General",
+      "openShortcuts": "Keyboard shortcuts",
+      "shortcutStartPause": "Start / Pause timer",
+      "shortcutStop": "Stop session",
+      "shortcutReset": "Reset timer",
+      "shortcutMiniMode": "Toggle mini mode",
+      "shortcutTimerTab": "Go to Timer tab",
+      "shortcutFocusTab": "Go to Focus tab",
+      "shortcutShowShortcuts": "Show keyboard shortcuts",
+      "shortcutCloseModal": "Close modal or panel"
     }
   },
   "auth": {
