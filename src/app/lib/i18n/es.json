@@ -204,7 +204,14 @@
     },
     "settings": {
       "openButton": "Abrir configuración",
-      "tooltip": "Configuración"
+      "tooltip": "Configuración",
+      "exportTitle": "Exportar datos",
+      "exportDescription": "Descarga todas tus sesiones Pomodoro y tareas.",
+      "exportJson": "JSON",
+      "exportCsv": "CSV (ZIP)",
+      "exportExporting": "Exportando...",
+      "exportSuccess": "Datos exportados correctamente",
+      "exportError": "Error al exportar datos. Inténtalo de nuevo."
     },
     "confirmModal": {
       "defaultConfirm": "Aceptar",

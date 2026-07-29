@@ -16,6 +16,7 @@ import { sounds, noSound } from '../../lib/sounds';
 import { useRouter } from 'next/navigation';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
+import { useDataExport } from '@/app/hooks/useDataExport';
 import { useLocale } from '@/app/lib/i18n';
 
 // Props for the SettingsPanel component
@@ -70,7 +71,7 @@ const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus'];
  * Displays a modal panel for user settings, including general options, themes, and sounds.
  */
 export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodoroStats }: SettingsPanelProps) {
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { t } = useLocale();
   // State for the currently active section
   const [activeSection, setActiveSection] = useState<SectionKey>('general');
@@ -87,6 +88,14 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+  // Client-side data export (Pomodoro sessions + tasks) for the General section.
+  const {
+    exportJson,
+    exportCsv,
+    isExporting,
+    error: exportError,
+  } = useDataExport(user?.id ?? null, t('app.settings.exportError'));
 
   // Only used here to read feature support (`isSupported`); the window itself
   // is opened by the instance wired up in page.tsx with `enabled: true`.
@@ -331,9 +340,36 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                     {loggingOut ? t('settings.general.loggingOut') : t('settings.general.logout')}
                   </button>
                 </div>
+
+                {/* Export data section */}
+                <div className={styles.exportSection}>
+                  <h3 className={styles.subSectionTitle}>{t('app.settings.exportTitle')}</h3>
+                  <p className={styles.settingsFocusHelperText} style={{ maxWidth: 'none' }}>
+                    {t('app.settings.exportDescription')}
+                  </p>
+                  <div className={styles.exportButtons}>
+                    <button
+                      type="button"
+                      className={styles.exportButton}
+                      onClick={exportJson}
+                      disabled={isExporting}
+                    >
+                      {isExporting ? t('app.settings.exportExporting') : t('app.settings.exportJson')}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.exportButton}
+                      onClick={exportCsv}
+                      disabled={isExporting}
+                    >
+                      {isExporting ? t('app.settings.exportExporting') : t('app.settings.exportCsv')}
+                    </button>
+                  </div>
+                  {exportError && <p className={styles.exportError}>{exportError}</p>}
+                </div>
               </div>
             )}
-            
+
             {/* Themes Section */}
             {activeSection === 'themes' && (
               <div className={styles.settingsContainer}>

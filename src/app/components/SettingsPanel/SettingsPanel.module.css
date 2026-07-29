@@ -260,6 +260,55 @@ input:disabled + .slider {
   min-width: 200px;
 }
 
+/* --- Export data section --- */
+
+.exportSection {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color-primary, #333);
+  width: 100%;
+}
+
+.exportButtons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.exportButton {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: var(--button-primary-bg, rgba(255, 255, 255, 0.04));
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-primary, #333);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.exportButton:hover:not(:disabled) {
+  border-color: var(--brand-color-uibo);
+  color: var(--text-color-primary);
+}
+
+.exportButton:focus-visible {
+  outline: 2px solid var(--brand-color-uibo);
+  outline-offset: 2px;
+}
+
+.exportButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exportError {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
 .comingSoon {
   font-size: 2.5rem;
   font-weight: bold;
