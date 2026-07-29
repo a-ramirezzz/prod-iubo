@@ -218,6 +218,11 @@
       "sectionMessage": "An error occurred, but the rest of the app is still working.",
       "retryButton": "Retry",
       "errorDetailsLabel": "Error details"
+    },
+    "connection": {
+      "disconnected": "Connection lost — changes are not syncing",
+      "reconnecting": "Reconnecting...",
+      "reconnected": "Connection restored"
     }
   },
   "auth": {

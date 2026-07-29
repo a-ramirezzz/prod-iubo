@@ -218,6 +218,11 @@
       "sectionMessage": "Ocurrió un error, pero el resto de la app sigue funcionando.",
       "retryButton": "Reintentar",
       "errorDetailsLabel": "Detalles del error"
+    },
+    "connection": {
+      "disconnected": "Sin conexión — los cambios no se están sincronizando",
+      "reconnecting": "Reconectando...",
+      "reconnected": "Conexión restaurada"
     }
   },
   "auth": {
