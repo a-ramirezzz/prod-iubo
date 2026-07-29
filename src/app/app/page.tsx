@@ -33,6 +33,7 @@ import OnboardingTour from '@/app/components/OnboardingTour/OnboardingTour';
 import LocaleSync from './LocaleSync';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 import { ConnectionIndicator } from '@/app/components/ConnectionIndicator';
+import { ShortcutsModal } from '@/app/components/ShortcutsModal';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -114,6 +115,8 @@ export default function HomePage() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   // Active tab: classic timer view or the Focus (Pomodoro cycle) view.
   const [activeTab, setActiveTab] = useState<'timer' | 'focus'>('timer');
+  // Keyboard shortcuts help modal, opened via `?` or the Settings panel.
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   // Integrate PiP timer hook (returns refs for canvas, video, and background video)
   const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settings, {
@@ -169,6 +172,23 @@ export default function HomePage() {
   useEffect(() => {
     setIsMiniMode(settings.start_in_mini_mode);
   }, [settings.start_in_mini_mode]);
+
+  /**
+   * Global `?` (Shift+/) shortcut to open the keyboard shortcuts help modal.
+   * Ignored while typing in a form field so it never hijacks text entry.
+   */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== '?') return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if ((e.target as HTMLElement | null)?.isContentEditable) return;
+      e.preventDefault();
+      setShowShortcuts(true);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   /**
    * Effect to request notification permissions from the user upon
@@ -299,6 +319,10 @@ export default function HomePage() {
       <SettingsPanel
         isOpen={isSettingsPanelOpen}
         onClose={() => setIsSettingsPanelOpen(false)}
+        onOpenShortcuts={() => {
+          setIsSettingsPanelOpen(false);
+          setShowShortcuts(true);
+        }}
         pomodoroStats={{
           totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
           cycleCount: pomodoroEngine.cycleCount,
@@ -357,6 +381,9 @@ export default function HomePage() {
       />
       {/* Portal target lives inside the separate Document PiP window, not in this DOM tree */}
       {horizontalPipPortal}
+
+      {/* Keyboard shortcuts help modal (opened via `?` or the Settings panel) */}
+      <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
 
       {/* First-run onboarding tour: only for authenticated users who haven't seen it yet */}
       {!authLoading && user && !settingsLoading && !settings.has_seen_onboarding && (
