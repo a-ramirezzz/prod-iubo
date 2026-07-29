@@ -32,6 +32,7 @@ import FocusTab from './FocusTab';
 import OnboardingTour from '@/app/components/OnboardingTour/OnboardingTour';
 import LocaleSync from './LocaleSync';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
+import { ConnectionIndicator } from '@/app/components/ConnectionIndicator';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -203,6 +204,10 @@ export default function HomePage() {
   return (
     <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
       <LocaleSync />
+      {/* App-level Realtime connection status: fixed banner, non-blocking,
+          hidden while connected. Kept outside ErrorBoundaries so it still
+          shows if a tab crashes. */}
+      <ConnectionIndicator />
       {showSetupControls && <ProjectBranding />}
 
       {/* Tab navigation (hidden in mini mode, which is timer-only) */}
