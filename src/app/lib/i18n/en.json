@@ -211,7 +211,9 @@
       "exportCsv": "CSV (ZIP)",
       "exportExporting": "Exporting...",
       "exportSuccess": "Data exported successfully",
-      "exportError": "Failed to export data. Please try again."
+      "exportError": "Failed to export data. Please try again.",
+      "notificationSound": "Notification sound",
+      "notificationSoundDescription": "Play a short sound when each session ends"
     },
     "confirmModal": {
       "defaultConfirm": "Accept",

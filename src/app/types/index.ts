@@ -40,6 +40,7 @@ export interface AppSettings {
   horizontal_pip_enabled: boolean;
   language: 'es' | 'en';
   enable_desktop_notifications: boolean;
+  notification_sound_enabled: boolean;
   theme_mode: 'light' | 'dark';
   selected_theme_id: string;
   background_sound: string;

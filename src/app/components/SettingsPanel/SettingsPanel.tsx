@@ -310,6 +310,24 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                     <span className={styles.slider}></span>
                   </label>
                 </div>
+                {/* Notification sound toggle */}
+                <div className={styles.settingItem}>
+                  <label htmlFor="notification-sound">
+                    {t('app.settings.notificationSound')}
+                    <span className={styles.settingHint} style={{ display: 'block', fontSize: '0.8em', opacity: 0.7 }}>
+                      {t('app.settings.notificationSoundDescription')}
+                    </span>
+                  </label>
+                  <label className={styles.toggleSwitch}>
+                    <input
+                      id="notification-sound"
+                      type="checkbox"
+                      checked={!!settings.notification_sound_enabled}
+                      onChange={(e) => updateSettings({ notification_sound_enabled: e.target.checked })}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </div>
                 {/* Keyboard shortcuts help launcher */}
                 {onOpenShortcuts && (
                   <div className={styles.settingItem}>

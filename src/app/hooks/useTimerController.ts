@@ -8,12 +8,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTimer } from '@/hooks/useTimer';
 import { useTimerAlert } from '@/hooks/useTimerAlert';
 import { usePomodoroEngine } from '@/hooks/usePomodoroEngine';
+import { playNotificationSound } from '@/app/lib/notificationSound';
 
 interface UseTimerControllerParams {
   enableDesktopNotifications: boolean;
   confirmOnStop: boolean;
   currentTaskText: string | undefined;
   userId: string | null;
+  /** Whether to play the notification chime when a session ends. */
+  notificationSoundEnabled: boolean;
+  /** App volume (0..1) used to scale the notification chime. */
+  volume: number;
 }
 
 /**
@@ -27,6 +32,8 @@ export function useTimerController({
   confirmOnStop,
   currentTaskText,
   userId,
+  notificationSoundEnabled,
+  volume,
 }: UseTimerControllerParams) {
   // Dedicated alert instance for the "cycle complete" (long break) notification.
   const { triggerLongBreakAlert } = useTimerAlert(enableDesktopNotifications);
@@ -49,6 +56,12 @@ export function useTimerController({
     resetTimer,
     stopTimer,
   } = useTimer(enableDesktopNotifications, () => {
+    // Audible notification for BOTH work and break completions so the
+    // user knows a session ended even with the tab in the background.
+    // Skip entirely (and never create the AudioContext) when disabled.
+    if (notificationSoundEnabled) {
+      playNotificationSound(volume);
+    }
     // Advance the Pomodoro cycle when the countdown finishes naturally.
     if (pomodoroEngine.currentPhase === 'work') {
       pomodoroEngine.completeSession(currentTaskText ?? null);
