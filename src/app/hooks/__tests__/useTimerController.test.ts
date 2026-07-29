@@ -79,6 +79,8 @@ interface Params {
   confirmOnStop?: boolean;
   currentTaskText?: string | undefined;
   userId?: string | null;
+  notificationSoundEnabled?: boolean;
+  volume?: number;
 }
 
 const render = (params: Params = {}) =>
@@ -88,6 +90,8 @@ const render = (params: Params = {}) =>
       confirmOnStop: params.confirmOnStop ?? false,
       currentTaskText: params.currentTaskText,
       userId: params.userId ?? USER,
+      notificationSoundEnabled: params.notificationSoundEnabled ?? false,
+      volume: params.volume ?? 0.5,
     })
   );
 

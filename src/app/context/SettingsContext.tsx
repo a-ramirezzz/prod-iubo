@@ -36,6 +36,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   horizontal_pip_enabled: false,
   language: 'es',
   enable_desktop_notifications: true,
+  notification_sound_enabled: true,
   theme_mode: 'dark',
   selected_theme_id: 'dark-default',
   background_sound: 'none',

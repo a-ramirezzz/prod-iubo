@@ -100,6 +100,8 @@ export default function HomePage() {
     confirmOnStop: settings.confirm_on_stop,
     currentTaskText,
     userId: user?.id ?? null,
+    notificationSoundEnabled: !!settings.notification_sound_enabled,
+    volume: settings.volume,
   });
 
   // Productivity statistics shared between the Focus tab and Settings panel.
