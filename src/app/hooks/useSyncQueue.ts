@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { processSyncQueue, type SyncResult } from '@/app/lib/syncProcessor';
-import { getQueueSize } from '@/app/lib/offlineDb';
+import { getQueueSize, getFailedQueueSize } from '@/app/lib/offlineDb';
 import { useRealtimeStatus } from '@/app/hooks/useRealtimeStatus';
 import { logWarn } from '@/app/lib/logger';
 
@@ -19,7 +19,10 @@ import { logWarn } from '@/app/lib/logger';
 const RECONNECT_STABILIZE_MS = 1500;
 
 export interface UseSyncQueueResult {
+  /** Entries still awaiting their first sync attempt or a retry (excludes permanently failed ones). */
   pendingCount: number;
+  /** Entries that exhausted their retries and need manual attention. */
+  failedCount: number;
   isSyncing: boolean;
   lastSyncResult: SyncResult | null;
   syncNow: () => Promise<void>;
@@ -28,6 +31,7 @@ export interface UseSyncQueueResult {
 export function useSyncQueue(userId: string | null): UseSyncQueueResult {
   const { status } = useRealtimeStatus();
   const [pendingCount, setPendingCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncResult, setLastSyncResult] = useState<SyncResult | null>(null);
 
@@ -36,14 +40,16 @@ export function useSyncQueue(userId: string | null): UseSyncQueueResult {
   const isSyncingRef = useRef(false);
   const prevStatusRef = useRef(status);
 
-  const refreshPendingCount = useCallback(async () => {
+  const refreshCounts = useCallback(async () => {
     const uid = userIdRef.current;
     if (!uid) {
       setPendingCount(0);
+      setFailedCount(0);
       return;
     }
-    const size = await getQueueSize(uid);
-    setPendingCount(size);
+    const [total, failed] = await Promise.all([getQueueSize(uid), getFailedQueueSize(uid)]);
+    setPendingCount(Math.max(0, total - failed));
+    setFailedCount(failed);
   }, []);
 
   const syncNow = useCallback(async () => {
@@ -65,14 +71,14 @@ export function useSyncQueue(userId: string | null): UseSyncQueueResult {
     } finally {
       isSyncingRef.current = false;
       setIsSyncing(false);
-      await refreshPendingCount();
+      await refreshCounts();
     }
-  }, [refreshPendingCount]);
+  }, [refreshCounts]);
 
-  // Refresh the pending count whenever the signed-in user changes.
+  // Refresh the counts whenever the signed-in user changes.
   useEffect(() => {
-    refreshPendingCount();
-  }, [userId, refreshPendingCount]);
+    refreshCounts();
+  }, [userId, refreshCounts]);
 
   // Auto-sync when the realtime connection transitions back to "connected".
   useEffect(() => {
@@ -87,5 +93,5 @@ export function useSyncQueue(userId: string | null): UseSyncQueueResult {
     }
   }, [status, userId, syncNow]);
 
-  return { pendingCount, isSyncing, lastSyncResult, syncNow };
+  return { pendingCount, failedCount, isSyncing, lastSyncResult, syncNow };
 }

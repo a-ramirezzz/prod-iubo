@@ -1,0 +1,199 @@
+/* Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz) — CC BY-NC-ND 4.0 */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1100; /* above ConnectionIndicator (1000) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayIn 0.2s ease-out;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.panel {
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.2);
+  max-width: 520px;
+  width: 90%;
+  max-height: 80vh;
+  color: rgba(255, 255, 255, 0.9);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  animation: panelIn 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #EF4444, #3B82F6);
+  border-radius: 16px 16px 0 0;
+}
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.15rem;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.closeButton:hover {
+  opacity: 1;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--accent-color, #3B82F6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.body {
+  overflow-y: auto;
+  padding: 0 0.75rem;
+}
+
+.entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+.entryIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.entryInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.entryOperation {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.entryMeta {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-top: 0.15rem;
+}
+
+.entryError {
+  font-size: 0.8rem;
+  color: #ef4444;
+  margin-top: 0.25rem;
+  word-break: break-word;
+}
+
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.statusPending {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.statusFailed {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.entryActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.retryButton, .discardButton {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.retryButton {
+  background-color: var(--accent-color, #3B82F6);
+  color: #fff;
+}
+
+.retryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.discardButton {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.footer .retryButton,
+.footer .discardButton {
+  flex: 1;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  opacity: 0.5;
+}
