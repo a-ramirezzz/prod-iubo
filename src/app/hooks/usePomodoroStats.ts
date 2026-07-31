@@ -13,6 +13,8 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
+import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
+import { cacheSessions, getCachedSessions } from '@/app/lib/offlineDb';
 
 export interface SessionRow {
   completed_at: string;
@@ -68,22 +70,31 @@ export function usePomodoroStats(
         monthAgo.setUTCDate(monthAgo.getUTCDate() - 30);
         monthAgo.setUTCHours(0, 0, 0, 0);
 
-        const { data, error } = await createClient()
-          .from('pomodoro_sessions')
-          .select('completed_at, task_text, duration_minutes')
-          .eq('user_id', userId)
-          .eq('session_type', 'work')
-          .eq('completed', true)
-          .gte('completed_at', monthAgo.toISOString())
-          .order('completed_at', { ascending: false });
+        const result = await fetchWithOfflineFallback<SessionRow[]>({
+          fetchFn: async () => {
+            const { data, error } = await createClient()
+              .from('pomodoro_sessions')
+              .select('completed_at, task_text, duration_minutes')
+              .eq('user_id', userId)
+              .eq('session_type', 'work')
+              .eq('completed', true)
+              .gte('completed_at', monthAgo.toISOString())
+              .order('completed_at', { ascending: false });
+            if (error) throw error;
+            return (data ?? []) as SessionRow[];
+          },
+          cacheFn: (rows) => cacheSessions(userId, rows),
+          getCacheFn: () => getCachedSessions(userId),
+          operationName: 'fetchPomodoroStats',
+        });
 
         if (cancelled) return;
-        if (error || !data) {
+        if (result.data === null) {
           setLoadError(true);
           return;
         }
 
-        const rows = data as SessionRow[];
+        const rows = result.data;
         const now = new Date();
 
         const todayMidnight = new Date();

@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from '@/app/lib/supabase/client';
+import { clearUserData } from '@/app/lib/offlineDb';
 import type { User } from "@supabase/supabase-js";
 
 /**
@@ -48,7 +49,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    */
   const signOut = async () => {
     isVoluntaryLogoutRef.current = true;
+    const userId = user?.id;
     await supabase.auth.signOut();
+    if (userId) {
+      await clearUserData(userId);
+    }
   };
 
   useEffect(() => {

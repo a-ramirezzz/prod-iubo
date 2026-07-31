@@ -15,6 +15,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
+import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
+import { cacheTasks, getCachedTasks } from '@/app/lib/offlineDb';
 import type { Task } from '@/app/types';
 
 // Shape of a row in the `tasks` table as delivered by Realtime.
@@ -78,16 +80,25 @@ export const useTaskManager = (userId: string | null) => {
 
     const fetchTasks = async () => {
       try {
-        const { data, error } = await supabase
-          .from('tasks')
-          .select('id, text, completed, position')
-          .eq('user_id', userId)
-          .order('position', { ascending: true });
+        const result = await fetchWithOfflineFallback<Task[]>({
+          fetchFn: async () => {
+            const { data, error } = await supabase
+              .from('tasks')
+              .select('id, text, completed, position')
+              .eq('user_id', userId)
+              .order('position', { ascending: true });
+            if (error) throw error;
+            return (data ?? []) as Task[];
+          },
+          cacheFn: (rows) => cacheTasks(userId, rows),
+          getCacheFn: () => getCachedTasks(userId),
+          operationName: 'fetchTasks',
+        });
         if (cancelled) return;
-        if (error) {
-          console.error('[useTaskManager] Error fetching tasks:', error);
-        } else if (data) {
-          setTasks(data as Task[]);
+        if (result.data !== null) {
+          setTasks(result.data);
+        } else if (result.error) {
+          console.error('[useTaskManager] Error fetching tasks:', result.error);
         }
       } catch (err) {
         if (!cancelled) console.error('[useTaskManager] Error fetching tasks:', err);
