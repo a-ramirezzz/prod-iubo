@@ -17,6 +17,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
 import { cacheTasks, getCachedTasks } from '@/app/lib/offlineDb';
+import { executeOrQueue } from '@/app/lib/offlineMutation';
 import type { Task } from '@/app/types';
 
 // Shape of a row in the `tasks` table as delivered by Realtime.
@@ -217,24 +218,32 @@ export const useTaskManager = (userId: string | null) => {
         position,
       };
 
+      // Functional update — safe even if multiple handlers fire in the same
+      // batch (tasksRef only reflects the latest *committed* state).
       setTasks((prev) => [...prev, newTask]);
 
       if (!userId) return; // Signed out: local-only.
-      supabase
-        .from('tasks')
-        .insert({
-          id: newTask.id,
-          user_id: userId,
-          text: newTask.text,
-          completed: false,
-          position,
-        })
-        .then(({ error }) => {
-          if (error) {
-            console.error('[useTaskManager] Error adding task:', error);
-            setTasks(snapshot);
-          }
-        });
+      const payload = {
+        id: newTask.id,
+        user_id: userId,
+        text: newTask.text,
+        completed: false,
+        position,
+      };
+      executeOrQueue(
+        () => supabase.from('tasks').insert(payload),
+        { table: 'tasks', operation: 'insert', data: payload, userId }
+      ).then(({ queued, error }) => {
+        if (queued) {
+          // By now the batch above has committed, so tasksRef is current.
+          cacheTasks(userId, tasksRef.current);
+          return;
+        }
+        if (error) {
+          console.error('[useTaskManager] Error adding task:', error);
+          setTasks(snapshot);
+        }
+      });
     },
     [userId, supabase]
   );
@@ -250,22 +259,24 @@ export const useTaskManager = (userId: string | null) => {
       if (!target) return;
 
       setTasks((prev) =>
-        prev.map((task) =>
-          task.id === id ? { ...task, completed: !task.completed } : task
-        )
+        prev.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task))
       );
 
       if (!userId) return;
-      supabase
-        .from('tasks')
-        .update({ completed: !target.completed, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .then(({ error }) => {
-          if (error) {
-            console.error('[useTaskManager] Error toggling task:', error);
-            setTasks(snapshot);
-          }
-        });
+      const payload = { completed: !target.completed, updated_at: new Date().toISOString() };
+      executeOrQueue(
+        () => supabase.from('tasks').update(payload).eq('id', id),
+        { table: 'tasks', operation: 'update', data: payload, filters: { id }, userId }
+      ).then(({ queued, error }) => {
+        if (queued) {
+          cacheTasks(userId, tasksRef.current);
+          return;
+        }
+        if (error) {
+          console.error('[useTaskManager] Error toggling task:', error);
+          setTasks(snapshot);
+        }
+      });
     },
     [userId, supabase]
   );
@@ -281,16 +292,19 @@ export const useTaskManager = (userId: string | null) => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
 
       if (!userId) return;
-      supabase
-        .from('tasks')
-        .delete()
-        .eq('id', id)
-        .then(({ error }) => {
-          if (error) {
-            console.error('[useTaskManager] Error deleting task:', error);
-            setTasks(snapshot);
-          }
-        });
+      executeOrQueue(
+        () => supabase.from('tasks').delete().eq('id', id),
+        { table: 'tasks', operation: 'delete', data: {}, filters: { id }, userId }
+      ).then(({ queued, error }) => {
+        if (queued) {
+          cacheTasks(userId, tasksRef.current);
+          return;
+        }
+        if (error) {
+          console.error('[useTaskManager] Error deleting task:', error);
+          setTasks(snapshot);
+        }
+      });
     },
     [userId, supabase]
   );
@@ -315,14 +329,19 @@ export const useTaskManager = (userId: string | null) => {
       if (changed.length === 0) return;
 
       Promise.all(
-        changed.map((task) =>
-          supabase
-            .from('tasks')
-            .update({ position: task.position, updated_at: new Date().toISOString() })
-            .eq('id', task.id)
-        )
+        changed.map((task) => {
+          const payload = { position: task.position, updated_at: new Date().toISOString() };
+          return executeOrQueue(
+            () => supabase.from('tasks').update(payload).eq('id', task.id),
+            { table: 'tasks', operation: 'update', data: payload, filters: { id: task.id }, userId }
+          );
+        })
       ).then((results) => {
-        const failed = results.find((r) => r.error);
+        const anyQueued = results.some((r) => r.queued);
+        if (anyQueued) {
+          cacheTasks(userId, reordered);
+        }
+        const failed = results.find((r) => !r.queued && r.error);
         if (failed) {
           console.error('[useTaskManager] Error reordering tasks:', failed.error);
           setTasks(snapshot);

@@ -18,7 +18,7 @@ import { logWarn } from '@/app/lib/logger';
 import type { Task, AppSettings } from '@/app/types';
 
 const DB_NAME = 'prod-uibo-offline';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 /** Shape of the `pomodoro_sessions` rows as selected by usePomodoroStats. */
 export interface CachedSessionRow {
@@ -34,6 +34,20 @@ interface StoredSessionRow extends CachedSessionRow {
 
 interface StoredTask extends Task {
   user_id: string;
+}
+
+/** A queued Supabase mutation, replayed by syncProcessor.ts once back online. */
+export interface SyncQueueEntry {
+  id?: number; // auto-increment
+  operation: 'insert' | 'update' | 'delete' | 'upsert';
+  table: 'pomodoro_sessions' | 'tasks' | 'user_settings';
+  data: Record<string, unknown>; // the payload to send
+  filters?: Record<string, unknown>; // .eq() filters for update/delete
+  status: 'pending' | 'processing' | 'failed';
+  createdAt: string; // ISO timestamp
+  userId: string;
+  retryCount: number; // starts at 0
+  lastError?: string; // last error message if failed
 }
 
 interface OfflineDBSchema extends DBSchema {
@@ -54,6 +68,11 @@ interface OfflineDBSchema extends DBSchema {
   meta: {
     key: string;
     value: { timestamp: string; user_id: string };
+  };
+  syncQueue: {
+    key: number;
+    value: SyncQueueEntry;
+    indexes: { 'by-status': string; 'by-timestamp': string };
   };
 }
 
@@ -77,6 +96,15 @@ function getDb(): Promise<IDBPDatabase<OfflineDBSchema>> {
         }
         if (!db.objectStoreNames.contains('meta')) {
           db.createObjectStore('meta');
+        }
+        // Version 1 → 2: add syncQueue store.
+        if (!db.objectStoreNames.contains('syncQueue')) {
+          const queueStore = db.createObjectStore('syncQueue', {
+            keyPath: 'id',
+            autoIncrement: true,
+          });
+          queueStore.createIndex('by-status', 'status');
+          queueStore.createIndex('by-timestamp', 'createdAt');
         }
       },
     });
@@ -268,6 +296,110 @@ export async function getSyncTimestamp(store: string, userId: string): Promise<s
   }
 }
 
+// ── Sync queue ──
+
+export async function addToSyncQueue(
+  entry: Omit<SyncQueueEntry, 'id' | 'status' | 'retryCount' | 'createdAt'>,
+): Promise<void> {
+  try {
+    const db = await getDb();
+    await db.add('syncQueue', {
+      ...entry,
+      status: 'pending',
+      retryCount: 0,
+      createdAt: new Date().toISOString(),
+    });
+  } catch (err) {
+    logWarn('Failed to add sync queue entry', {
+      operation: 'addToSyncQueue',
+      userId: entry.userId,
+      metadata: { table: entry.table, mutation: entry.operation, error: String(err) },
+    });
+  }
+}
+
+/** Entries with status 'pending' or 'failed' (retryable), ordered by createdAt ASC. */
+export async function getPendingQueueEntries(userId: string): Promise<SyncQueueEntry[]> {
+  try {
+    const db = await getDb();
+    const all = await db.getAll('syncQueue');
+    return all
+      .filter(
+        (entry) =>
+          entry.userId === userId && (entry.status === 'pending' || entry.status === 'failed'),
+      )
+      .sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
+  } catch (err) {
+    logWarn('Failed to read sync queue', {
+      operation: 'getPendingQueueEntries',
+      userId,
+      metadata: { error: String(err) },
+    });
+    return [];
+  }
+}
+
+export async function updateQueueEntryStatus(
+  id: number,
+  status: SyncQueueEntry['status'],
+  error?: string,
+  retryCount?: number,
+): Promise<void> {
+  try {
+    const db = await getDb();
+    const entry = await db.get('syncQueue', id);
+    if (!entry) return;
+    await db.put('syncQueue', {
+      ...entry,
+      status,
+      lastError: error ?? entry.lastError,
+      retryCount: retryCount ?? entry.retryCount,
+    });
+  } catch (err) {
+    logWarn('Failed to update sync queue entry status', {
+      operation: 'updateQueueEntryStatus',
+      metadata: { id, status, error: String(err) },
+    });
+  }
+}
+
+export async function removeQueueEntry(id: number): Promise<void> {
+  try {
+    const db = await getDb();
+    await db.delete('syncQueue', id);
+  } catch (err) {
+    logWarn('Failed to remove sync queue entry', {
+      operation: 'removeQueueEntry',
+      metadata: { id, error: String(err) },
+    });
+  }
+}
+
+/** Count of pending + failed entries for a user — useful for a UI badge (Step 4). */
+export async function getQueueSize(userId: string): Promise<number> {
+  const entries = await getPendingQueueEntries(userId);
+  return entries.length;
+}
+
+/** Clears all queued mutations for a user (on logout, or after a full sync). */
+export async function clearSyncQueue(userId: string): Promise<void> {
+  try {
+    const db = await getDb();
+    const all = await db.getAll('syncQueue');
+    await Promise.all(
+      all
+        .filter((entry) => entry.userId === userId && entry.id !== undefined)
+        .map((entry) => db.delete('syncQueue', entry.id as number)),
+    );
+  } catch (err) {
+    logWarn('Failed to clear sync queue', {
+      operation: 'clearSyncQueue',
+      userId,
+      metadata: { error: String(err) },
+    });
+  }
+}
+
 // ── Cleanup ──
 
 /** Clears all cached data for a user — call on logout so a different user on the same device never sees stale data. */
@@ -282,6 +414,7 @@ export async function clearUserData(userId: string): Promise<void> {
         db.delete('meta', metaKey(store, userId)),
       ),
     );
+    await clearSyncQueue(userId);
   } catch (err) {
     logWarn('Failed to clear user data', {
       operation: 'clearUserData',
