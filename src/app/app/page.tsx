@@ -35,6 +35,7 @@ import LocaleSync from './LocaleSync';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 import { ConnectionIndicator } from '@/app/components/ConnectionIndicator';
 import { ShortcutsModal } from '@/app/components/ShortcutsModal';
+import { SyncDetailsPanel } from '@/app/components/SyncDetailsPanel';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -69,7 +70,14 @@ export default function HomePage() {
   } = useTaskManager(user?.id ?? null);
 
   // Auto-syncs queued offline mutations once the connection is back.
-  useSyncQueue(user?.id ?? null);
+  const {
+    pendingCount: syncPendingCount,
+    failedCount: syncFailedCount,
+    isSyncing,
+    lastSyncResult,
+    syncNow,
+  } = useSyncQueue(user?.id ?? null);
+  const [showSyncDetails, setShowSyncDetails] = useState(false);
 
   // Name of the first incomplete task, shown as "current task" in the horizontal PiP window.
   const currentTaskText = tasks.find(task => !task.completed)?.text;
@@ -233,7 +241,13 @@ export default function HomePage() {
       {/* App-level Realtime connection status: fixed banner, non-blocking,
           hidden while connected. Kept outside ErrorBoundaries so it still
           shows if a tab crashes. */}
-      <ConnectionIndicator />
+      <ConnectionIndicator
+        pendingCount={syncPendingCount}
+        isSyncing={isSyncing}
+        failedCount={syncFailedCount}
+        lastSyncedCount={lastSyncResult?.processed ?? 0}
+        onOpenSyncDetails={() => setShowSyncDetails(true)}
+      />
       {showSetupControls && <ProjectBranding />}
 
       {/* Tab navigation (hidden in mini mode, which is timer-only) */}
@@ -390,6 +404,13 @@ export default function HomePage() {
 
       {/* Keyboard shortcuts help modal (opened via `?` or the Settings panel) */}
       <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
+
+      <SyncDetailsPanel
+        isOpen={showSyncDetails}
+        onClose={() => setShowSyncDetails(false)}
+        userId={user?.id ?? null}
+        onSyncNow={syncNow}
+      />
 
       {/* First-run onboarding tour: only for authenticated users who haven't seen it yet */}
       {!authLoading && user && !settingsLoading && !settings.has_seen_onboarding && (

@@ -231,7 +231,11 @@
     "connection": {
       "disconnected": "Connection lost — changes are not syncing",
       "reconnecting": "Reconnecting...",
-      "reconnected": "Connection restored"
+      "reconnected": "Connection restored",
+      "syncing": "Syncing {count} changes...",
+      "pendingWhileOffline": " · {count} pending changes",
+      "syncComplete": "Connection restored · {count} changes synced",
+      "syncFailed": "{count} changes failed to sync"
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",
@@ -252,6 +256,37 @@
       "title": "You're offline",
       "message": "Check your internet connection and try again.",
       "retry": "Retry"
+    },
+    "sync": {
+      "detailsTitle": "Pending changes",
+      "allSynced": "Everything is synced",
+      "pendingChanges": "{count} pending changes",
+      "syncingChanges": "Syncing {count} changes...",
+      "failedChanges": "{count} changes failed to sync",
+      "changesSynced": "{count} changes synced",
+      "viewDetails": "View details",
+      "retryAll": "Retry all",
+      "discardAll": "Discard all",
+      "retrySingle": "Retry",
+      "discardSingle": "Discard",
+      "discardConfirm": "Are you sure? This change will be lost.",
+      "discardAllConfirm": "Are you sure? All pending changes will be lost.",
+      "operationInsert": "Create",
+      "operationUpdate": "Update",
+      "operationDelete": "Delete",
+      "operationUpsert": "Save",
+      "tableSessions": "Pomodoro session",
+      "tableTasks": "Task",
+      "tableSettings": "Settings",
+      "timeAgo": "{time} ago",
+      "timeJustNow": "just now",
+      "timeMinutes": "{n}m",
+      "timeHours": "{n}h",
+      "timeDays": "{n}d",
+      "statusPending": "Pending",
+      "statusFailed": "Failed",
+      "errorLabel": "Error",
+      "closeAria": "Close sync details panel"
     }
   },
   "auth": {

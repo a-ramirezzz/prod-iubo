@@ -381,6 +381,22 @@ export async function getQueueSize(userId: string): Promise<number> {
   return entries.length;
 }
 
+/** Count of permanently failed entries (status === 'failed') for a user. */
+export async function getFailedQueueSize(userId: string): Promise<number> {
+  try {
+    const db = await getDb();
+    const all = await db.getAll('syncQueue');
+    return all.filter((entry) => entry.userId === userId && entry.status === 'failed').length;
+  } catch (err) {
+    logWarn('Failed to read failed sync queue size', {
+      operation: 'getFailedQueueSize',
+      userId,
+      metadata: { error: String(err) },
+    });
+    return 0;
+  }
+}
+
 /** Clears all queued mutations for a user (on logout, or after a full sync). */
 export async function clearSyncQueue(userId: string): Promise<void> {
   try {

@@ -231,7 +231,11 @@
     "connection": {
       "disconnected": "Sin conexión — los cambios no se están sincronizando",
       "reconnecting": "Reconectando...",
-      "reconnected": "Conexión restaurada"
+      "reconnected": "Conexión restaurada",
+      "syncing": "Sincronizando {count} cambios...",
+      "pendingWhileOffline": " · {count} cambios pendientes",
+      "syncComplete": "Conexión restaurada · {count} cambios sincronizados",
+      "syncFailed": "{count} cambios no pudieron sincronizarse"
     },
     "shortcuts": {
       "title": "Atajos de teclado",
@@ -252,6 +256,37 @@
       "title": "Sin conexión",
       "message": "Verifica tu conexión a internet e intenta de nuevo.",
       "retry": "Reintentar"
+    },
+    "sync": {
+      "detailsTitle": "Cambios pendientes",
+      "allSynced": "Todo está sincronizado",
+      "pendingChanges": "{count} cambios pendientes",
+      "syncingChanges": "Sincronizando {count} cambios...",
+      "failedChanges": "{count} cambios no pudieron sincronizarse",
+      "changesSynced": "{count} cambios sincronizados",
+      "viewDetails": "Ver detalles",
+      "retryAll": "Reintentar todo",
+      "discardAll": "Descartar todo",
+      "retrySingle": "Reintentar",
+      "discardSingle": "Descartar",
+      "discardConfirm": "¿Seguro? Este cambio se perderá.",
+      "discardAllConfirm": "¿Seguro? Todos los cambios pendientes se perderán.",
+      "operationInsert": "Crear",
+      "operationUpdate": "Actualizar",
+      "operationDelete": "Eliminar",
+      "operationUpsert": "Guardar",
+      "tableSessions": "Sesión Pomodoro",
+      "tableTasks": "Tarea",
+      "tableSettings": "Configuración",
+      "timeAgo": "hace {time}",
+      "timeJustNow": "un momento",
+      "timeMinutes": "{n} min",
+      "timeHours": "{n} h",
+      "timeDays": "{n} d",
+      "statusPending": "Pendiente",
+      "statusFailed": "Fallido",
+      "errorLabel": "Error",
+      "closeAria": "Cerrar panel de sincronización"
     }
   },
   "auth": {

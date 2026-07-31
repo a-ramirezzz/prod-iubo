@@ -5,10 +5,14 @@
 /**
  * ConnectionIndicator
  * -----------------------------------------------------------------
- * A slim, non-blocking banner fixed to the top of the viewport that
- * warns the user when the Supabase Realtime connection is lost (so
- * they know changes are not syncing) and briefly confirms when it is
- * restored. Hidden entirely while everything is healthy.
+ * A slim, non-blocking banner fixed to the top of the viewport. Two
+ * signals feed into it:
+ *  - the Supabase Realtime connection (useRealtimeStatus): warns when
+ *    lost, briefly confirms when restored.
+ *  - the offline mutation queue (useSyncQueue, passed in as props):
+ *    surfaces syncing progress and permanently failed entries.
+ * Hidden entirely while everything is healthy — the offline system is
+ * invisible unless it needs the user's attention.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -18,7 +22,26 @@ import styles from './ConnectionIndicator.module.css';
 
 const RECONNECTED_VISIBLE_MS = 3000;
 
-export default function ConnectionIndicator() {
+interface ConnectionIndicatorProps {
+  /** Queued mutations awaiting sync (from useSyncQueue). */
+  pendingCount?: number;
+  /** Whether the queue is actively being replayed right now. */
+  isSyncing?: boolean;
+  /** Entries that exhausted their retries and need manual attention. */
+  failedCount?: number;
+  /** How many entries the last sync run processed successfully. */
+  lastSyncedCount?: number;
+  /** Opens the sync details panel — required to show the failed-state link. */
+  onOpenSyncDetails?: () => void;
+}
+
+export default function ConnectionIndicator({
+  pendingCount = 0,
+  isSyncing = false,
+  failedCount = 0,
+  lastSyncedCount = 0,
+  onOpenSyncDetails,
+}: ConnectionIndicatorProps) {
   const { status } = useRealtimeStatus();
   const { t } = useLocale();
 
@@ -40,21 +63,42 @@ export default function ConnectionIndicator() {
   }, [status]);
 
   const isDown = status === 'disconnected' || status === 'reconnecting';
-  const visible = isDown || showReconnected;
 
-  // Choose message + state style.
+  // Priority: connection down > actively syncing > permanent failures >
+  // transient "just reconnected" success > hidden.
   let stateClass = styles.reconnected;
-  let message = t('app.connection.reconnected');
+  let message = '';
   let icon = '✓';
+  let visible = false;
+  let showDetailsLink = false;
 
-  if (status === 'disconnected') {
-    stateClass = styles.disconnected;
-    message = t('app.connection.disconnected');
+  if (isDown) {
+    visible = true;
+    stateClass = status === 'disconnected' ? styles.disconnected : styles.reconnecting;
     icon = '⚠️';
-  } else if (status === 'reconnecting') {
-    stateClass = styles.reconnecting;
-    message = t('app.connection.reconnecting');
+    message =
+      status === 'disconnected' ? t('app.connection.disconnected') : t('app.connection.reconnecting');
+    if (pendingCount > 0) {
+      message += t('app.connection.pendingWhileOffline').replace('{count}', String(pendingCount));
+    }
+  } else if (isSyncing) {
+    visible = true;
+    stateClass = styles.syncing;
+    message = t('app.connection.syncing').replace('{count}', String(pendingCount + failedCount));
+  } else if (failedCount > 0) {
+    visible = true;
+    stateClass = styles.failed;
     icon = '⚠️';
+    message = t('app.connection.syncFailed').replace('{count}', String(failedCount));
+    showDetailsLink = true;
+  } else if (showReconnected) {
+    visible = true;
+    stateClass = styles.reconnected;
+    icon = '✓';
+    message =
+      lastSyncedCount > 0
+        ? t('app.connection.syncComplete').replace('{count}', String(lastSyncedCount))
+        : t('app.connection.reconnected');
   }
 
   return (
@@ -64,8 +108,17 @@ export default function ConnectionIndicator() {
       aria-live="polite"
       aria-hidden={!visible}
     >
-      <span className={styles.icon} aria-hidden="true">{icon}</span>
+      {isSyncing ? (
+        <span className={styles.spinner} aria-hidden="true" />
+      ) : (
+        <span className={styles.icon} aria-hidden="true">{icon}</span>
+      )}
       <span>{message}</span>
+      {showDetailsLink && onOpenSyncDetails && (
+        <button type="button" className={styles.detailsLink} onClick={onOpenSyncDetails}>
+          {t('app.sync.viewDetails')}
+        </button>
+      )}
     </div>
   );
 }
