@@ -9,6 +9,7 @@
  */
 
 const path = require("path");
+const withSerwist = require("@serwist/next").default;
 
 /**
  * @type {import('next').NextConfig}
@@ -107,7 +108,15 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSerwist({
+  swSrc: "src/app/sw.ts",
+  swDest: "public/sw.js",
+  // Only precache the app shell's own static assets, never the large
+  // background videos / ambient sounds in public/ (100+ MB combined).
+  globPublicPatterns: ["favicon.png", "manifest.json", "icon-192.png", "icon-512.png"],
+  maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+  disable: process.env.NODE_ENV === "development",
+})(nextConfig);
 
 // =================================================================
 // END OF FILE
