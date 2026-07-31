@@ -41,9 +41,11 @@ vi.mock('@/app/lib/supabase/client', () => ({
 // unaffected; individual tests override to exercise the offline fallback.
 const cacheTasksMock = vi.fn().mockResolvedValue(undefined);
 const getCachedTasksMock = vi.fn().mockResolvedValue(null);
+const addToSyncQueueMock = vi.fn().mockResolvedValue(undefined);
 vi.mock('@/app/lib/offlineDb', () => ({
   cacheTasks: (...args: unknown[]) => cacheTasksMock(...args),
   getCachedTasks: (...args: unknown[]) => getCachedTasksMock(...args),
+  addToSyncQueue: (...args: unknown[]) => addToSyncQueueMock(...args),
 }));
 
 import { useTaskManager } from '@/app/hooks/useTaskManager';
@@ -58,6 +60,7 @@ describe('useTaskManager', () => {
     mockSupabase.from.mockClear();
     cacheTasksMock.mockClear().mockResolvedValue(undefined);
     getCachedTasksMock.mockClear().mockResolvedValue(null);
+    addToSyncQueueMock.mockClear().mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -154,6 +157,23 @@ describe('useTaskManager', () => {
     await waitFor(() => {
       expect(result.current.tasks).toEqual([]);
     });
+  });
+
+  it('queues the add instead of reverting when the failure looks like a network error', async () => {
+    insertResult = { error: { message: 'Failed to fetch' } };
+    const { result } = renderHook(() => useTaskManager(USER));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => {
+      result.current.handleAddTask('Offline task');
+    });
+
+    // Optimistic state is kept (not reverted) because the mutation was queued.
+    expect(result.current.tasks).toHaveLength(1);
+    await waitFor(() => expect(addToSyncQueueMock).toHaveBeenCalled());
+    expect(addToSyncQueueMock).toHaveBeenCalledWith(
+      expect.objectContaining({ table: 'tasks', operation: 'insert', userId: USER })
+    );
+    await waitFor(() => expect(cacheTasksMock).toHaveBeenCalled());
   });
 
   it('mirrors a successful initial fetch into the offline cache', async () => {

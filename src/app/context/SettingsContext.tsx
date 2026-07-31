@@ -21,6 +21,7 @@ import { AppSettings } from '../types';
 import { logError } from '@/app/lib/logger';
 import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
 import { cacheSettings, getCachedSettings } from '@/app/lib/offlineDb';
+import { executeOrQueue } from '@/app/lib/offlineMutation';
 
 // =================================================================
 // SECTION: Constants
@@ -160,10 +161,20 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     console.log('[SettingsContext] updateSettings called:', newSettings, 'Full object:', updated);
 
     // 2. Persist ONLY the changed fields to Supabase.
-    const { error } = await supabase
-      .from('user_settings')
-      .update(newSettings)
-      .eq('id', user.id);
+    const { queued, error } = await executeOrQueue(
+      () => supabase.from('user_settings').update(newSettings).eq('id', user.id),
+      {
+        table: 'user_settings',
+        operation: 'update',
+        data: newSettings as Record<string, unknown>,
+        filters: { id: user.id },
+        userId: user.id,
+      }
+    );
+    if (queued) {
+      await cacheSettings(user.id, updated);
+      return;
+    }
     if (error) {
       setError('Error updating settings: ' + error.message);
       logError(error, { operation: 'updateSettings', userId: user.id, metadata: { fields: Object.keys(newSettings) } });
@@ -190,9 +201,20 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings(resetValues);
     console.log('[SettingsContext] resetSettings called');
 
-    const { error } = await supabase
-      .from('user_settings')
-      .upsert([{ id: user.id, ...resetValues }], { onConflict: 'id' });
+    const upsertPayload = { id: user.id, ...resetValues };
+    const { queued, error } = await executeOrQueue(
+      () => supabase.from('user_settings').upsert([upsertPayload], { onConflict: 'id' }),
+      {
+        table: 'user_settings',
+        operation: 'upsert',
+        data: upsertPayload as Record<string, unknown>,
+        userId: user.id,
+      }
+    );
+    if (queued) {
+      await cacheSettings(user.id, resetValues);
+      return;
+    }
     if (error) {
       setError('Error resetting settings: ' + error.message);
       console.error('[SettingsContext] Error resetting settings:', error);

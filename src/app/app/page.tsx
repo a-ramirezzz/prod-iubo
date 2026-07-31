@@ -15,6 +15,7 @@ import { useTimerController } from '@/hooks/useTimerController';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { usePomodoroStats } from '@/hooks/usePomodoroStats';
 import { useTaskManager } from '@/hooks/useTaskManager';
+import { useSyncQueue } from '@/hooks/useSyncQueue';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
 import { useHorizontalPipTimer } from '@/hooks/useHorizontalPipTimer';
@@ -66,6 +67,9 @@ export default function HomePage() {
     handleDeleteTask,
     handleReorderTasks,
   } = useTaskManager(user?.id ?? null);
+
+  // Auto-syncs queued offline mutations once the connection is back.
+  useSyncQueue(user?.id ?? null);
 
   // Name of the first incomplete task, shown as "current task" in the horizontal PiP window.
   const currentTaskText = tasks.find(task => !task.completed)?.text;

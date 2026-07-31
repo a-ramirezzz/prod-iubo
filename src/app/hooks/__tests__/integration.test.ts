@@ -417,8 +417,10 @@ describe('hook integration: timer → engine → Supabase → stats', () => {
   // Error resilience
   // ===========================================================================
 
-  it('should keep the timer and engine working when the Supabase save fails', async () => {
-    insertError = { message: 'network down' };
+  it('should keep the timer and engine working when the Supabase save fails with a data error', async () => {
+    // A genuine data-level failure (RLS denial, constraint violation) — not a
+    // connectivity issue, so the offline mutation queue must NOT swallow it.
+    insertError = { message: 'new row violates row-level security policy', code: '42501' };
     const { result } = renderController();
 
     await runWorkSession(result);

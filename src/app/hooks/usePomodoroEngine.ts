@@ -14,6 +14,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
+import { executeOrQueue } from '@/app/lib/offlineMutation';
+import { cacheSessions, getCachedSessions } from '@/app/lib/offlineDb';
 
 // A valid Pomodoro is a work session of at least 20 minutes.
 const MIN_VALID_POMODORO_SECONDS = 1200;
@@ -189,20 +191,35 @@ export const usePomodoroEngine = (
 
     // Persist the session (best-effort, fire-and-forget).
     if (userId) {
-      supabase
-        .from('pomodoro_sessions')
-        .insert({
-          user_id: userId,
-          started_at: (sessionStartedAtRef.current ?? new Date()).toISOString(),
-          completed_at: new Date().toISOString(),
-          duration_minutes: Math.round(initialTimeSetRef.current / 60),
-          session_type: 'work',
-          task_text: taskText,
-          completed: true,
-        })
-        .then(({ error }) => {
-          if (error) console.error('[usePomodoroEngine] Error saving session:', error);
-        });
+      const payload = {
+        user_id: userId,
+        started_at: (sessionStartedAtRef.current ?? new Date()).toISOString(),
+        completed_at: new Date().toISOString(),
+        duration_minutes: Math.round(initialTimeSetRef.current / 60),
+        session_type: 'work',
+        task_text: taskText,
+        completed: true,
+      };
+      executeOrQueue(
+        () => supabase.from('pomodoro_sessions').insert(payload),
+        { table: 'pomodoro_sessions', operation: 'insert', data: payload, userId }
+      ).then(async ({ queued, error }) => {
+        if (queued) {
+          // Not reflected by Supabase yet — mirror it into the local cache
+          // so it shows up immediately in the offline stats view.
+          const cached = (await getCachedSessions(userId)) ?? [];
+          await cacheSessions(userId, [
+            {
+              completed_at: payload.completed_at,
+              task_text: payload.task_text,
+              duration_minutes: payload.duration_minutes,
+            },
+            ...cached,
+          ]);
+          return;
+        }
+        if (error) console.error('[usePomodoroEngine] Error saving session:', error);
+      });
     }
 
     setTotalPomodorosToday((prev) => prev + 1);
