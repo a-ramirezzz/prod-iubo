@@ -247,6 +247,11 @@
       "shortcutFocusTab": "Go to Focus tab",
       "shortcutShowShortcuts": "Show keyboard shortcuts",
       "shortcutCloseModal": "Close modal or panel"
+    },
+    "offline": {
+      "title": "You're offline",
+      "message": "Check your internet connection and try again.",
+      "retry": "Retry"
     }
   },
   "auth": {

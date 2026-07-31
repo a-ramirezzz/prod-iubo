@@ -38,6 +38,7 @@ const inter = Inter({
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#111827',
 };
 
 export const metadata = {
@@ -64,7 +65,15 @@ export const metadata = {
     shortcut: '/favicon.png',       // Legacy browser support
     apple: '/favicon.png',          // iOS home screen icon
   },
-  
+
+  // Web App Manifest for PWA installability
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'PROD-UIBO',
+  },
+
   // Open Graph metadata for social media sharing
   openGraph: {
     title: 'Prod-UIBO - Temporizador de Productividad',

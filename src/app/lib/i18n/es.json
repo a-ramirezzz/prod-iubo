@@ -247,6 +247,11 @@
       "shortcutFocusTab": "Ir a la pestaña Enfoque",
       "shortcutShowShortcuts": "Mostrar atajos de teclado",
       "shortcutCloseModal": "Cerrar ventana o panel"
+    },
+    "offline": {
+      "title": "Sin conexión",
+      "message": "Verifica tu conexión a internet e intenta de nuevo.",
+      "retry": "Reintentar"
     }
   },
   "auth": {
