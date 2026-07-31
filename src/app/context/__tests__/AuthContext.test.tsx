@@ -43,6 +43,11 @@ vi.mock('@/app/lib/supabase/client', () => ({
   createClient: vi.fn(() => mockSupabase),
 }));
 
+const clearUserDataMock = vi.fn().mockResolvedValue(undefined);
+vi.mock('@/app/lib/offlineDb', () => ({
+  clearUserData: (...args: unknown[]) => clearUserDataMock(...args),
+}));
+
 import { AuthProvider, useAuth } from '@/app/context/AuthContext';
 
 // --- Test helpers ----------------------------------------------------------
@@ -79,6 +84,7 @@ describe('AuthContext', () => {
     signOutMock.mockClear();
     getSessionMock.mockClear();
     onAuthStateChangeMock.mockClear();
+    clearUserDataMock.mockClear();
   });
 
   afterEach(() => {
@@ -162,6 +168,7 @@ describe('AuthContext', () => {
       expect(screen.getByTestId('user').textContent).toBe('null');
     });
     expect(screen.getByTestId('session-expired').textContent).toBe('false');
+    expect(clearUserDataMock).toHaveBeenCalledWith('user-a');
   });
 
   it('clears sessionExpired on re-authentication', async () => {

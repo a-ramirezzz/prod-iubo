@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 
 // Configurable results for the Supabase mock.
-let selectResult: { data: unknown[]; error: unknown } = { data: [], error: null };
+let selectResult: { data: unknown[] | null; error: unknown } = { data: [], error: null };
 let insertResult: { error: unknown } = { error: null };
 
 const insertMock = vi.fn(() => Promise.resolve(insertResult));
@@ -37,6 +37,15 @@ vi.mock('@/app/lib/supabase/client', () => ({
   createClient: vi.fn(() => mockSupabase),
 }));
 
+// Default to "nothing cached yet" so existing network-path assertions are
+// unaffected; individual tests override to exercise the offline fallback.
+const cacheTasksMock = vi.fn().mockResolvedValue(undefined);
+const getCachedTasksMock = vi.fn().mockResolvedValue(null);
+vi.mock('@/app/lib/offlineDb', () => ({
+  cacheTasks: (...args: unknown[]) => cacheTasksMock(...args),
+  getCachedTasks: (...args: unknown[]) => getCachedTasksMock(...args),
+}));
+
 import { useTaskManager } from '@/app/hooks/useTaskManager';
 
 const USER = 'user-123';
@@ -47,6 +56,8 @@ describe('useTaskManager', () => {
     insertResult = { error: null };
     insertMock.mockClear();
     mockSupabase.from.mockClear();
+    cacheTasksMock.mockClear().mockResolvedValue(undefined);
+    getCachedTasksMock.mockClear().mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -143,6 +154,28 @@ describe('useTaskManager', () => {
     await waitFor(() => {
       expect(result.current.tasks).toEqual([]);
     });
+  });
+
+  it('mirrors a successful initial fetch into the offline cache', async () => {
+    selectResult = { data: [{ id: 't1', text: 'A', completed: false, position: 0 }], error: null };
+    renderHook(() => useTaskManager(USER));
+    await waitFor(() => expect(cacheTasksMock).toHaveBeenCalled());
+    expect(cacheTasksMock).toHaveBeenCalledWith(USER, [
+      { id: 't1', text: 'A', completed: false, position: 0 },
+    ]);
+  });
+
+  it('falls back to cached tasks when the initial fetch fails', async () => {
+    selectResult = { data: null, error: { message: 'offline' } };
+    getCachedTasksMock.mockResolvedValue([
+      { id: 't1', text: 'Cached task', completed: false, position: 0 },
+    ]);
+    const { result } = renderHook(() => useTaskManager(USER));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.tasks).toEqual([
+      { id: 't1', text: 'Cached task', completed: false, position: 0 },
+    ]);
   });
 
   it('skips Supabase calls when userId is null', async () => {

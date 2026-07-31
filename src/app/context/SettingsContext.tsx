@@ -19,6 +19,8 @@ import { useLocale } from '@/app/lib/i18n';
 import Notification from '@/app/components/Notification/Notification';
 import { AppSettings } from '../types';
 import { logError } from '@/app/lib/logger';
+import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
+import { cacheSettings, getCachedSettings } from '@/app/lib/offlineDb';
 
 // =================================================================
 // SECTION: Constants
@@ -107,21 +109,32 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
     setLoading(true);
     const fetchSettings = async () => {
-      const { data, error } = await supabase
-        .from('user_settings')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-      if (error) {
-        setSettings(DEFAULT_SETTINGS);
-        console.error('[SettingsContext] Error loading settings:', error);
-        setNotification({ visible: true, message: t('settings.errors.loadFailed'), icon: iconError });
-      } else if (!data) {
-        setSettings(DEFAULT_SETTINGS);
-        console.log('[SettingsContext] No settings found, using defaults.');
+      const result = await fetchWithOfflineFallback<AppSettings>({
+        fetchFn: async () => {
+          const { data, error } = await supabase
+            .from('user_settings')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          if (error) throw error;
+          return data as AppSettings;
+        },
+        cacheFn: (data) => cacheSettings(user.id, data),
+        getCacheFn: () => getCachedSettings(user.id),
+        operationName: 'fetchSettings',
+      });
+
+      if (result.data) {
+        setSettings({ ...DEFAULT_SETTINGS, ...result.data });
+        console.log(`[SettingsContext] Loaded settings from ${result.source}:`, result.data);
       } else {
-        setSettings({ ...DEFAULT_SETTINGS, ...data });
-        console.log('[SettingsContext] Loaded settings from Supabase:', data);
+        setSettings(DEFAULT_SETTINGS);
+        if (result.error) {
+          console.error('[SettingsContext] Error loading settings:', result.error);
+          setNotification({ visible: true, message: t('settings.errors.loadFailed'), icon: iconError });
+        } else {
+          console.log('[SettingsContext] No settings found, using defaults.');
+        }
       }
       setLoading(false);
     };

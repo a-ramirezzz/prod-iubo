@@ -36,6 +36,16 @@ vi.mock('@/app/lib/supabase/client', () => ({
   createClient: vi.fn(() => ({ from: fromMock })),
 }));
 
+// The offline cache is irrelevant to this hook's own calculation logic (covered
+// separately by offlineDb/offlineSync tests) — default to "nothing cached yet"
+// so every existing network-path assertion below is unaffected.
+const cacheSessionsMock = vi.fn().mockResolvedValue(undefined);
+const getCachedSessionsMock = vi.fn().mockResolvedValue(null);
+vi.mock('@/app/lib/offlineDb', () => ({
+  cacheSessions: (...args: unknown[]) => cacheSessionsMock(...args),
+  getCachedSessions: (...args: unknown[]) => getCachedSessionsMock(...args),
+}));
+
 import { usePomodoroStats } from '@/app/hooks/usePomodoroStats';
 
 const USER = 'mock-user-id';
@@ -103,6 +113,8 @@ describe('usePomodoroStats', () => {
     builder.eq.mockClear();
     builder.gte.mockClear();
     orderMock.mockClear();
+    cacheSessionsMock.mockClear().mockResolvedValue(undefined);
+    getCachedSessionsMock.mockClear().mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -138,12 +150,34 @@ describe('usePomodoroStats', () => {
     expect(result.current.loadError).toBe(false);
   });
 
-  it('should set loadError when the query returns an error', async () => {
+  it('should set loadError when the query returns an error and nothing is cached', async () => {
     mockResponse = { data: null, error: { message: 'boom' } };
     const { result } = await renderSettled();
 
     expect(result.current.loadError).toBe(true);
     expect(result.current.weekTotal).toBe(0);
+  });
+
+  it('should mirror a successful fetch into the offline cache', async () => {
+    setData([createMockSession({ completed_at: daysAgoAt(0) })]);
+    await renderSettled();
+
+    expect(cacheSessionsMock).toHaveBeenCalledWith(
+      USER,
+      expect.arrayContaining([expect.objectContaining({ duration_minutes: 25 })])
+    );
+  });
+
+  it('should fall back to cached sessions when the network fetch fails', async () => {
+    mockResponse = { data: null, error: { message: 'offline' } };
+    getCachedSessionsMock.mockResolvedValue([
+      createMockSession({ completed_at: daysAgoAt(0), task_text: 'Cached' }),
+    ]);
+    const { result } = await renderSettled();
+
+    expect(result.current.loadError).toBe(false);
+    expect(result.current.todaySessions).toHaveLength(1);
+    expect(result.current.todaySessions[0].task_text).toBe('Cached');
   });
 
   // ===========================================================================
