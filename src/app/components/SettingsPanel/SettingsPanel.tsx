@@ -455,7 +455,7 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                       disabled={settingsLoading}
                     >
                       <div className={styles.soundIcon}>{sound.icon}</div>
-                      <span>{sound.name}</span>
+                      <span>{t(sound.nameKey)}</span>
                     </button>
                   ))}
                 </div>

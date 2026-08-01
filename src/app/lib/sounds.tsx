@@ -26,7 +26,7 @@ import type { JSX } from 'react';
  */
 export interface Sound {
   id: string;        // Unique identifier, corresponds to the audio file name (without extension).
-  name: string;      // Display name for the sound.
+  nameKey: string;   // i18n dot-notation key for the display name.
   src: string;       // The path to the audio file in the /public directory.
   icon: JSX.Element; // The JSX element for the icon representing the sound.
 }
@@ -57,14 +57,14 @@ const ICONS = {
  * An array containing all available ambient sounds for the user to choose from.
  */
 export const sounds: Sound[] = [
-  { id: 'noche-campo', name: 'Noche en el Campo', src: '/noche-campo.mp3', icon: ICONS.Leaf },
-  { id: 'nuevo-dia', name: 'Nuevo Día', src: '/nuevo-dia.mp3', icon: ICONS.Sun },
-  { id: 'noche-de-disco', name: 'Noche de Disco', src: '/noche-de-disco.mp3', icon: ICONS.Music },
-  { id: 'espacio', name: 'Espacio Sideral', src: '/espacio.mp3', icon: ICONS.Rocket },
-  { id: 'lluvia-relajante', name: 'Lluvia Relajante', src: '/lluvia-relajante.mp3', icon: ICONS.CloudRain },
+  { id: 'noche-campo', nameKey: 'settings.sounds.nightInTheField', src: '/noche-campo.mp3', icon: ICONS.Leaf },
+  { id: 'nuevo-dia', nameKey: 'settings.sounds.newDay', src: '/nuevo-dia.mp3', icon: ICONS.Sun },
+  { id: 'noche-de-disco', nameKey: 'settings.sounds.discoNight', src: '/noche-de-disco.mp3', icon: ICONS.Music },
+  { id: 'espacio', nameKey: 'settings.sounds.outerSpace', src: '/espacio.mp3', icon: ICONS.Rocket },
+  { id: 'lluvia-relajante', nameKey: 'settings.sounds.relaxingRain', src: '/lluvia-relajante.mp3', icon: ICONS.CloudRain },
 ];
 
 /**
  * A special 'Sound' object representing the option to have no sound playing.
  */
-export const noSound: Sound = { id: 'none', name: 'Ninguno', src: '', icon: ICONS.None };
+export const noSound: Sound = { id: 'none', nameKey: 'settings.sounds.none', src: '', icon: ICONS.None };
