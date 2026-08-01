@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
     });
     setLoading(false);
     if (error) {
-      setNotification({ visible: true, message: translateSupabaseError(error.message), icon: iconError });
+      setNotification({ visible: true, message: translateSupabaseError(error.message, t), icon: iconError });
     } else {
       setSent(true);
       setNotification({

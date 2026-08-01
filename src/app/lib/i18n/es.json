@@ -295,6 +295,15 @@
       "signup": "Registrarse"
     },
     "loadingApp": "Cargando aplicación…",
+    "errors": {
+      "emailAlreadyRegistered": "El correo electrónico ya está registrado.",
+      "usernameAlreadyTaken": "El nombre de usuario ya está en uso. Por favor, elige otro.",
+      "invalidCredentials": "Correo electrónico o contraseña incorrectos.",
+      "userNotFound": "Usuario no encontrado.",
+      "emailNotConfirmed": "Por favor confirma tu correo electrónico.",
+      "networkError": "Error de red. Intenta de nuevo más tarde.",
+      "passwordError": "La contraseña es incorrecta o no cumple los requisitos."
+    },
     "login": {
       "title": "Iniciar Sesión",
       "emailPlaceholder": "Correo electrónico",

@@ -295,6 +295,15 @@
       "signup": "Sign up"
     },
     "loadingApp": "Loading app…",
+    "errors": {
+      "emailAlreadyRegistered": "This email is already registered.",
+      "usernameAlreadyTaken": "This username is already taken. Please choose another.",
+      "invalidCredentials": "Incorrect email or password.",
+      "userNotFound": "User not found.",
+      "emailNotConfirmed": "Please confirm your email.",
+      "networkError": "Network error. Please try again later.",
+      "passwordError": "The password is incorrect or does not meet the requirements."
+    },
     "login": {
       "title": "Log In",
       "emailPlaceholder": "Email address",

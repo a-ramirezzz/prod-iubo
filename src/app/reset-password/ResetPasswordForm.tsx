@@ -103,7 +103,7 @@ export default function ResetPasswordForm() {
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
     if (error) {
-      setNotification({ visible: true, message: translateSupabaseError(error.message), icon: iconError });
+      setNotification({ visible: true, message: translateSupabaseError(error.message, t), icon: iconError });
     } else {
       setDone(true);
       setNotification({
