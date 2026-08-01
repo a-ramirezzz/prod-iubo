@@ -414,7 +414,13 @@
     },
     "sounds": {
       "background": "Background sound",
-      "volume": "Volume"
+      "volume": "Volume",
+      "none": "None",
+      "nightInTheField": "Night in the Field",
+      "newDay": "New Day",
+      "discoNight": "Disco Night",
+      "outerSpace": "Outer Space",
+      "relaxingRain": "Relaxing Rain"
     },
     "focus": {
       "dailyGoal": "Daily Pomodoro Goal",

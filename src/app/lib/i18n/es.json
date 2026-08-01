@@ -414,7 +414,13 @@
     },
     "sounds": {
       "background": "Sonido de fondo",
-      "volume": "Volumen"
+      "volume": "Volumen",
+      "none": "Ninguno",
+      "nightInTheField": "Noche en el Campo",
+      "newDay": "Nuevo Día",
+      "discoNight": "Noche de Disco",
+      "outerSpace": "Espacio Sideral",
+      "relaxingRain": "Lluvia Relajante"
     },
     "focus": {
       "dailyGoal": "Meta diaria de Pomodoros",
