@@ -75,7 +75,7 @@ export default function LoginForm({ hideLinks = false }: { hideLinks?: boolean }
     setLoading(false);
     if (error) {
       // Check for unconfirmed email error (Supabase error message may vary)
-      const translated = translateSupabaseError(error.message);
+      const translated = translateSupabaseError(error.message, t);
       if (translated === 'Por favor confirma tu correo electrónico.') {
         setNotification({ visible: true, message: translated, icon: iconWarning });
       } else {

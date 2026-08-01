@@ -127,7 +127,7 @@ export default function SignupForm({ hideLinks = false }: { hideLinks?: boolean 
     });
     setLoading(false);
     if (result?.error) {
-      const translated = translateSupabaseError(result.error);
+      const translated = translateSupabaseError(result.error, t);
       // Show warning icon if it's a duplicate user error, else error icon
       if (translated.includes("ya está registrado") || translated.includes("ya está en uso")) {
         setNotification({ visible: true, message: translated, icon: iconWarning });
