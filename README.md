@@ -81,7 +81,7 @@ The app uses a hooks-based architecture that separates logic from presentation:
 - **Tab components** (`TimerTab`, `FocusTab`) are presentational — they receive props, no hooks
 - **Providers** nest as: `LocaleProvider → AuthProvider → SettingsProvider → ThemeWrapper → ErrorBoundary`
 - **Offline system** has 4 layers: Service Worker (precache), IndexedDB (local mirror), sync queue (mutation replay), UI (connection indicator + sync panel)
-- **Error isolation**: per-tab ErrorBoundaries prevent crashes from propagating (Focus crashing won't kill Timer)
+- **Error isolation**: per-tab ErrorBoundaries prevent crashes from propagating (Focus crashing won't kill Timer).
 
 ## Testing
 
