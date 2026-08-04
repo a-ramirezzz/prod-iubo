@@ -17,8 +17,7 @@ import {
   type SyncQueueEntry,
 } from '@/app/lib/offlineDb';
 import { logError, logWarn } from '@/app/lib/logger';
-
-const MAX_RETRIES = 3;
+import { SYNC } from '@/app/lib/constants';
 
 export interface SyncResult {
   processed: number;
@@ -49,7 +48,7 @@ export async function processSyncQueue(userId: string): Promise<SyncResult> {
       const message = error instanceof Error ? error.message : String(error);
       const retryCount = entry.retryCount + 1;
 
-      if (retryCount >= MAX_RETRIES) {
+      if (retryCount >= SYNC.MAX_RETRIES) {
         await updateQueueEntryStatus(entry.id, 'failed', message, retryCount);
         failed++;
         logError(error, {

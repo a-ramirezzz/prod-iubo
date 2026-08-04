@@ -22,6 +22,7 @@ import { logError } from '@/app/lib/logger';
 import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
 import { cacheSettings, getCachedSettings } from '@/app/lib/offlineDb';
 import { executeOrQueue } from '@/app/lib/offlineMutation';
+import { POMODORO } from '@/app/lib/constants';
 
 // =================================================================
 // SECTION: Constants
@@ -44,7 +45,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   selected_theme_id: 'dark-default',
   background_sound: 'none',
   volume: 0.5,
-  daily_pomodoro_goal: 8,
+  daily_pomodoro_goal: POMODORO.DEFAULT_DAILY_GOAL,
   has_seen_onboarding: false,
 };
 

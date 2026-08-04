@@ -181,11 +181,12 @@ Object.assign(globalThis, {
 
 import { useTimerController } from '@/app/hooks/useTimerController';
 import { usePomodoroStats } from '@/app/hooks/usePomodoroStats';
+import { POMODORO } from '@/app/lib/constants';
 
 const USER = 'user-integration-1';
 
-/** A valid pomodoro must be >= 20 minutes (MIN_VALID_POMODORO_SECONDS). */
-const WORK_MINUTES = 20;
+/** A valid pomodoro must be >= 20 minutes (POMODORO.MIN_VALID_SECONDS). */
+const WORK_MINUTES = POMODORO.MIN_VALID_SECONDS / 60;
 
 interface Params {
   userId?: string | null;

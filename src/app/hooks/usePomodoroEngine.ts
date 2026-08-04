@@ -16,11 +16,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { executeOrQueue } from '@/app/lib/offlineMutation';
 import { cacheSessions, getCachedSessions } from '@/app/lib/offlineDb';
-
-// A valid Pomodoro is a work session of at least 20 minutes.
-const MIN_VALID_POMODORO_SECONDS = 1200;
-// A long break is earned after this many valid pomodoros.
-const POMODOROS_PER_CYCLE = 4;
+import { POMODORO } from '@/app/lib/constants';
 
 export type PomodoroPhase = 'work' | 'short_break' | 'long_break' | 'idle';
 
@@ -184,7 +180,7 @@ export const usePomodoroEngine = (
   const completeSession = useCallback((taskText: string | null) => {
     if (
       currentPhaseRef.current !== 'work' ||
-      initialTimeSetRef.current < MIN_VALID_POMODORO_SECONDS
+      initialTimeSetRef.current < POMODORO.MIN_VALID_SECONDS
     ) {
       return; // Not a valid pomodoro — no state change.
     }
@@ -225,7 +221,7 @@ export const usePomodoroEngine = (
     setTotalPomodorosToday((prev) => prev + 1);
 
     const newCycleCount = cycleCountRef.current + 1;
-    if (newCycleCount >= POMODOROS_PER_CYCLE) {
+    if (newCycleCount >= POMODORO.SESSIONS_PER_CYCLE) {
       cycleCountRef.current = 0;
       setCycleCount(0);
       currentPhaseRef.current = 'long_break';

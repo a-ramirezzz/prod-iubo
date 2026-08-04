@@ -18,9 +18,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRealtimeStatus } from '@/hooks/useRealtimeStatus';
 import { useLocale } from '@/app/lib/i18n';
+import { SYNC } from '@/app/lib/constants';
 import styles from './ConnectionIndicator.module.css';
-
-const RECONNECTED_VISIBLE_MS = 3000;
 
 interface ConnectionIndicatorProps {
   /** Queued mutations awaiting sync (from useSyncQueue). */
@@ -57,7 +56,7 @@ export default function ConnectionIndicator({
     // Detect the transition FROM a bad state TO connected.
     if (status === 'connected' && (prev === 'disconnected' || prev === 'reconnecting')) {
       setShowReconnected(true);
-      const timeout = setTimeout(() => setShowReconnected(false), RECONNECTED_VISIBLE_MS);
+      const timeout = setTimeout(() => setShowReconnected(false), SYNC.RECONNECTED_VISIBLE_MS);
       return () => clearTimeout(timeout);
     }
   }, [status]);

@@ -9,6 +9,7 @@ import { useTimer } from '@/hooks/useTimer';
 import { useTimerAlert } from '@/hooks/useTimerAlert';
 import { usePomodoroEngine } from '@/hooks/usePomodoroEngine';
 import { playNotificationSound } from '@/app/lib/notificationSound';
+import { POMODORO } from '@/app/lib/constants';
 
 interface UseTimerControllerParams {
   enableDesktopNotifications: boolean;
@@ -123,15 +124,15 @@ export function useTimerController({
    * CTA from the Focus tab: starts a standard 25-minute Pomodoro.
    */
   const handleFocusStartWork = useCallback(() => {
-    pomodoroEngine.startWorkSession(25 * 60);
-    startTimer(25);
+    pomodoroEngine.startWorkSession(POMODORO.DEFAULT_WORK_MINUTES * 60);
+    startTimer(POMODORO.DEFAULT_WORK_MINUTES);
   }, [pomodoroEngine, startTimer]);
 
   /**
    * CTA from the Focus tab: starts the earned break (5 or 15 minutes).
    */
   const handleFocusStartBreak = useCallback(() => {
-    const minutes = pomodoroEngine.currentPhase === 'long_break' ? 15 : 5;
+    const minutes = pomodoroEngine.currentPhase === 'long_break' ? POMODORO.DEFAULT_LONG_BREAK_MINUTES : POMODORO.DEFAULT_SHORT_BREAK_MINUTES;
     pomodoroEngine.startBreak();
     startTimer(minutes);
   }, [pomodoroEngine, startTimer]);

@@ -1,15 +1,14 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 
-const DEFAULT_WINDOW_MS = 60 * 1000;
-const DEFAULT_MAX_REQUESTS = 5;
+import { RATE_LIMIT } from '@/app/lib/constants';
 
 interface RateLimitEntry {
   count: number;
   firstRequest: number;
 }
 
-export function createRateLimiter(windowMs = DEFAULT_WINDOW_MS, maxRequests = DEFAULT_MAX_REQUESTS) {
+export function createRateLimiter(windowMs: number = RATE_LIMIT.WINDOW_MS, maxRequests: number = RATE_LIMIT.MAX_REQUESTS) {
   const map = new Map<string, RateLimitEntry>();
 
   function cleanup(now: number) {

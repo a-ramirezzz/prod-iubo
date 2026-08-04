@@ -14,9 +14,7 @@ import { processSyncQueue, type SyncResult } from '@/app/lib/syncProcessor';
 import { getQueueSize, getFailedQueueSize } from '@/app/lib/offlineDb';
 import { useRealtimeStatus } from '@/app/hooks/useRealtimeStatus';
 import { logWarn } from '@/app/lib/logger';
-
-// Let the connection settle before hammering it with queued writes.
-const RECONNECT_STABILIZE_MS = 1500;
+import { SYNC } from '@/app/lib/constants';
 
 export interface UseSyncQueueResult {
   /** Entries still awaiting their first sync attempt or a retry (excludes permanently failed ones). */
@@ -88,7 +86,7 @@ export function useSyncQueue(userId: string | null): UseSyncQueueResult {
     if (status === 'connected' && prevStatus !== 'connected') {
       const timer = setTimeout(() => {
         syncNow();
-      }, RECONNECT_STABILIZE_MS);
+      }, SYNC.RECONNECT_STABILIZE_MS);
       return () => clearTimeout(timer);
     }
   }, [status, userId, syncNow]);
