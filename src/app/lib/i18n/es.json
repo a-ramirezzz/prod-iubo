@@ -501,5 +501,91 @@
     "skip": "Omitir",
     "next": "Siguiente",
     "finish": "Finalizar"
+  },
+  "legal": {
+    "backToHome": "← Volver al inicio",
+    "lastUpdated": "Última actualización: Agosto 2026",
+    "privacy": {
+      "title": "Política de Privacidad",
+      "intro": "En PROD-UIBO respetamos tu privacidad. Esta política describe qué datos recopilamos, cómo los usamos y tus derechos sobre ellos.",
+      "sections": [
+        {
+          "heading": "Datos que recopilamos",
+          "content": "Recopilamos únicamente los datos necesarios para que la aplicación funcione: tu correo electrónico para autenticación, tus configuraciones de preferencias (tema, sonido, idioma), y datos de sesiones Pomodoro (duración, tareas asociadas, marcas de tiempo). No recopilamos datos de ubicación, contactos ni información financiera."
+        },
+        {
+          "heading": "Cómo usamos tus datos",
+          "content": "Tus datos se utilizan exclusivamente para: autenticar tu cuenta, sincronizar tus sesiones y configuraciones entre dispositivos, y generar tus estadísticas de productividad. No vendemos, compartimos ni transferimos tus datos a terceros."
+        },
+        {
+          "heading": "Almacenamiento y seguridad",
+          "content": "Los datos se almacenan en Supabase (PostgreSQL) con políticas de Row Level Security (RLS) activadas, lo que significa que solo tú puedes acceder a tus propios datos. Las contraseñas se gestionan a través de Supabase Auth y nunca se almacenan en texto plano."
+        },
+        {
+          "heading": "Datos offline",
+          "content": "Cuando usas la aplicación sin conexión, tus datos se almacenan temporalmente en IndexedDB en tu navegador. Estos datos se sincronizan automáticamente con el servidor cuando recuperas la conexión."
+        },
+        {
+          "heading": "Tus derechos",
+          "content": "Puedes exportar todos tus datos en cualquier momento desde la sección de configuración (formato JSON o CSV). Si deseas eliminar tu cuenta y todos los datos asociados, puedes contactarnos y procesaremos la solicitud."
+        },
+        {
+          "heading": "Contacto",
+          "content": "Para preguntas sobre privacidad, contacta a: alanrod88@gmail.com"
+        }
+      ]
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "intro": "Al usar PROD-UIBO aceptas los siguientes términos. Si no estás de acuerdo, por favor no utilices la aplicación.",
+      "sections": [
+        {
+          "heading": "Descripción del servicio",
+          "content": "PROD-UIBO es una aplicación web gratuita de productividad basada en la técnica Pomodoro. Se ofrece tal cual ('as is'), sin garantías de disponibilidad continua ni soporte técnico garantizado."
+        },
+        {
+          "heading": "Uso aceptable",
+          "content": "Te comprometes a usar la aplicación únicamente para fines de productividad personal. No está permitido: intentar acceder a datos de otros usuarios, realizar ingeniería inversa del código fuente, usar la aplicación para actividades ilegales, ni intentar sobrecargar o interferir con los servidores."
+        },
+        {
+          "heading": "Cuentas de usuario",
+          "content": "Eres responsable de mantener la seguridad de tu cuenta y contraseña. PROD-UIBO no se hace responsable de accesos no autorizados que resulten de la divulgación de tus credenciales."
+        },
+        {
+          "heading": "Propiedad intelectual",
+          "content": "PROD-UIBO y todo su contenido (código, diseño, medios) son propiedad de Alan Rodrigo Ramírez Luna, licenciados bajo CC BY-NC-ND 4.0. No se permite el uso comercial ni la creación de obras derivadas sin autorización."
+        },
+        {
+          "heading": "Limitación de responsabilidad",
+          "content": "PROD-UIBO no se responsabiliza por la pérdida de datos de sesiones, interrupciones del servicio, ni daños directos o indirectos derivados del uso de la aplicación."
+        },
+        {
+          "heading": "Modificaciones",
+          "content": "Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios se reflejarán en esta página con la fecha de actualización correspondiente."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "intro": "PROD-UIBO utiliza tecnologías de almacenamiento local para funcionar correctamente. A continuación explicamos cuáles y por qué.",
+      "sections": [
+        {
+          "heading": "¿Qué usamos?",
+          "content": "No utilizamos cookies de rastreo ni cookies de terceros. La aplicación usa: localStorage para preferencias de idioma y estado de la interfaz, IndexedDB para caché offline de sesiones y configuraciones, y una cookie de sesión de Supabase Auth para mantener tu sesión iniciada."
+        },
+        {
+          "heading": "Cookie de autenticación",
+          "content": "Supabase Auth establece una cookie segura (HttpOnly, SameSite) que contiene tu token de sesión. Esta cookie es estrictamente necesaria para que puedas iniciar sesión y se elimina al cerrar sesión."
+        },
+        {
+          "heading": "Sin rastreo",
+          "content": "No utilizamos Google Analytics, Facebook Pixel, ni ningún otro servicio de rastreo o publicidad. No recopilamos datos de comportamiento de navegación fuera de la aplicación."
+        },
+        {
+          "heading": "Gestión",
+          "content": "Puedes eliminar todos los datos locales limpiando el almacenamiento de tu navegador para este sitio. Ten en cuenta que esto cerrará tu sesión y eliminará la caché offline hasta la próxima sincronización."
+        }
+      ]
+    }
   }
 }

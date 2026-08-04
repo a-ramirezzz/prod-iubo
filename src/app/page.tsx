@@ -3,6 +3,7 @@
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 import Image from 'next/image';
+import Link from 'next/link';
 import styles from '@/app/LandingPage.module.css';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -498,9 +499,9 @@ export default function LandingPage() {
             {t('landing.footer.copyright')}
           </div>
           <div className={styles.footerLegal}>
-            <a href="#" className={styles.footerLegalLink}>{t('landing.footer.legal.privacy')}</a>
-            <a href="#" className={styles.footerLegalLink}>{t('landing.footer.legal.terms')}</a>
-            <a href="#" className={styles.footerLegalLink}>{t('landing.footer.legal.cookies')}</a>
+            <Link href="/privacy" className={styles.footerLegalLink}>{t('landing.footer.legal.privacy')}</Link>
+            <Link href="/terms" className={styles.footerLegalLink}>{t('landing.footer.legal.terms')}</Link>
+            <Link href="/cookies" className={styles.footerLegalLink}>{t('landing.footer.legal.cookies')}</Link>
           </div>
         </div>
       </footer>

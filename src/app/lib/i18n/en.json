@@ -501,5 +501,91 @@
     "skip": "Skip",
     "next": "Next",
     "finish": "Finish"
+  },
+  "legal": {
+    "backToHome": "← Back to Home",
+    "lastUpdated": "Last updated: August 2026",
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "At PROD-UIBO we respect your privacy. This policy describes what data we collect, how we use it, and your rights over it.",
+      "sections": [
+        {
+          "heading": "Data we collect",
+          "content": "We collect only the data needed for the app to function: your email address for authentication, your preference settings (theme, sound, language), and Pomodoro session data (duration, associated tasks, timestamps). We do not collect location data, contacts, or financial information."
+        },
+        {
+          "heading": "How we use your data",
+          "content": "Your data is used exclusively to: authenticate your account, sync your sessions and settings across devices, and generate your productivity statistics. We do not sell, share, or transfer your data to third parties."
+        },
+        {
+          "heading": "Storage and security",
+          "content": "Data is stored in Supabase (PostgreSQL) with Row Level Security (RLS) policies enabled, meaning only you can access your own data. Passwords are managed through Supabase Auth and are never stored in plain text."
+        },
+        {
+          "heading": "Offline data",
+          "content": "When you use the app without an internet connection, your data is temporarily stored in IndexedDB in your browser. This data syncs automatically with the server when your connection is restored."
+        },
+        {
+          "heading": "Your rights",
+          "content": "You can export all your data at any time from the settings section (JSON or CSV format). If you wish to delete your account and all associated data, you can contact us and we will process the request."
+        },
+        {
+          "heading": "Contact",
+          "content": "For privacy questions, contact: alanrod88@gmail.com"
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "By using PROD-UIBO you accept the following terms. If you disagree, please do not use the application.",
+      "sections": [
+        {
+          "heading": "Service description",
+          "content": "PROD-UIBO is a free web-based productivity application based on the Pomodoro technique. It is provided 'as is', with no guarantees of continuous availability or guaranteed technical support."
+        },
+        {
+          "heading": "Acceptable use",
+          "content": "You agree to use the application solely for personal productivity purposes. The following are not permitted: attempting to access other users' data, reverse-engineering the source code, using the application for illegal activities, or attempting to overload or interfere with the servers."
+        },
+        {
+          "heading": "User accounts",
+          "content": "You are responsible for maintaining the security of your account and password. PROD-UIBO is not responsible for unauthorized access resulting from the disclosure of your credentials."
+        },
+        {
+          "heading": "Intellectual property",
+          "content": "PROD-UIBO and all its content (code, design, media) are owned by Alan Rodrigo Ramírez Luna, licensed under CC BY-NC-ND 4.0. Commercial use and derivative works are not permitted without authorization."
+        },
+        {
+          "heading": "Limitation of liability",
+          "content": "PROD-UIBO is not responsible for loss of session data, service interruptions, or any direct or indirect damages arising from the use of the application."
+        },
+        {
+          "heading": "Modifications",
+          "content": "We reserve the right to modify these terms at any time. Changes will be reflected on this page with the corresponding update date."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "intro": "PROD-UIBO uses local storage technologies to function properly. Below we explain which ones and why.",
+      "sections": [
+        {
+          "heading": "What do we use?",
+          "content": "We do not use tracking cookies or third-party cookies. The application uses: localStorage for language preferences and interface state, IndexedDB for offline caching of sessions and settings, and a Supabase Auth session cookie to keep you signed in."
+        },
+        {
+          "heading": "Authentication cookie",
+          "content": "Supabase Auth sets a secure cookie (HttpOnly, SameSite) containing your session token. This cookie is strictly necessary for sign-in and is removed when you sign out."
+        },
+        {
+          "heading": "No tracking",
+          "content": "We do not use Google Analytics, Facebook Pixel, or any other tracking or advertising service. We do not collect browsing behavior data outside of the application."
+        },
+        {
+          "heading": "Management",
+          "content": "You can delete all local data by clearing your browser's storage for this site. Note that this will sign you out and remove the offline cache until the next sync."
+        }
+      ]
+    }
   }
 }
