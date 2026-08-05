@@ -11,14 +11,12 @@
  */
 
 import JSZip from 'jszip';
+import type { SessionRow } from '@/app/types/session';
 
-export interface ExportableSession {
-  started_at: string;
-  completed_at: string;
-  duration_minutes: number;
-  session_type: string;
-  task_text: string | null;
-}
+export type ExportableSession = Pick<
+  SessionRow,
+  'started_at' | 'completed_at' | 'duration_minutes' | 'session_type' | 'task_text'
+>;
 
 export interface ExportableTask {
   text: string;

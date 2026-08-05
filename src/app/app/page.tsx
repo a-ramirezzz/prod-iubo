@@ -279,6 +279,7 @@ export default function HomePage() {
       {!isMiniMode && activeTab === 'focus' && (
         <ErrorBoundary>
         <FocusTab
+          userId={user?.id ?? null}
           totalPomodorosToday={pomodoroEngine.totalPomodorosToday}
           cycleCount={pomodoroEngine.cycleCount}
           currentPhase={pomodoroEngine.currentPhase}

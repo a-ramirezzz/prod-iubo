@@ -14,8 +14,10 @@ import type { PomodoroPhase } from '@/app/hooks/usePomodoroEngine';
 import type { SessionRow, TaskBreakdown } from '@/app/hooks/usePomodoroStats';
 import styles from './FocusSection.module.css';
 import { useLocale } from '@/app/lib/i18n';
+import SessionHistory from '@/app/components/SessionHistory/SessionHistory';
 
 interface FocusSectionProps {
+  userId: string | null;
   totalPomodorosToday: number;
   cycleCount: number;
   currentPhase: PomodoroPhase;
@@ -32,6 +34,7 @@ interface FocusSectionProps {
 }
 
 export default function FocusSection({
+  userId,
   totalPomodorosToday,
   cycleCount,
   currentPhase,
@@ -281,6 +284,10 @@ export default function FocusSection({
           </div>
         )}
       </section>
+
+      <hr className={styles.sectionDivider} />
+
+      <SessionHistory userId={userId} />
     </div>
   );
 }
