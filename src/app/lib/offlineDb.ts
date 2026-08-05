@@ -16,16 +16,16 @@
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
 import { logWarn } from '@/app/lib/logger';
 import type { Task, AppSettings } from '@/app/types';
+import type { SessionRow } from '@/app/types/session';
 
 const DB_NAME = 'prod-uibo-offline';
 const DB_VERSION = 2;
 
 /** Shape of the `pomodoro_sessions` rows as selected by usePomodoroStats. */
-export interface CachedSessionRow {
-  completed_at: string;
-  task_text: string | null;
-  duration_minutes: number;
-}
+export type CachedSessionRow = Pick<
+  SessionRow,
+  'completed_at' | 'task_text' | 'duration_minutes'
+>;
 
 interface StoredSessionRow extends CachedSessionRow {
   id: string;

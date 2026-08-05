@@ -484,6 +484,25 @@
       "currentStreak": "Racha actual",
       "day": "día",
       "days": "días"
+    },
+    "history": {
+      "title": "Historial de Sesiones",
+      "filter7d": "7 días",
+      "filter30d": "30 días",
+      "filter90d": "90 días",
+      "filterAll": "Todo",
+      "columnDate": "Fecha",
+      "columnTime": "Hora",
+      "columnDuration": "Duración",
+      "columnTask": "Tarea",
+      "noTask": "Sin tarea",
+      "empty": "No hay sesiones en este período.",
+      "loading": "Cargando historial...",
+      "error": "No se pudo cargar el historial",
+      "pageOf": "Página {page} de {total}",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "minutes": "min"
     }
   },
   "onboarding": {

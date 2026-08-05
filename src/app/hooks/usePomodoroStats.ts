@@ -15,12 +15,12 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
 import { cacheSessions, getCachedSessions } from '@/app/lib/offlineDb';
+import type { SessionRow as FullSessionRow } from '@/app/types/session';
 
-export interface SessionRow {
-  completed_at: string;
-  task_text: string | null;
-  duration_minutes: number;
-}
+export type SessionRow = Pick<
+  FullSessionRow,
+  'completed_at' | 'task_text' | 'duration_minutes'
+>;
 
 export interface TaskBreakdown {
   taskName: string;

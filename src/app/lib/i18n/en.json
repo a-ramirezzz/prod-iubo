@@ -484,6 +484,25 @@
       "currentStreak": "Current streak",
       "day": "day",
       "days": "days"
+    },
+    "history": {
+      "title": "Session History",
+      "filter7d": "7 days",
+      "filter30d": "30 days",
+      "filter90d": "90 days",
+      "filterAll": "All",
+      "columnDate": "Date",
+      "columnTime": "Time",
+      "columnDuration": "Duration",
+      "columnTask": "Task",
+      "noTask": "No task",
+      "empty": "No sessions found for this period.",
+      "loading": "Loading history...",
+      "error": "Could not load session history",
+      "pageOf": "Page {page} of {total}",
+      "prev": "Previous",
+      "next": "Next",
+      "minutes": "min"
     }
   },
   "onboarding": {

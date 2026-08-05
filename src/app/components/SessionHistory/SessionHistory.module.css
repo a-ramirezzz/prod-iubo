@@ -1,0 +1,213 @@
+/* app/components/SessionHistory/SessionHistory.module.css */
+
+.block {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color-primary);
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+
+.blockTitle {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color, inherit);
+}
+
+/* --- Filter pills --- */
+
+.filterPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.pill {
+  appearance: none;
+  border: 1px solid var(--border-color-primary);
+  background-color: var(--button-primary-bg);
+  color: var(--text-color-secondary, inherit);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pill:hover {
+  background-color: var(--button-primary-bg-hover);
+}
+
+.pill.pillActive {
+  background-color: var(--accent-color, var(--brand-color-uibo));
+  border-color: var(--accent-color, var(--brand-color-uibo));
+  color: #fff;
+}
+
+/* --- Table (desktop) --- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.6;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-color-primary);
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color-primary);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: var(--highlight-color, rgba(255, 255, 255, 0.05));
+}
+
+.taskCell {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.noTask {
+  opacity: 0.5;
+}
+
+/* --- Card list (mobile) --- */
+
+.cardList {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  border: 1px solid var(--border-color-primary);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.cardDate {
+  font-weight: 600;
+}
+
+.cardTime,
+.cardDuration {
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.cardTask {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .table {
+    display: none;
+  }
+  .cardList {
+    display: flex;
+  }
+}
+
+/* --- Empty / loading / error states --- */
+
+.emptyState {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.92rem;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.errorText {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.92rem;
+}
+
+.skeleton {
+  height: 14px;
+  border-radius: 4px;
+  background-color: var(--border-color-primary);
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+
+/* --- Pagination --- */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.pageButton {
+  appearance: none;
+  border: 1px solid var(--button-border-color, var(--border-color-primary));
+  background-color: var(--button-primary-bg);
+  color: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: var(--button-primary-bg-hover);
+}
+
+.pageButton:disabled {
+  background-color: var(--button-disabled-bg);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pageIndicator {
+  font-size: 0.82rem;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
