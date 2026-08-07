@@ -64,7 +64,7 @@ PROD-UIBO is a web-based Pomodoro productivity app with task management, statist
    RESEND_API_KEY=your_resend_api_key
    ```
 
-4. Set up the database — run the SQL migration files in `src/database/migrations/` in order (coming soon; see that folder's README for details)
+4. Set up the database — run the migration files in `src/database/migrations/` in order (see `src/database/README.md` for details)
 
 5. Run the development server
    ```bash

@@ -1,5 +1,4 @@
--- Check constraints for PROD-UIBO Supabase tables
--- Run manually in Supabase SQL Editor
+-- Migration 003: Check constraints for data integrity
 
 -- pomodoro_sessions
 ALTER TABLE pomodoro_sessions
