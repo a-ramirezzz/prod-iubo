@@ -12,12 +12,13 @@ import { useEffect } from 'react';
  *
  * Shortcuts:
  *   SPACE — Toggle play/pause (only when the timer has been started or is active).
- *   ESC   — Close the topmost open modal/panel (settings first, then tasks).
+ *   ESC   — Close the topmost open modal/panel (Focus Mode first, then settings, then tasks).
  *   R     — Reset the timer (only when started, no modal open, not typing).
  *   S     — Stop the timer with confirmation (only when active, no modal open, not typing).
  *   M     — Toggle mini mode (no modal open, not typing).
  *   1     — Switch to the Timer tab (not in mini mode, no modal open, not typing).
  *   2     — Switch to the Focus tab (not in mini mode, no modal open, not typing).
+ *   F     — Toggle Focus Mode (distraction-free overlay), not typing.
  *
  * All shortcuts are ignored while the user is typing in an <input>, <textarea>,
  * <select>, or a contentEditable element.
@@ -40,6 +41,9 @@ interface UseKeyboardShortcutsParams {
   setActiveTab: (tab: 'timer' | 'focus') => void;
   isMiniMode: boolean;
   setIsMiniMode: (mini: boolean) => void;
+  // Focus mode
+  isFocusModeActive: boolean;
+  onToggleFocusMode: () => void;
 }
 
 export function useKeyboardShortcuts({
@@ -57,6 +61,8 @@ export function useKeyboardShortcuts({
   setActiveTab,
   isMiniMode,
   setIsMiniMode,
+  isFocusModeActive,
+  onToggleFocusMode,
 }: UseKeyboardShortcutsParams) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -84,9 +90,11 @@ export function useKeyboardShortcuts({
           return;
         }
 
-        // ESCAPE — Close the topmost open modal/panel.
+        // ESCAPE — Close the topmost open modal/panel (Focus Mode first).
         case 'escape': {
-          if (isSettingsPanelOpen) {
+          if (isFocusModeActive) {
+            onToggleFocusMode();
+          } else if (isSettingsPanelOpen) {
             setIsSettingsPanelOpen(false);
           } else if (isTaskModalOpen) {
             setIsTaskModalOpen(false);
@@ -133,6 +141,14 @@ export function useKeyboardShortcuts({
           return;
         }
 
+        // F — Toggle Focus Mode (distraction-free overlay).
+        case 'f': {
+          if (isTyping || anyModalOpen) return;
+          e.preventDefault();
+          onToggleFocusMode();
+          return;
+        }
+
         default:
           return;
       }
@@ -155,5 +171,7 @@ export function useKeyboardShortcuts({
     setActiveTab,
     isMiniMode,
     setIsMiniMode,
+    isFocusModeActive,
+    onToggleFocusMode,
   ]);
 }

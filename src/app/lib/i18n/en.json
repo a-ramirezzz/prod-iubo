@@ -188,6 +188,17 @@
       "fullView": "Full View",
       "instruction": "Select a preset time or enter a custom time to begin."
     },
+    "focusMode": {
+      "title": "Focus Mode",
+      "work": "Focus",
+      "shortBreak": "Short Break",
+      "longBreak": "Long Break",
+      "exitHint": "Press F or Esc to exit",
+      "pause": "Pause timer",
+      "resume": "Resume timer",
+      "enter": "Focus Mode",
+      "shortcut": "Toggle Focus Mode"
+    },
     "tasks": {
       "sectionTitle": "Session Tasks",
       "openModalAria": "Open today's objectives",

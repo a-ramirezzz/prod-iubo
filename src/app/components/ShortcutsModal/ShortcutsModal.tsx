@@ -28,7 +28,7 @@ interface Category {
 
 /**
  * Static description of every keyboard shortcut the app currently implements.
- * Mirrors `useKeyboardShortcuts` (Space/R/S/M/1/2/Escape) plus the global `?`
+ * Mirrors `useKeyboardShortcuts` (Space/R/S/M/F/1/2/Escape) plus the global `?`
  * that opens this modal. This is documentation only — it does not register any
  * behavior, so it must be kept in sync with the hook.
  */
@@ -40,6 +40,7 @@ const CATEGORIES: Category[] = [
       { keys: ['S'], descKey: 'app.shortcuts.shortcutStop' },
       { keys: ['R'], descKey: 'app.shortcuts.shortcutReset' },
       { keys: ['M'], descKey: 'app.shortcuts.shortcutMiniMode' },
+      { keys: ['F'], descKey: 'app.focusMode.shortcut' },
     ],
   },
   {
