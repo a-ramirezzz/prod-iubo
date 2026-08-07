@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Theme } from '@/app/lib/themes'
 import styles from '@/app/components/ThemeCard/ThemeCard.module.css'
+import { useLocale } from '@/app/lib/i18n'
 
 /**
  * Defines the props for the ThemeCard component
@@ -24,6 +25,7 @@ const observerOptions = {
  * It lazy-loads video previews for animated themes when they scroll into view
  */
 export default function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps) {
+  const { t } = useLocale()
   // A ref for the card element to attach the IntersectionObserver
   const cardRef = useRef<HTMLButtonElement>(null)
   // State to track if the card is currently visible in the viewport
@@ -78,7 +80,7 @@ export default function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={theme.previewImage}
-            alt={`Preview of ${theme.name} theme`} // More descriptive alt text
+            alt={t('settings.themes.themePreview').replace('{name}', theme.name)} // More descriptive alt text
             loading="lazy"
             className={styles.themePreviewImage}
           />

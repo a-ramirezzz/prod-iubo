@@ -423,7 +423,8 @@
       "light": "Claro",
       "dark": "Oscuro",
       "static": "Temas Estáticos",
-      "animated": "Temas Animados"
+      "animated": "Temas Animados",
+      "themePreview": "Vista previa del tema {name}"
     },
     "sounds": {
       "background": "Sonido de fondo",
