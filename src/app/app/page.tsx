@@ -36,6 +36,7 @@ import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 import { ConnectionIndicator } from '@/app/components/ConnectionIndicator';
 import { ShortcutsModal } from '@/app/components/ShortcutsModal';
 import { SyncDetailsPanel } from '@/app/components/SyncDetailsPanel';
+import FocusMode from '@/app/components/FocusMode/FocusMode';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -131,6 +132,11 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'timer' | 'focus'>('timer');
   // Keyboard shortcuts help modal, opened via `?` or the Settings panel.
   const [showShortcuts, setShowShortcuts] = useState(false);
+  // Distraction-free fullscreen overlay, toggled via `F` or the TimerView button.
+  const [focusModeActive, setFocusModeActive] = useState(false);
+  const toggleFocusMode = useCallback(() => {
+    setFocusModeActive(prev => !prev);
+  }, []);
 
   // Integrate PiP timer hook (returns refs for canvas, video, and background video)
   const { canvasRef, videoRef, backgroundVideoRef } = usePipTimer(timeParts, settings, {
@@ -163,6 +169,8 @@ export default function HomePage() {
     setActiveTab,
     isMiniMode,
     setIsMiniMode,
+    isFocusModeActive: focusModeActive,
+    onToggleFocusMode: toggleFocusMode,
   });
 
   const router = useRouter();
@@ -205,6 +213,19 @@ export default function HomePage() {
   }, []);
 
   /**
+   * Auto-exit Focus Mode once the session ends: either the Pomodoro cycle
+   * falls back to idle, or the countdown reaches zero and stops.
+   */
+  useEffect(() => {
+    if (!focusModeActive) return;
+    const sessionEnded =
+      pomodoroEngine.currentPhase === 'idle' || (totalSeconds === 0 && !isActive);
+    if (sessionEnded) {
+      setFocusModeActive(false);
+    }
+  }, [focusModeActive, pomodoroEngine.currentPhase, totalSeconds, isActive]);
+
+  /**
    * Effect to request notification permissions from the user upon
    * the component's initial mount.
    */
@@ -224,6 +245,13 @@ export default function HomePage() {
 
   // Mini mode is timer-only: it hides the tab bar and locks to the timer view.
   const showTimerView = isMiniMode || activeTab === 'timer';
+
+  // Compact "MM:SS" (or "HH:MM:SS" past an hour) string for Focus Mode's big
+  // display — same formatting rule already used for the browser tab title.
+  const focusModeTimeDisplay =
+    timeParts.hours === '00'
+      ? `${timeParts.minutes}:${timeParts.seconds}`
+      : `${timeParts.hours}:${timeParts.minutes}:${timeParts.seconds}`;
 
   // Focus-tab CTAs also switch back to the timer view.
   const onFocusStartWork = () => {
@@ -316,6 +344,7 @@ export default function HomePage() {
           setCustomMinutesInput={setCustomMinutesInput}
           isMiniMode={isMiniMode}
           setIsMiniMode={setIsMiniMode}
+          onEnterFocusMode={() => setFocusModeActive(true)}
           tasks={tasks}
           tasksLoading={tasksLoading}
           handleAddTask={handleAddTask}
@@ -402,6 +431,18 @@ export default function HomePage() {
       />
       {/* Portal target lives inside the separate Document PiP window, not in this DOM tree */}
       {horizontalPipPortal}
+
+      {/* Distraction-free fullscreen overlay (opened via `F` or the TimerView button) */}
+      {focusModeActive && (
+        <FocusMode
+          timeDisplay={focusModeTimeDisplay}
+          isRunning={isActive}
+          currentPhase={pomodoroEngine.currentPhase}
+          taskText={currentTaskText ?? null}
+          onToggleTimer={togglePause}
+          onExit={() => setFocusModeActive(false)}
+        />
+      )}
 
       {/* Keyboard shortcuts help modal (opened via `?` or the Settings panel) */}
       <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />

@@ -188,6 +188,17 @@
       "fullView": "Vista Completa",
       "instruction": "Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar."
     },
+    "focusMode": {
+      "title": "Modo Foco",
+      "work": "Enfoque",
+      "shortBreak": "Pausa Corta",
+      "longBreak": "Pausa Larga",
+      "exitHint": "Presiona F o Esc para salir",
+      "pause": "Pausar temporizador",
+      "resume": "Reanudar temporizador",
+      "enter": "Modo Foco",
+      "shortcut": "Alternar modo foco"
+    },
     "tasks": {
       "sectionTitle": "Tareas de la Sesión",
       "openModalAria": "Abrir objetivos de hoy",

@@ -1,0 +1,127 @@
+/* src/app/components/FocusMode/FocusMode.module.css */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500; /* below OnboardingTour (9998+), above the rest of the app */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+
+  background-color: var(--bg-color);
+  color: var(--text-color-primary);
+
+  opacity: 0;
+  animation: focusModeFadeIn 0.3s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+@keyframes focusModeFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.phaseLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-color-secondary);
+}
+
+.timeDisplay {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 400;
+  line-height: 1;
+  user-select: none;
+}
+
+.taskText {
+  font-size: 1.15rem;
+  color: var(--text-color-secondary);
+  text-align: center;
+  max-width: 80vw;
+}
+
+.playPauseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 1px solid var(--border-color-primary);
+  background-color: transparent;
+  color: var(--text-color-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.playPauseButton:hover {
+  background-color: var(--button-primary-bg, rgba(255, 255, 255, 0.08));
+}
+
+.playPauseButton:focus-visible {
+  outline: 2px solid var(--accent-color, #3B82F6);
+  outline-offset: 2px;
+}
+
+.exitHint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.exitHintVisible {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exitHint {
+    transition: none;
+  }
+}
+
+/* Visually hidden but reachable via keyboard (standard sr-only pattern) */
+.exitButton {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.exitButton:focus-visible {
+  width: auto;
+  height: auto;
+  clip: auto;
+  margin: 0;
+  bottom: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  background-color: var(--card-bg, #1F2937);
+  color: var(--text-color-primary);
+  border-radius: 6px;
+  outline: 2px solid var(--accent-color, #3B82F6);
+}

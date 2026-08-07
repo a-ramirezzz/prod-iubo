@@ -42,6 +42,8 @@ interface TimerViewProps {
   // Mini mode
   isMiniMode: boolean;
   setIsMiniMode: (value: boolean) => void;
+  // Focus mode
+  onEnterFocusMode: () => void;
   // Tasks
   tasks: Task[];
   tasksLoading: boolean;
@@ -80,6 +82,7 @@ export default function TimerView({
   setCustomMinutesInput,
   isMiniMode,
   setIsMiniMode,
+  onEnterFocusMode,
   tasks,
   tasksLoading,
   handleAddTask,
@@ -165,6 +168,16 @@ export default function TimerView({
         <button onClick={() => setIsMiniMode(!isMiniMode)} className="button">
           {isMiniMode ? t('app.timer.fullView') : t('app.timer.miniMode')}
         </button>
+        {initialTimeSet > 0 && (
+          <button
+            onClick={onEnterFocusMode}
+            className={`button ${styles.focusModeButton}`}
+            title={`${t('app.focusMode.enter')} (F)`}
+            aria-label={`${t('app.focusMode.enter')} (F)`}
+          >
+            ⛶
+          </button>
+        )}
       </div>
 
       {/* Task Management Section */}
