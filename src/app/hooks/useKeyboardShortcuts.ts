@@ -18,6 +18,7 @@ import { useEffect } from 'react';
  *   M     — Toggle mini mode (no modal open, not typing).
  *   1     — Switch to the Timer tab (not in mini mode, no modal open, not typing).
  *   2     — Switch to the Focus tab (not in mini mode, no modal open, not typing).
+ *   3     — Switch to the Achievements tab (not in mini mode, no modal open, not typing).
  *   F     — Toggle Focus Mode (distraction-free overlay), not typing.
  *
  * All shortcuts are ignored while the user is typing in an <input>, <textarea>,
@@ -37,8 +38,8 @@ interface UseKeyboardShortcutsParams {
   setIsSettingsPanelOpen: (open: boolean) => void;
   isTaskModalOpen: boolean;
   setIsTaskModalOpen: (open: boolean) => void;
-  activeTab: 'timer' | 'focus';
-  setActiveTab: (tab: 'timer' | 'focus') => void;
+  activeTab: 'timer' | 'focus' | 'achievements';
+  setActiveTab: (tab: 'timer' | 'focus' | 'achievements') => void;
   isMiniMode: boolean;
   setIsMiniMode: (mini: boolean) => void;
   // Focus mode
@@ -138,6 +139,13 @@ export function useKeyboardShortcuts({
         case '2': {
           if (isTyping || anyModalOpen || isMiniMode) return;
           setActiveTab('focus');
+          return;
+        }
+
+        // 3 — Switch to the Achievements tab.
+        case '3': {
+          if (isTyping || anyModalOpen || isMiniMode) return;
+          setActiveTab('achievements');
           return;
         }
 
