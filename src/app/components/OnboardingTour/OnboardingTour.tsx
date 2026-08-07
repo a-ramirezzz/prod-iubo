@@ -42,7 +42,7 @@ interface Rect {
  * according to the requested side, while clamping to the viewport so it never
  * overflows off-screen on small devices.
  */
-function calculatePosition(rect: Rect, position: TooltipPosition): React.CSSProperties {
+export function calculatePosition(rect: Rect, position: TooltipPosition): React.CSSProperties {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
@@ -80,7 +80,7 @@ function calculatePosition(rect: Rect, position: TooltipPosition): React.CSSProp
   };
 }
 
-function clamp(value: number, min: number, max: number): number {
+export function clamp(value: number, min: number, max: number): number {
   if (max < min) return min;
   return Math.min(Math.max(value, min), max);
 }
