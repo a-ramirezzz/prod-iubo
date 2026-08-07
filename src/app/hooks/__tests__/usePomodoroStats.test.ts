@@ -181,6 +181,68 @@ describe('usePomodoroStats', () => {
   });
 
   // ===========================================================================
+  // Stale-while-revalidate
+  // ===========================================================================
+
+  it('should show cached stats instantly with loading=false and isRevalidating=true', async () => {
+    getCachedSessionsMock.mockResolvedValue([
+      createMockSession({ completed_at: daysAgoAt(0), task_text: 'Cached' }),
+    ]);
+    // Network never resolves during this assertion window.
+    let resolveOrder: (v: { data: unknown; error: unknown }) => void = () => {};
+    orderMock.mockImplementationOnce(
+      () => new Promise((resolve) => { resolveOrder = resolve; })
+    );
+
+    const view = render();
+    await waitFor(() => expect(view.result.current.loading).toBe(false));
+
+    expect(view.result.current.isRevalidating).toBe(true);
+    expect(view.result.current.todaySessions).toHaveLength(1);
+    expect(view.result.current.todaySessions[0].task_text).toBe('Cached');
+
+    // Let the in-flight fetch resolve so the effect's cleanup doesn't leak.
+    resolveOrder({ data: [], error: null });
+    await waitFor(() => expect(view.result.current.isRevalidating).toBe(false));
+  });
+
+  it('should replace cached stats with fresh data once the background fetch resolves', async () => {
+    getCachedSessionsMock.mockResolvedValue([
+      createMockSession({ completed_at: daysAgoAt(0), task_text: 'Cached' }),
+    ]);
+    setData([
+      createMockSession({ completed_at: daysAgoAt(0), task_text: 'Fresh' }),
+      createMockSession({ completed_at: daysAgoAt(0), task_text: 'Fresh' }),
+    ]);
+
+    const view = render();
+    await waitFor(() =>
+      expect(view.result.current.todaySessions[0]?.task_text).toBe('Fresh')
+    );
+
+    expect(view.result.current.todaySessions).toHaveLength(2);
+    expect(view.result.current.isRevalidating).toBe(false);
+    expect(cacheSessionsMock).toHaveBeenCalled();
+  });
+
+  it('should show loading (not error) for a first-time user with no cache while the fetch is in flight', async () => {
+    getCachedSessionsMock.mockResolvedValue(null);
+    let resolveOrder: (v: { data: unknown; error: unknown }) => void = () => {};
+    orderMock.mockImplementationOnce(
+      () => new Promise((resolve) => { resolveOrder = resolve; })
+    );
+
+    const view = render();
+    await waitFor(() => expect(view.result.current.isRevalidating).toBe(false));
+    expect(view.result.current.loading).toBe(true);
+    expect(view.result.current.loadError).toBe(false);
+
+    resolveOrder({ data: [createMockSession({ completed_at: daysAgoAt(0) })], error: null });
+    await waitFor(() => expect(view.result.current.loading).toBe(false));
+    expect(view.result.current.todaySessions).toHaveLength(1);
+  });
+
+  // ===========================================================================
   // Core stats
   // ===========================================================================
 
