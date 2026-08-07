@@ -129,6 +129,17 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
     });
   }, [settings.enable_desktop_notifications, updateSettings]);
 
+  // Lock page scroll behind the panel while it's open, so only the panel's
+  // own internal scroll area responds to scrolling.
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
   // If the panel is not open, render nothing
   if (!isOpen) {
     return null;

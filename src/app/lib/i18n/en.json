@@ -423,7 +423,8 @@
       "light": "Light",
       "dark": "Dark",
       "static": "Static Themes",
-      "animated": "Animated Themes"
+      "animated": "Animated Themes",
+      "themePreview": "Preview of {name} theme"
     },
     "sounds": {
       "background": "Background sound",
