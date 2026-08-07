@@ -1,0 +1,87 @@
+/* AchievementNotification.module.css */
+
+@keyframes achievement-slide-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -30px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes achievement-glow {
+  0%, 100% {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 158, 11, 0.35);
+  }
+  50% {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 24px 2px rgba(245, 158, 11, 0.45);
+  }
+}
+
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px;
+  min-width: 280px;
+  max-width: 90vw;
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: 16px;
+  color: #fff;
+  cursor: pointer;
+  animation:
+    achievement-slide-in 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+    achievement-glow 2.4s ease-in-out 0.35s infinite;
+}
+
+.emoji {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #F59E0B;
+}
+
+.name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .toast {
+    top: 12px;
+    padding: 12px 16px;
+    min-width: 0;
+    width: calc(100vw - 32px);
+  }
+}

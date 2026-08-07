@@ -48,6 +48,7 @@ const CATEGORIES: Category[] = [
     shortcuts: [
       { keys: ['1'], descKey: 'app.shortcuts.shortcutTimerTab' },
       { keys: ['2'], descKey: 'app.shortcuts.shortcutFocusTab' },
+      { keys: ['3'], descKey: 'app.shortcuts.shortcutAchievementsTab' },
     ],
   },
   {

@@ -145,7 +145,8 @@
   "app": {
     "tabs": {
       "timer": "Timer",
-      "focus": "Focus"
+      "focus": "Focus",
+      "achievements": "Achievements"
     },
     "notification": {
       "timeUp": "Time's up!\nYour productivity session has ended.",
@@ -260,6 +261,7 @@
       "shortcutMiniMode": "Toggle mini mode",
       "shortcutTimerTab": "Go to Timer tab",
       "shortcutFocusTab": "Go to Focus tab",
+      "shortcutAchievementsTab": "Go to Achievements tab",
       "shortcutShowShortcuts": "Show keyboard shortcuts",
       "shortcutCloseModal": "Close modal or panel"
     },
@@ -617,6 +619,34 @@
           "content": "You can delete all local data by clearing your browser's storage for this site. Note that this will sign you out and remove the offline cache until the next sync."
         }
       ]
+    }
+  },
+  "achievements": {
+    "tab": "Achievements",
+    "title": "Achievements",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "unlockedDate": "Unlocked on {date}",
+    "progress": "{current} of {target}",
+    "categorySessions": "Sessions",
+    "categoryStreak": "Streak",
+    "categoryTasks": "Tasks",
+    "totalUnlocked": "{count} of {total} unlocked",
+    "notification": "Achievement Unlocked!",
+    "emptyState": "Start completing sessions to earn your first achievement!",
+    "items": {
+      "firstSession":  { "name": "First Flame",         "desc": "Complete your first Pomodoro session" },
+      "sessions10":    { "name": "On Fire",              "desc": "Complete 10 Pomodoro sessions" },
+      "sessions50":    { "name": "Dedicated",            "desc": "Complete 50 Pomodoro sessions" },
+      "sessions100":   { "name": "Centurion",            "desc": "Complete 100 Pomodoro sessions" },
+      "streak3":       { "name": "Consistent",           "desc": "Maintain a 3-day streak" },
+      "streak7":       { "name": "Perfect Week",         "desc": "Maintain a 7-day streak" },
+      "streak14":      { "name": "Unstoppable",          "desc": "Maintain a 14-day streak" },
+      "streak30":      { "name": "Legend",               "desc": "Maintain a 30-day streak" },
+      "firstTask":     { "name": "First Step",           "desc": "Complete your first task" },
+      "tasks10":       { "name": "Organizer",            "desc": "Complete 10 tasks" },
+      "tasks50":       { "name": "Productivity Machine", "desc": "Complete 50 tasks" },
+      "tasks100":      { "name": "Task Master",          "desc": "Complete 100 tasks" }
     }
   }
 }

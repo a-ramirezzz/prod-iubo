@@ -16,6 +16,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { usePomodoroStats } from '@/hooks/usePomodoroStats';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSyncQueue } from '@/hooks/useSyncQueue';
+import { useAchievements } from '@/hooks/useAchievements';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
 import { useHorizontalPipTimer } from '@/hooks/useHorizontalPipTimer';
@@ -37,6 +38,8 @@ import { ConnectionIndicator } from '@/app/components/ConnectionIndicator';
 import { ShortcutsModal } from '@/app/components/ShortcutsModal';
 import { SyncDetailsPanel } from '@/app/components/SyncDetailsPanel';
 import FocusMode from '@/app/components/FocusMode/FocusMode';
+import AchievementNotification from '@/app/components/AchievementNotification/AchievementNotification';
+import AchievementsTab from '@/app/components/AchievementsTab/AchievementsTab';
 
 /**
  * HomePage is the main component of the application, serving as the central hub
@@ -123,13 +126,21 @@ export default function HomePage() {
     pomodoroEngine.totalPomodorosToday
   );
 
+  // Gamification: evaluates progress against achievement thresholds and
+  // surfaces newly unlocked ones as a toast notification.
+  const achievements = useAchievements({
+    userId: user?.id ?? null,
+    currentStreak: pomodoroStats.streak,
+    totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
+  });
+
   // Local UI state for this page
   const [isMiniMode, setIsMiniMode] = useState(false);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   // State to control the visibility of the task objectives modal
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  // Active tab: classic timer view or the Focus (Pomodoro cycle) view.
-  const [activeTab, setActiveTab] = useState<'timer' | 'focus'>('timer');
+  // Active tab: classic timer view, the Focus (Pomodoro cycle) view, or Achievements.
+  const [activeTab, setActiveTab] = useState<'timer' | 'focus' | 'achievements'>('timer');
   // Keyboard shortcuts help modal, opened via `?` or the Settings panel.
   const [showShortcuts, setShowShortcuts] = useState(false);
   // Distraction-free fullscreen overlay, toggled via `F` or the TimerView button.
@@ -300,6 +311,15 @@ export default function HomePage() {
           >
             {t('app.tabs.focus')}
           </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'achievements'}
+            className={`${styles.tabButton} ${activeTab === 'achievements' ? styles.tabButtonActive : ''}`}
+            onClick={() => setActiveTab('achievements')}
+          >
+            {t('app.tabs.achievements')}
+          </button>
         </div>
       )}
 
@@ -323,6 +343,18 @@ export default function HomePage() {
           onStartWork={onFocusStartWork}
           onStartBreak={onFocusStartBreak}
         />
+        </ErrorBoundary>
+      )}
+
+      {/* Achievements tab: gamification badges catalog, read-only */}
+      {!isMiniMode && activeTab === 'achievements' && (
+        <ErrorBoundary>
+          <AchievementsTab
+            unlockedIds={achievements.unlockedIds}
+            allAchievements={achievements.allAchievements}
+            progress={achievements.progress}
+            loading={achievements.loading}
+          />
         </ErrorBoundary>
       )}
 
@@ -389,6 +421,11 @@ export default function HomePage() {
         visible={showVisualNotification}
         onClose={() => setShowVisualNotification(false)}
         duration={3500}
+      />
+      {/* Achievement unlocked toast (floating, independent of tab content) */}
+      <AchievementNotification
+        achievement={achievements.newlyUnlocked}
+        onDismiss={achievements.dismissNotification}
       />
       {/* Hidden canvas and video for Picture-in-Picture floating timer */}
       <canvas

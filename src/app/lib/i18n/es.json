@@ -145,7 +145,8 @@
   "app": {
     "tabs": {
       "timer": "Temporizador",
-      "focus": "Focus"
+      "focus": "Focus",
+      "achievements": "Logros"
     },
     "notification": {
       "timeUp": "¡Tiempo cumplido!\nTu sesión de productividad ha finalizado.",
@@ -260,6 +261,7 @@
       "shortcutMiniMode": "Alternar modo mini",
       "shortcutTimerTab": "Ir a la pestaña Temporizador",
       "shortcutFocusTab": "Ir a la pestaña Enfoque",
+      "shortcutAchievementsTab": "Ir a la pestaña Logros",
       "shortcutShowShortcuts": "Mostrar atajos de teclado",
       "shortcutCloseModal": "Cerrar ventana o panel"
     },
@@ -617,6 +619,34 @@
           "content": "Puedes eliminar todos los datos locales limpiando el almacenamiento de tu navegador para este sitio. Ten en cuenta que esto cerrará tu sesión y eliminará la caché offline hasta la próxima sincronización."
         }
       ]
+    }
+  },
+  "achievements": {
+    "tab": "Logros",
+    "title": "Logros",
+    "unlocked": "Desbloqueado",
+    "locked": "Bloqueado",
+    "unlockedDate": "Desbloqueado el {date}",
+    "progress": "{current} de {target}",
+    "categorySessions": "Sesiones",
+    "categoryStreak": "Racha",
+    "categoryTasks": "Tareas",
+    "totalUnlocked": "{count} de {total} desbloqueados",
+    "notification": "¡Logro Desbloqueado!",
+    "emptyState": "¡Completa sesiones para desbloquear tu primer logro!",
+    "items": {
+      "firstSession":  { "name": "Primera Llama",      "desc": "Completa tu primera sesión Pomodoro" },
+      "sessions10":    { "name": "En Racha",            "desc": "Completa 10 sesiones Pomodoro" },
+      "sessions50":    { "name": "Dedicación",          "desc": "Completa 50 sesiones Pomodoro" },
+      "sessions100":   { "name": "Centenario",          "desc": "Completa 100 sesiones Pomodoro" },
+      "streak3":       { "name": "Constancia",          "desc": "Mantén una racha de 3 días" },
+      "streak7":       { "name": "Semana Perfecta",     "desc": "Mantén una racha de 7 días" },
+      "streak14":      { "name": "Imparable",           "desc": "Mantén una racha de 14 días" },
+      "streak30":      { "name": "Leyenda",             "desc": "Mantén una racha de 30 días" },
+      "firstTask":     { "name": "Primer Paso",         "desc": "Completa tu primera tarea" },
+      "tasks10":       { "name": "Organizador",         "desc": "Completa 10 tareas" },
+      "tasks50":       { "name": "Máquina Productiva",  "desc": "Completa 50 tareas" },
+      "tasks100":      { "name": "Maestro de Tareas",   "desc": "Completa 100 tareas" }
     }
   }
 }
