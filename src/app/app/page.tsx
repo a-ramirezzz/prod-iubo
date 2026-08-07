@@ -275,18 +275,9 @@ export default function HomePage() {
   };
 
   return (
+    <>
     <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
       <LocaleSync />
-      {/* App-level Realtime connection status: fixed banner, non-blocking,
-          hidden while connected. Kept outside ErrorBoundaries so it still
-          shows if a tab crashes. */}
-      <ConnectionIndicator
-        pendingCount={syncPendingCount}
-        isSyncing={isSyncing}
-        failedCount={syncFailedCount}
-        lastSyncedCount={lastSyncResult?.processed ?? 0}
-        onOpenSyncDetails={() => setShowSyncDetails(true)}
-      />
       {showSetupControls && <ProjectBranding />}
 
       {/* Tab navigation (hidden in mini mode, which is timer-only) */}
@@ -394,39 +385,6 @@ export default function HomePage() {
         </ErrorBoundary>
       )}
 
-      {/* Settings Panel Trigger and Component */}
-      <div className='settingsButton'>
-        <SettingsButton onClick={() => setIsSettingsPanelOpen(true)} />
-      </div>
-
-      <SettingsPanel
-        isOpen={isSettingsPanelOpen}
-        onClose={() => setIsSettingsPanelOpen(false)}
-        onOpenShortcuts={() => {
-          setIsSettingsPanelOpen(false);
-          setShowShortcuts(true);
-        }}
-        pomodoroStats={{
-          totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
-          cycleCount: pomodoroEngine.cycleCount,
-          currentPhase: pomodoroEngine.currentPhase,
-          dailyPomodoroGoal: settings.daily_pomodoro_goal,
-          streak: pomodoroStats.streak,
-          weekTotal: pomodoroStats.weekTotal,
-        }}
-      />
-      {/* Visual notification centered on screen */}
-      <VisualNotification
-        message={t('app.notification.timeUp')}
-        visible={showVisualNotification}
-        onClose={() => setShowVisualNotification(false)}
-        duration={3500}
-      />
-      {/* Achievement unlocked toast (floating, independent of tab content) */}
-      <AchievementNotification
-        achievement={achievements.newlyUnlocked}
-        onDismiss={achievements.dismissNotification}
-      />
       {/* Hidden canvas and video for Picture-in-Picture floating timer */}
       <canvas
         ref={canvasRef}
@@ -469,33 +427,82 @@ export default function HomePage() {
       />
       {/* Portal target lives inside the separate Document PiP window, not in this DOM tree */}
       {horizontalPipPortal}
-
-      {/* Distraction-free fullscreen overlay (opened via `F` or the TimerView button) */}
-      {focusModeActive && (
-        <FocusMode
-          timeDisplay={focusModeTimeDisplay}
-          isRunning={isActive}
-          currentPhase={pomodoroEngine.currentPhase}
-          taskText={currentTaskText ?? null}
-          onToggleTimer={togglePause}
-          onExit={() => setFocusModeActive(false)}
-        />
-      )}
-
-      {/* Keyboard shortcuts help modal (opened via `?` or the Settings panel) */}
-      <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
-
-      <SyncDetailsPanel
-        isOpen={showSyncDetails}
-        onClose={() => setShowSyncDetails(false)}
-        userId={user?.id ?? null}
-        onSyncNow={syncNow}
-      />
-
-      {/* First-run onboarding tour: only for authenticated users who haven't seen it yet */}
-      {!authLoading && user && !settingsLoading && !settings.has_seen_onboarding && (
-        <OnboardingTour onComplete={handleOnboardingComplete} />
-      )}
     </main>
+
+    {/* Fixed-position elements live outside <main> — an ancestor with an active/filled
+        `transform` (the pageFadeIn animation) turns `position: fixed` descendants into
+        elements positioned relative to that ancestor instead of the viewport. */}
+
+    {/* App-level Realtime connection status: fixed banner, non-blocking,
+        hidden while connected. Kept outside ErrorBoundaries so it still
+        shows if a tab crashes. */}
+    <ConnectionIndicator
+      pendingCount={syncPendingCount}
+      isSyncing={isSyncing}
+      failedCount={syncFailedCount}
+      lastSyncedCount={lastSyncResult?.processed ?? 0}
+      onOpenSyncDetails={() => setShowSyncDetails(true)}
+    />
+
+    <SettingsButton onClick={() => setIsSettingsPanelOpen(true)} />
+
+    <SettingsPanel
+      isOpen={isSettingsPanelOpen}
+      onClose={() => setIsSettingsPanelOpen(false)}
+      onOpenShortcuts={() => {
+        setIsSettingsPanelOpen(false);
+        setShowShortcuts(true);
+      }}
+      pomodoroStats={{
+        totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
+        cycleCount: pomodoroEngine.cycleCount,
+        currentPhase: pomodoroEngine.currentPhase,
+        dailyPomodoroGoal: settings.daily_pomodoro_goal,
+        streak: pomodoroStats.streak,
+        weekTotal: pomodoroStats.weekTotal,
+      }}
+    />
+
+    {/* Visual notification centered on screen */}
+    <VisualNotification
+      message={t('app.notification.timeUp')}
+      visible={showVisualNotification}
+      onClose={() => setShowVisualNotification(false)}
+      duration={3500}
+    />
+
+    {/* Achievement unlocked toast (floating, independent of tab content) */}
+    <AchievementNotification
+      achievement={achievements.newlyUnlocked}
+      onDismiss={achievements.dismissNotification}
+    />
+
+    {/* Distraction-free fullscreen overlay (opened via `F` or the TimerView button) */}
+    {focusModeActive && (
+      <FocusMode
+        timeDisplay={focusModeTimeDisplay}
+        isRunning={isActive}
+        currentPhase={pomodoroEngine.currentPhase}
+        taskText={currentTaskText ?? null}
+        onToggleTimer={togglePause}
+        onExit={() => setFocusModeActive(false)}
+      />
+    )}
+
+    {/* Keyboard shortcuts help modal (opened via `?` or the Settings panel) */}
+    <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
+
+    <SyncDetailsPanel
+      isOpen={showSyncDetails}
+      onClose={() => setShowSyncDetails(false)}
+      userId={user?.id ?? null}
+      onSyncNow={syncNow}
+    />
+
+    {/* First-run onboarding tour: only for authenticated users who haven't seen it yet */}
+    {!authLoading && user && !settingsLoading && !settings.has_seen_onboarding && (
+      <OnboardingTour onComplete={handleOnboardingComplete} />
+    )}
+    </>
   );
 }

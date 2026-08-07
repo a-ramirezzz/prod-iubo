@@ -424,7 +424,8 @@
       "dark": "Dark",
       "static": "Static Themes",
       "animated": "Animated Themes",
-      "themePreview": "Preview of {name} theme"
+      "themePreview": "Preview of {name} theme",
+      "selectTheme": "Select theme: {name}"
     },
     "sounds": {
       "background": "Background sound",

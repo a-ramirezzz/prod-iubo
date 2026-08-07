@@ -62,7 +62,7 @@ export default function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps
       className={`${styles.themeCard} ${isSelected ? styles.activeTheme : ''}`}
       onClick={onClick}
       aria-pressed={isSelected} // Semantically indicates if the theme is selected
-      aria-label={`Seleccionar tema: ${theme.name}`} // Provides a clear action for screen readers
+      aria-label={t('settings.themes.selectTheme').replace('{name}', theme.name)} // Provides a clear action for screen readers
     >
       <div className={styles.previewContainer}>
         {shouldPlayVideo && theme.backgroundVideo ? (
