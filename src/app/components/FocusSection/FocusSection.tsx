@@ -28,6 +28,7 @@ interface FocusSectionProps {
   streak: number;
   taskBreakdown: TaskBreakdown[];
   statsLoading: boolean;
+  statsRevalidating?: boolean;
   statsError: boolean;
   onStartWork: () => void;
   onStartBreak: () => void;
@@ -45,6 +46,7 @@ export default function FocusSection({
   streak,
   taskBreakdown,
   statsLoading,
+  statsRevalidating = false,
   statsError,
   onStartWork,
   onStartBreak,
@@ -246,7 +248,16 @@ export default function FocusSection({
 
       {/* BLOCK C: stats */}
       <section className={styles.block}>
-        <h2 className={styles.blockTitle}>{t('focus.stats.title')}</h2>
+        <h2 className={styles.blockTitle}>
+          {t('focus.stats.title')}
+          {statsRevalidating && (
+            <span
+              className={styles.revalidatingDot}
+              role="status"
+              aria-label={t('focus.stats.refreshing')}
+            />
+          )}
+        </h2>
         {loading ? (
           <>
             <div className={styles.skeleton} />

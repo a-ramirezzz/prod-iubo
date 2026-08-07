@@ -494,7 +494,8 @@
       "dailyAverage": "Daily average",
       "currentStreak": "Current streak",
       "day": "day",
-      "days": "days"
+      "days": "days",
+      "refreshing": "Refreshing stats"
     },
     "history": {
       "title": "Session History",

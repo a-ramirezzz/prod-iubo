@@ -318,6 +318,7 @@ export default function HomePage() {
           streak={pomodoroStats.streak}
           taskBreakdown={pomodoroStats.taskBreakdown}
           statsLoading={pomodoroStats.loading}
+          statsRevalidating={pomodoroStats.isRevalidating}
           statsError={pomodoroStats.loadError}
           onStartWork={onFocusStartWork}
           onStartBreak={onFocusStartBreak}

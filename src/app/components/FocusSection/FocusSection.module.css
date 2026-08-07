@@ -28,6 +28,27 @@
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-color, inherit);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/**
+ * Subtle indicator shown next to a block title while cached stats are
+ * being silently refreshed in the background (no loading spinner).
+ */
+.revalidatingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-color, currentColor);
+  opacity: 0.6;
+  animation: revalidatingPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes revalidatingPulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.8; }
 }
 
 /* --- Block A: current cycle --- */
