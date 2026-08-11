@@ -10,6 +10,7 @@
 
 const path = require("path");
 const withSerwist = require("@serwist/next").default;
+const { withSentryConfig } = require("@sentry/nextjs");
 
 /**
  * @type {import('next').NextConfig}
@@ -109,7 +110,7 @@ const nextConfig = {
   },
 };
 
-module.exports = withSerwist({
+const configWithSerwist = withSerwist({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
   // Only precache the app shell's own static assets, never the large
@@ -118,6 +119,23 @@ module.exports = withSerwist({
   maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
   disable: process.env.NODE_ENV === "development",
 })(nextConfig);
+
+// Sentry must be the outermost wrapper so its build-time source map upload
+// sees the final webpack config produced by every other plugin.
+module.exports = withSentryConfig(configWithSerwist, {
+  org: "a-ramirezzz",
+  project: "prod-uibo",
+
+  // Only print upload logs outside CI to keep local builds quiet.
+  silent: !process.env.CI,
+
+  // Automatically tree-shake Sentry logger statements from the client bundle.
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
+});
 
 // =================================================================
 // END OF FILE

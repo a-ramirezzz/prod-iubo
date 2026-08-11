@@ -68,6 +68,7 @@ public/worker-*.js
 .env.development.local
 .env.production.local
 .env.test.local
+.env.sentry-build-plugin
 
 # Playwright
 /test-results/
