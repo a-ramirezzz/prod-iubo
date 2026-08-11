@@ -14,10 +14,11 @@ declare global {
 // whatever `window.__STORYBOOK_REALTIME_STATUS__` is set to. This decorator
 // sets that value before each story mounts.
 function withRealtimeStatus(status: RealtimeConnectionState): Decorator {
-  return (Story) => {
+  function RealtimeStatusDecorator(Story: Parameters<Decorator>[0]) {
     window.__STORYBOOK_REALTIME_STATUS__ = status;
     return <Story />;
-  };
+  }
+  return RealtimeStatusDecorator;
 }
 
 const meta: Meta<typeof ConnectionIndicator> = {
