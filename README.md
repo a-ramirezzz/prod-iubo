@@ -97,6 +97,16 @@ npm test
 - Offline sync (queue, processor, fallback)
 - Integration tests (timer → engine → controller → Supabase)
 
+## Component Documentation
+
+The project includes Storybook for interactive component documentation:
+
+```bash
+npm run storybook
+```
+
+Opens at [http://localhost:6006](http://localhost:6006) with live examples of UI components organized by category.
+
 ## Deployment
 
 The app is deployed on Vercel. Push to `main` triggers automatic deployment. CI runs type checking, linting, tests, and build validation via GitHub Actions before deploy.
