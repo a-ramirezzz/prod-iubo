@@ -4,6 +4,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 
 export default function GlobalError({
   error,
@@ -13,6 +14,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
+    Sentry.captureException(error);
     console.error("[PROD-UIBO] Unhandled error:", error);
   }, [error]);
 
