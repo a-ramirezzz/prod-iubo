@@ -71,7 +71,7 @@ export default function HomePage() {
     handleToggleTask,
     handleDeleteTask,
     handleReorderTasks,
-  } = useTaskManager(user?.id ?? null);
+  } = useTaskManager(user?.id ?? null, !!settings.notification_sound_enabled);
 
   // Auto-syncs queued offline mutations once the connection is back.
   const {
@@ -132,6 +132,7 @@ export default function HomePage() {
     userId: user?.id ?? null,
     currentStreak: pomodoroStats.streak,
     totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
+    hapticsEnabled: !!settings.notification_sound_enabled,
   });
 
   // Local UI state for this page
