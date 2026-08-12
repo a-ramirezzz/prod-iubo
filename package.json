@@ -20,15 +20,15 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@sentry/nextjs": "^10.70.0",
     "@serwist/next": "^9.5.12",
-    "@supabase/ssr": "^0.12.0",
+    "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.51.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "idb": "^8.0.3",
     "jszip": "^3.10.1",
     "next": "15.3.8",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -42,7 +42,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@vitejs/plugin-react": "^6.0.5",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
@@ -51,6 +51,6 @@
     "serwist": "^9.5.12",
     "storybook": "^10.5.7",
     "typescript": "^5",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.10"
   }
 }
