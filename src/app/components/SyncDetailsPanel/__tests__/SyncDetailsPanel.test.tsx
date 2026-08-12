@@ -1,11 +1,14 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import type { SyncQueueEntry } from '@/app/lib/offlineDb';
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key }),
 }));
+
+expect.extend(toHaveNoViolations);
 
 let entries: SyncQueueEntry[] = [];
 const getPendingQueueEntriesMock = vi.fn(async () => entries);
@@ -70,6 +73,15 @@ describe('SyncDetailsPanel', () => {
     expect(screen.getByText('app.sync.statusPending')).toBeTruthy();
     expect(screen.getByText('app.sync.statusFailed')).toBeTruthy();
     expect(screen.getByText(/boom/)).toBeTruthy();
+  });
+
+  it('should have no accessibility violations', async () => {
+    entries = [makeEntry({ id: 1, status: 'pending' }), makeEntry({ id: 2, status: 'failed', lastError: 'boom' })];
+    const { container } = render(<SyncDetailsPanel isOpen onClose={vi.fn()} userId={USER} />);
+
+    await waitFor(() => expect(screen.getAllByText(/app\.sync\.operationInsert/).length).toBe(2));
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it('retries a failed entry: resets its status and triggers a sync', async () => {

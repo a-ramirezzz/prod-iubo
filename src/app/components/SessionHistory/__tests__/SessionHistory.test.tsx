@@ -4,8 +4,11 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import type { SessionRow } from '@/app/types/session';
 import type { DateFilter } from '@/app/hooks/useSessionHistory';
+
+expect.extend(toHaveNoViolations);
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key, locale: 'en' }),
@@ -82,6 +85,13 @@ describe('SessionHistory', () => {
     mockReturn({ isLoading: false, sessions: [], totalPages: 0 });
     render(<SessionHistory userId={USER} />);
     expect(screen.getByText('focus.history.empty')).toBeTruthy();
+  });
+
+  it('should have no accessibility violations', async () => {
+    mockReturn({ sessions: [makeSession()] });
+    const { container } = render(<SessionHistory userId={USER} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it('renders session rows with correct data', () => {

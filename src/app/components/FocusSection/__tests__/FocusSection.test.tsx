@@ -4,9 +4,12 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import type { ComponentProps } from 'react';
 import type { SessionRow, TaskBreakdown } from '@/app/hooks/usePomodoroStats';
 import type { PomodoroPhase } from '@/app/hooks/usePomodoroEngine';
+
+expect.extend(toHaveNoViolations);
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key }),
@@ -80,6 +83,20 @@ describe('FocusSection', () => {
   });
 
   describe('loaded state', () => {
+    it('should have no accessibility violations when loaded', async () => {
+      const { container } = renderFocusSection({
+        todaySessions: [
+          makeSession({ task_text: 'Study React' }),
+          makeSession({ task_text: 'Write tests' }),
+        ],
+        weekTotal: 15,
+        streak: 5,
+        taskBreakdown: [{ taskName: 'Study', count: 5, totalMinutes: 125 }],
+      });
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
     it("renders today's session log entries", () => {
       renderFocusSection({
         todaySessions: [

@@ -4,8 +4,11 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import type { ComponentProps } from 'react';
 import type { Task } from '@/app/types';
+
+expect.extend(toHaveNoViolations);
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key }),
@@ -57,6 +60,12 @@ function renderTimerView(overrides: Record<string, unknown> = {}) {
 describe('TimerView', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('should have no accessibility violations', async () => {
+    const { container } = renderTimerView({ timeParts: { hours: '00', minutes: '24', seconds: '59' } });
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   describe('timer display', () => {
