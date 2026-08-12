@@ -17,6 +17,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { ACHIEVEMENTS, type AchievementDefinition } from '@/app/lib/achievements';
+import { hapticFeedback } from '@/app/lib/haptic';
 
 interface Progress {
   totalSessions: number;
@@ -51,10 +52,13 @@ export function useAchievements({
   userId,
   currentStreak,
   totalPomodorosToday,
+  hapticsEnabled = false,
 }: {
   userId: string | null;
   currentStreak: number;
   totalPomodorosToday: number;
+  /** Whether to vibrate when a new achievement unlocks (mirrors notification_sound_enabled). */
+  hapticsEnabled?: boolean;
 }): UseAchievementsReturn {
   const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -160,6 +164,10 @@ export function useAchievements({
 
       if (unlockedNow.length === 0) return;
 
+      if (hapticsEnabled) {
+        hapticFeedback([50, 100, 50, 100]);
+      }
+
       setUnlockedIds((prev) => {
         const next = new Set(prev);
         unlockedNow.forEach((a) => next.add(a.id));
@@ -167,7 +175,7 @@ export function useAchievements({
       });
       setQueue((prev) => [...prev, ...unlockedNow]);
     })();
-  }, [userId, loading, totalSessions, currentStreak, totalTasksCompleted, unlockedIds]);
+  }, [userId, loading, totalSessions, currentStreak, totalTasksCompleted, unlockedIds, hapticsEnabled]);
 
   const dismissNotification = useCallback(() => {
     setQueue((prev) => prev.slice(1));

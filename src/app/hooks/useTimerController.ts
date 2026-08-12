@@ -9,6 +9,7 @@ import { useTimer } from '@/hooks/useTimer';
 import { useTimerAlert } from '@/hooks/useTimerAlert';
 import { usePomodoroEngine } from '@/hooks/usePomodoroEngine';
 import { playNotificationSound } from '@/app/lib/notificationSound';
+import { hapticFeedback } from '@/app/lib/haptic';
 import { POMODORO } from '@/app/lib/constants';
 
 interface UseTimerControllerParams {
@@ -65,6 +66,9 @@ export function useTimerController({
     }
     // Advance the Pomodoro cycle when the countdown finishes naturally.
     if (pomodoroEngine.currentPhase === 'work') {
+      if (notificationSoundEnabled) {
+        hapticFeedback([50, 50, 100]);
+      }
       pomodoroEngine.completeSession(currentTaskText ?? null);
     } else if (
       pomodoroEngine.currentPhase === 'short_break' ||
@@ -114,11 +118,14 @@ export function useTimerController({
    * a Pomodoro work session in the cycle engine.
    */
   const handleStartTimer = useCallback((minutes: number) => {
+    if (notificationSoundEnabled) {
+      hapticFeedback();
+    }
     startTimer(minutes);
     if (pomodoroEngine.currentPhase === 'idle' || pomodoroEngine.currentPhase === 'work') {
       pomodoroEngine.startWorkSession(minutes * 60);
     }
-  }, [startTimer, pomodoroEngine]);
+  }, [startTimer, pomodoroEngine, notificationSoundEnabled]);
 
   /**
    * CTA from the Focus tab: starts a standard 25-minute Pomodoro.

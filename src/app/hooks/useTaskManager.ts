@@ -18,6 +18,7 @@ import { createClient } from '@/app/lib/supabase/client';
 import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
 import { cacheTasks, getCachedTasks } from '@/app/lib/offlineDb';
 import { executeOrQueue } from '@/app/lib/offlineMutation';
+import { hapticFeedback } from '@/app/lib/haptic';
 import type { Task } from '@/app/types';
 
 // Shape of a row in the `tasks` table as delivered by Realtime.
@@ -42,8 +43,9 @@ const sortByPosition = (list: Task[]) =>
  * the Supabase call runs asynchronously, and on error the state is
  * reverted to the pre-mutation snapshot.
  * @param userId - The authenticated user's id, or null when signed out.
+ * @param hapticsEnabled - Whether to vibrate on task completion (mirrors notification_sound_enabled).
  */
-export const useTaskManager = (userId: string | null) => {
+export const useTaskManager = (userId: string | null, hapticsEnabled: boolean = false) => {
   const supabase = createClient();
 
   // -----------------------------------------------------------------
@@ -258,6 +260,10 @@ export const useTaskManager = (userId: string | null) => {
       const target = snapshot.find((t) => t.id === id);
       if (!target) return;
 
+      if (!target.completed && hapticsEnabled) {
+        hapticFeedback();
+      }
+
       setTasks((prev) =>
         prev.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task))
       );
@@ -278,7 +284,7 @@ export const useTaskManager = (userId: string | null) => {
         }
       });
     },
-    [userId, supabase]
+    [userId, supabase, hapticsEnabled]
   );
 
   /**
