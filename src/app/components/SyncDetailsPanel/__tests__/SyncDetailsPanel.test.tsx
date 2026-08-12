@@ -2,7 +2,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import type { SyncQueueEntry } from '@/app/lib/offlineDb';
+import type {
+  SyncQueueEntry,
+  getPendingQueueEntries,
+  removeQueueEntry,
+  updateQueueEntryStatus,
+  clearSyncQueue,
+} from '@/app/lib/offlineDb';
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key }),
@@ -11,16 +17,19 @@ vi.mock('@/app/lib/i18n', () => ({
 expect.extend(toHaveNoViolations);
 
 let entries: SyncQueueEntry[] = [];
-const getPendingQueueEntriesMock = vi.fn(async () => entries);
-const removeQueueEntryMock = vi.fn().mockResolvedValue(undefined);
-const updateQueueEntryStatusMock = vi.fn().mockResolvedValue(undefined);
-const clearSyncQueueMock = vi.fn().mockResolvedValue(undefined);
+const getPendingQueueEntriesMock = vi.fn<typeof getPendingQueueEntries>(async () => entries);
+const removeQueueEntryMock = vi.fn<typeof removeQueueEntry>(async () => undefined);
+const updateQueueEntryStatusMock = vi.fn<typeof updateQueueEntryStatus>(async () => undefined);
+const clearSyncQueueMock = vi.fn<typeof clearSyncQueue>(async () => undefined);
 
 vi.mock('@/app/lib/offlineDb', () => ({
-  getPendingQueueEntries: (...args: unknown[]) => getPendingQueueEntriesMock(...args),
-  removeQueueEntry: (...args: unknown[]) => removeQueueEntryMock(...args),
-  updateQueueEntryStatus: (...args: unknown[]) => updateQueueEntryStatusMock(...args),
-  clearSyncQueue: (...args: unknown[]) => clearSyncQueueMock(...args),
+  getPendingQueueEntries: (...args: Parameters<typeof getPendingQueueEntries>) =>
+    getPendingQueueEntriesMock(...args),
+  removeQueueEntry: (...args: Parameters<typeof removeQueueEntry>) =>
+    removeQueueEntryMock(...args),
+  updateQueueEntryStatus: (...args: Parameters<typeof updateQueueEntryStatus>) =>
+    updateQueueEntryStatusMock(...args),
+  clearSyncQueue: (...args: Parameters<typeof clearSyncQueue>) => clearSyncQueueMock(...args),
 }));
 
 import SyncDetailsPanel from '../SyncDetailsPanel';
