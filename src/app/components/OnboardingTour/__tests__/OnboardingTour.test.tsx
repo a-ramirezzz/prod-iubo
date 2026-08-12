@@ -4,10 +4,13 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key }),
 }));
+
+expect.extend(toHaveNoViolations);
 
 import OnboardingTour, { calculatePosition, clamp } from '../OnboardingTour';
 
@@ -94,6 +97,13 @@ describe('OnboardingTour component', () => {
   it('renders the first step content on mount', () => {
     render(<OnboardingTour onComplete={vi.fn()} />);
     expect(screen.getByText('onboarding.steps.0.message')).toBeTruthy();
+  });
+
+  it('should have no accessibility violations', async () => {
+    const { container } = render(<OnboardingTour onComplete={vi.fn()} />);
+    fireEvent.click(screen.getByText('onboarding.next'));
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it('advances to next step on "Next" button click', () => {

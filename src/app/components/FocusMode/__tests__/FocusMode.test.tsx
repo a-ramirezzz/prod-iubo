@@ -4,10 +4,13 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 
 vi.mock('@/app/lib/i18n', () => ({
   useLocale: () => ({ t: (key: string) => key }),
 }));
+
+expect.extend(toHaveNoViolations);
 
 import FocusMode from '../FocusMode';
 
@@ -33,6 +36,12 @@ describe('FocusMode', () => {
   it('renders the timer display prominently', () => {
     renderFocusMode();
     expect(screen.getByText('24:59')).toBeTruthy();
+  });
+
+  it('should have no accessibility violations', async () => {
+    const { container } = renderFocusMode();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it('renders the current task text', () => {

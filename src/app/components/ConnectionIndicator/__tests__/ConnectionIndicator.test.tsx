@@ -1,6 +1,9 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+expect.extend(toHaveNoViolations);
 
 let mockStatus: 'connected' | 'disconnected' | 'reconnecting' = 'connected';
 
@@ -26,6 +29,14 @@ describe('ConnectionIndicator', () => {
   it('is hidden when connected with nothing pending', () => {
     render(<ConnectionIndicator pendingCount={0} isSyncing={false} failedCount={0} />);
     expect(screen.getByRole('status', { hidden: true }).getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('should have no accessibility violations', async () => {
+    const { container } = render(
+      <ConnectionIndicator pendingCount={0} isSyncing={false} failedCount={0} />
+    );
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it('shows the disconnected banner with a pending-count suffix', () => {

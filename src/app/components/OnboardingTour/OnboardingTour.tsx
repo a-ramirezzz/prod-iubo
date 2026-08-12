@@ -145,7 +145,13 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
   const isLast = currentStep === STEPS.length - 1;
 
   return (
-    <div className={styles.root} role="dialog" aria-modal="true" aria-live="polite">
+    <div
+      className={styles.root}
+      role="dialog"
+      aria-modal="true"
+      aria-live="polite"
+      aria-labelledby="onboarding-tour-message"
+    >
       {/* Highlight cutout: the huge box-shadow acts as the dimmed backdrop, with
           the element bounds forming the "hole". Clicking the backdrop skips. */}
       <div
@@ -161,7 +167,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
 
       {/* Tooltip */}
       <div className={styles.tooltip} style={tooltipStyle}>
-        <p className={styles.message}>
+        <p id="onboarding-tour-message" className={styles.message}>
           {t(`onboarding.steps.${currentStep}.message`)}
         </p>
         <div className={styles.footer}>
