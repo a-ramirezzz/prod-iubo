@@ -141,8 +141,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     };
     fetchSettings();
+    // Keyed on the user's id (not the `user` object itself) — Supabase emits a
+    // new `user` object reference on every auth event (token refresh,
+    // reconnect, duplicate INITIAL_SESSION/SIGNED_IN at startup) even when the
+    // logged-in user hasn't changed. Depending on the object caused this
+    // effect to refire repeatedly, flipping `loading` back to true and
+    // silently swallowing in-flight theme clicks gated on `!settingsLoading`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, authLoading]);
+  }, [user?.id, authLoading]);
 
   /**
    * Updates one or more settings and persists them to Supabase.
