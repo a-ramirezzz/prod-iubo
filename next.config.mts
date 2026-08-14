@@ -8,14 +8,15 @@
  * =================================================================
  */
 
-const path = require("path");
-const withSerwist = require("@serwist/next").default;
-const { withSentryConfig } = require("@sentry/nextjs");
+import path from "path";
+import { fileURLToPath } from "url";
+import type { NextConfig } from "next";
+import withSerwistInit from "@serwist/next";
+import { withSentryConfig } from "@sentry/nextjs";
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const nextConfig: NextConfig = {
   /**
    * Configuration for the Next.js Image component (`<Image />`).
    * It allows specifying which external domains are permitted for image optimization.
@@ -110,7 +111,7 @@ const nextConfig = {
   },
 };
 
-const configWithSerwist = withSerwist({
+const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
   // Only precache the app shell's own static assets, never the large
@@ -118,11 +119,13 @@ const configWithSerwist = withSerwist({
   globPublicPatterns: ["favicon.png", "manifest.json", "icon-192.png", "icon-512.png"],
   maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
   disable: process.env.NODE_ENV === "development",
-})(nextConfig);
+});
+
+const configWithSerwist = withSerwist(nextConfig);
 
 // Sentry must be the outermost wrapper so its build-time source map upload
 // sees the final webpack config produced by every other plugin.
-module.exports = withSentryConfig(configWithSerwist, {
+export default withSentryConfig(configWithSerwist, {
   org: "a-ramirezzz",
   project: "prod-uibo",
 
