@@ -40,5 +40,12 @@ export function createRateLimiter(windowMs: number = RATE_LIMIT.WINDOW_MS, maxRe
     map.clear();
   }
 
-  return { isRateLimited, reset };
+  function getRetryAfterSeconds(ip: string): number {
+    const entry = map.get(ip);
+    if (!entry) return 0;
+    const remainingMs = windowMs - (Date.now() - entry.firstRequest);
+    return Math.max(1, Math.ceil(remainingMs / 1000));
+  }
+
+  return { isRateLimited, reset, getRetryAfterSeconds };
 }
