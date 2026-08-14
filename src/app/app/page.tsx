@@ -7,8 +7,9 @@
 // SECTION: Imports
 // =================================================================
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from '@/app/Page.module.css';
+import tabTransitionStyles from '@/app/components/TabTransition/TabTransition.module.css';
 
 // Custom Hooks for Core Logic
 import { useTimerController } from '@/hooks/useTimerController';
@@ -142,6 +143,13 @@ export default function HomePage() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   // Active tab: classic timer view, the Focus (Pomodoro cycle) view, or Achievements.
   const [activeTab, setActiveTab] = useState<'timer' | 'focus' | 'achievements'>('timer');
+  // The tab actually rendered on screen. Lags behind `activeTab` by one fade-out
+  // cycle so the outgoing tab's content stays mounted (and visible) while it
+  // animates out, instead of being swapped in the same frame.
+  const [displayedTab, setDisplayedTab] = useState<'timer' | 'focus' | 'achievements'>('timer');
+  const [tabTransitionPhase, setTabTransitionPhase] = useState<'idle' | 'exiting' | 'entering'>('idle');
+  const tabTransitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tabTransitionFrameRef = useRef<number | null>(null);
   // Keyboard shortcuts help modal, opened via `?` or the Settings panel.
   const [showShortcuts, setShowShortcuts] = useState(false);
   // Distraction-free fullscreen overlay, toggled via `F` or the TimerView button.
@@ -225,6 +233,48 @@ export default function HomePage() {
   }, []);
 
   /**
+   * Drives the fade + slide transition between tabs. `displayedTab` (what's
+   * actually rendered) is kept in sync with `activeTab` (what the user
+   * picked) with a short lag: fade the current content out, swap the
+   * content once it's invisible, then fade the new content in. Skipped
+   * entirely for users who prefer reduced motion.
+   */
+  useEffect(() => {
+    if (activeTab === displayedTab) return;
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      setDisplayedTab(activeTab);
+      setTabTransitionPhase('idle');
+      return;
+    }
+
+    setTabTransitionPhase('exiting');
+    tabTransitionTimeoutRef.current = setTimeout(() => {
+      setDisplayedTab(activeTab);
+      setTabTransitionPhase('entering');
+      tabTransitionFrameRef.current = requestAnimationFrame(() => {
+        setTabTransitionPhase('idle');
+      });
+    }, 200);
+
+    return () => {
+      if (tabTransitionTimeoutRef.current) clearTimeout(tabTransitionTimeoutRef.current);
+    };
+  }, [activeTab, displayedTab]);
+
+  // Clean up any pending timeout/frame on unmount.
+  useEffect(() => {
+    return () => {
+      if (tabTransitionTimeoutRef.current) clearTimeout(tabTransitionTimeoutRef.current);
+      if (tabTransitionFrameRef.current) cancelAnimationFrame(tabTransitionFrameRef.current);
+    };
+  }, []);
+
+  /**
    * Auto-exit Focus Mode once the session ends: either the Pomodoro cycle
    * falls back to idle, or the countdown reaches zero and stops.
    */
@@ -256,7 +306,19 @@ export default function HomePage() {
   const showSetupControls = !isMiniMode;
 
   // Mini mode is timer-only: it hides the tab bar and locks to the timer view.
-  const showTimerView = isMiniMode || activeTab === 'timer';
+  // Uses `displayedTab` (not `activeTab`) so the outgoing tab keeps rendering
+  // while it fades out.
+  const showTimerView = isMiniMode || displayedTab === 'timer';
+
+  // className applied to whichever tab's content is on screen, driving the
+  // fade + slide transition as `tabTransitionPhase` moves through its states.
+  const tabContentClassName = [
+    tabTransitionStyles.tabContent,
+    tabTransitionPhase === 'exiting' ? tabTransitionStyles.tabContentExiting : '',
+    tabTransitionPhase === 'entering' ? tabTransitionStyles.tabContentEntering : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   // Compact "MM:SS" (or "HH:MM:SS" past an hour) string for Focus Mode's big
   // display — same formatting rule already used for the browser tab title.
@@ -316,7 +378,8 @@ export default function HomePage() {
       )}
 
       {/* Focus tab: Pomodoro cycle status, daily log and statistics */}
-      {!isMiniMode && activeTab === 'focus' && (
+      {!isMiniMode && displayedTab === 'focus' && (
+        <div className={tabContentClassName}>
         <ErrorBoundary>
         <FocusTab
           userId={user?.id ?? null}
@@ -336,10 +399,12 @@ export default function HomePage() {
           onStartBreak={onFocusStartBreak}
         />
         </ErrorBoundary>
+        </div>
       )}
 
       {/* Achievements tab: gamification badges catalog, read-only */}
-      {!isMiniMode && activeTab === 'achievements' && (
+      {!isMiniMode && displayedTab === 'achievements' && (
+        <div className={tabContentClassName}>
         <ErrorBoundary>
           <AchievementsTab
             unlockedIds={achievements.unlockedIds}
@@ -348,9 +413,11 @@ export default function HomePage() {
             loading={achievements.loading}
           />
         </ErrorBoundary>
+        </div>
       )}
 
       {showTimerView && (
+        <div className={isMiniMode ? undefined : tabContentClassName}>
         <ErrorBoundary>
         <TimerTab
           timeParts={timeParts}
@@ -384,6 +451,7 @@ export default function HomePage() {
           setShowStopConfirm={setShowStopConfirm}
         />
         </ErrorBoundary>
+        </div>
       )}
 
       {/* Hidden canvas and video for Picture-in-Picture floating timer */}

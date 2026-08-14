@@ -1,0 +1,25 @@
+.tabContent {
+  transition: opacity 200ms ease, transform 200ms ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tabContentExiting {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.tabContentEntering {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabContent,
+  .tabContentExiting,
+  .tabContentEntering {
+    transition: none;
+    transform: none;
+  }
+}
