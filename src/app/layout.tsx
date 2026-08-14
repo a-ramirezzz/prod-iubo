@@ -1,5 +1,6 @@
-import './globals.css'; 
-import { SettingsProvider } from '@/context/SettingsContext'; 
+import type { Metadata } from 'next';
+import './globals.css';
+import { SettingsProvider } from '@/context/SettingsContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { LocaleProvider } from '@/app/lib/i18n';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
@@ -41,24 +42,31 @@ export const viewport = {
   themeColor: '#111827',
 };
 
-export const metadata = {
+const APP_TITLE = 'PROD-UIBO | Pomodoro Timer & Task Manager';
+const APP_DESCRIPTION = 'Boost your productivity with customizable Pomodoro sessions, task management, achievements, and ambient themes. Free, open source, works offline.';
+
+export const metadata: Metadata = {
+  // metadataBase is required for relative image paths (e.g. og-image.png) to
+  // resolve to absolute URLs that social platforms can actually fetch.
+  metadataBase: new URL('https://prod-iubo.vercel.app'),
+
   // Basic page information
-  title: 'Prod-UIBO',
-  description: 'Temporizador de productividad personalizable con técnica Pomodoro. Gestiona tu tiempo y mantén el enfoque con temas inmersivos y sonidos ambientales.',
+  title: APP_TITLE,
+  description: APP_DESCRIPTION,
   keywords: 'productividad, pomodoro, temporizador, enfoque, gestión de tiempo, tareas',
-  
+
   // Author and creator information
   authors: [{ name: 'Alan Rodrigo Ramírez Luna' }],
   creator: 'Alan Rodrigo Ramírez Luna',
   publisher: 'Prod-UIBO',
-  
+
   // Browser behavior settings
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  
+
   // Favicon configuration for different platforms
   icons: {
     icon: '/favicon.png',           // Standard favicon
@@ -76,17 +84,29 @@ export const metadata = {
 
   // Open Graph metadata for social media sharing
   openGraph: {
-    title: 'Prod-UIBO - Temporizador de Productividad',
-    description: 'Temporizador de productividad personalizable con técnica Pomodoro',
     type: 'website',
-    locale: 'es_ES',
+    locale: 'es_MX',
+    alternateLocale: 'en_US',
+    url: 'https://prod-iubo.vercel.app',
+    siteName: 'PROD-UIBO',
+    title: APP_TITLE,
+    description: APP_DESCRIPTION,
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'PROD-UIBO — Pomodoro Timer & Task Manager',
+      },
+    ],
   },
-  
+
   // Twitter Card metadata for Twitter sharing
   twitter: {
     card: 'summary_large_image',
-    title: 'Prod-UIBO - Temporizador de Productividad',
-    description: 'Temporizador de productividad personalizable con técnica Pomodoro',
+    title: APP_TITLE,
+    description: 'Boost your productivity with customizable Pomodoro sessions, task management, achievements, and ambient themes.',
+    images: ['/og-image.png'],
   },
 };
 
