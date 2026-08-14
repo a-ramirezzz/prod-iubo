@@ -211,7 +211,13 @@
         "title": "¿Cuáles son los objetivos de hoy?",
         "placeholder": "Agregar un nuevo objetivo...",
         "empty": "Aún no hay objetivos. ¡Agrega uno para comenzar!",
-        "deleteAria": "Eliminar objetivo"
+        "deleteAria": "Eliminar objetivo",
+        "addAria": "Agregar objetivo",
+        "progress": "{completed} de {total} completadas",
+        "allCompleted": "¡Todos los objetivos completados!",
+        "addFirstGoal": "Agrega tu primer objetivo",
+        "completedHeader": "Completadas ({count})",
+        "toggleCompletedAria": "Mostrar u ocultar objetivos completados"
       }
     },
     "settings": {
