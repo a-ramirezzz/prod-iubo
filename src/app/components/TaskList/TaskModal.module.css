@@ -2,129 +2,163 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: fadeIn 0.2s;
 }
 
 /* Modal container styles */
 .modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--panel-bg-transparent, rgba(36, 37, 38, 0.95));
+  position: relative;
+  /* transform establishes a containing block so CelebrationEffect's
+     position: fixed overlay resolves to the modal bounds, not the viewport */
+  transform: translateZ(0);
+  background: var(--panel-bg-transparent, rgba(30, 30, 35, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   z-index: 2001;
-  min-width: 340px;
-  max-width: 95vw;
-  width: 400px;
-  padding: 32px 28px 28px 28px;
+  width: min(480px, 90vw);
+  max-height: 80vh;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   animation: modalIn 0.25s;
 }
 
 /* Close button styles */
 .closeButton {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  background: none;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
+  border-radius: 50%;
   color: var(--text-color-secondary, #fff);
-  font-size: 1.3rem;
+  font-size: 1rem;
   cursor: pointer;
   z-index: 10;
-  transition: color 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 .closeButton:hover {
+  background: rgba(255, 255, 255, 0.2);
   color: var(--text-color-primary, #fff);
+}
+
+/* Sticky header: title, progress bar and input stay fixed while the list scrolls */
+.header {
+  flex-shrink: 0;
+  padding-right: 32px;
 }
 
 /* Modal title styles */
 .title {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: #fff;
-  margin-bottom: 22px;
-  text-align: center;
+  margin-bottom: 16px;
+  text-align: left;
 }
 
 /* Progress bar container styles */
 .progressBarContainer {
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 8px;
+  margin-bottom: 20px;
 }
-.progressBarContainer span {
-  color: #fff;
+.progressText {
+  color: var(--text-color-secondary, #ddd);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 .progressBarBg {
-  flex: 1;
-  height: 12px;
-  background: var(--border-color-primary, #333);
-  border-radius: 8px;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
   overflow: hidden;
   position: relative;
 }
 .progressBarFill {
   height: 100%;
-  transition: width 0.3s, background-color 0.3s;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-hover, #2563eb), var(--accent-color, #3b82f6));
+  transition: width 0.5s ease;
+}
+.progressBarComplete {
+  animation: progressGlow 1.8s ease-in-out infinite;
 }
 .tasksArea {
   width: 100%;
   min-height: 80px;
   margin-top: 10px;
+  overflow-y: auto;
 }
 
 /* Add task form styles */
 .addTaskForm {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 18px;
+  position: relative;
+  margin-bottom: 4px;
 }
 .addTaskInput {
-  flex: 1;
-  background: var(--input-bg, #23272f);
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-color-primary, #fff);
-  border: 1px solid var(--border-color-primary, #333);
-  border-radius: 5px;
-  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 48px 12px 16px;
   font-size: 1rem;
   outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.addTaskInput:focus {
+  border-color: var(--accent-color, #3b82f6);
 }
 .addTaskInput::placeholder {
   color: var(--text-color-placeholder, #bbb);
   opacity: 0.7;
 }
 .addTaskButton {
-  background: var(--brand-color-uibo, #1e88e5);
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: var(--accent-color, #3b82f6);
   color: #fff;
   border: none;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  width: 38px;
-  height: 38px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, transform 0.2s, opacity 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 1;
 }
 .addTaskButton:disabled {
-  background: #888;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 .addTaskButton:hover:not(:disabled) {
-  background: #1565c0;
-  transform: scale(1.08);
+  background: var(--accent-hover, #2563eb);
+  transform: translateY(-50%) scale(1.08);
 }
 
 /* Task list styles */
@@ -137,14 +171,29 @@
 .taskItem {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border-color-primary, #333);
-  transition: all 0.2s ease;
-  cursor: grab;
+  gap: 10px;
+  transition: background 0.15s ease, opacity 0.2s ease;
 }
 
-.taskItem:active {
+/* Pending task items: card-style rows, draggable */
+.pendingItem {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  cursor: grab;
+}
+.pendingItem:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+.pendingItem:hover .dragHandle {
+  color: rgba(255, 255, 255, 0.4);
+}
+.pendingItem:hover .deleteButton {
+  opacity: 1;
+  pointer-events: auto;
+}
+.pendingItem:active {
   cursor: grabbing;
 }
 
@@ -153,66 +202,133 @@
   transform: rotate(2deg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-/* Drag handle for reordering tasks */
+
+/* Completed task items: flat, dimmed, no card background */
+.completedItem {
+  background: transparent;
+  padding: 8px 4px;
+  opacity: 0.75;
+}
+.completedItem:hover .deleteButton {
+  opacity: 0.4;
+  pointer-events: auto;
+}
+
+/* Flash-pulse when a task transitions from pending to completed */
+.completing {
+  animation: taskCompletePulse 0.3s ease;
+}
+
+/* Drag handle for reordering tasks (pending section only) */
 .dragHandle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-  color: var(--text-color-secondary, #aaa);
-  font-size: 1.2rem;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
   cursor: grab;
   user-select: none;
   transition: color 0.2s ease;
 }
-
-.dragHandle:hover {
-  color: var(--text-color-primary, #fff);
-}
-
 .dragHandle:active {
   cursor: grabbing;
 }
 
-.taskLabel {
+/* Custom circular checkbox */
+.checkboxInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.checkboxCircle {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex: 1;
+  justify-content: center;
   cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
-.taskLabel span {
+.pendingItem .checkboxCircle:hover {
+  border-color: var(--accent-color, #3b82f6);
+}
+.checkboxCircleCompleted,
+.checkboxInput:checked + .checkboxCircle {
+  background: var(--accent-color, #3b82f6);
+  border-color: var(--accent-color, #3b82f6);
+}
+.checkboxInput:focus-visible + .checkboxCircle {
+  outline: 2px solid var(--accent-color, #3b82f6);
+  outline-offset: 2px;
+}
+.checkmark {
   color: #fff;
+  font-size: 0.7rem;
+  line-height: 1;
+  animation: checkmarkPop 0.2s ease;
 }
-.taskLabel input[type="checkbox"] {
-  accent-color: var(--brand-color-uibo, #1e88e5);
-  width: 18px;
-  height: 18px;
+
+.taskText {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+.taskTextCompleted,
 .completed {
   text-decoration: line-through;
-  color: var(--text-color-secondary, #aaa);
+  color: rgba(255, 255, 255, 0.35);
 }
+
 .deleteButton {
   background: none;
   border: none;
-  color: var(--text-color-secondary, #fff);
-  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   padding: 5px;
-  margin-left: 10px;
-  transition: color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: color 0.2s, transform 0.1s, opacity 0.15s ease;
 }
 .deleteButton:hover {
-  color: var(--button-stop-bg, #e53935);
+  color: #ef4444;
   transform: scale(1.1);
 }
 .deleteButton:focus-visible {
-  outline: 2px solid var(--button-stop-bg, #e53935);
+  outline: 2px solid #ef4444;
   outline-offset: 2px;
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (hover: none) {
+  .deleteButton {
+    opacity: 0.4;
+    pointer-events: auto;
+  }
+}
+
+.emptyState {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1.5rem 0;
 }
 .noTasks {
   color: var(--text-color-secondary, #aaa);
@@ -221,11 +337,103 @@
   padding: 10px 0;
 }
 
+/* Divider between pending and completed sections */
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 12px 0;
+}
+
+/* Collapsible completed section toggle */
+.completedToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.completedToggle:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.chevronExpanded {
+  transform: rotate(90deg);
+}
+
+/* Celebration banner shown above the list when 100% complete */
+.celebrationBanner {
+  text-align: center;
+  padding: 0.5rem 0 1rem;
+  animation: celebrationScaleIn 0.3s ease;
+}
+.celebrationEmoji {
+  font-size: 2rem;
+  display: inline-block;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 @keyframes modalIn {
-  from { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-} 
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes progressGlow {
+  0%, 100% { box-shadow: 0 0 4px 0 rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 0 12px 2px rgba(59, 130, 246, 0.8); }
+}
+@keyframes taskCompletePulse {
+  0% { background: rgba(59, 130, 246, 0); }
+  30% { background: rgba(59, 130, 246, 0.35); }
+  100% { background: rgba(59, 130, 246, 0); }
+}
+@keyframes checkmarkPop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+@keyframes celebrationScaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    animation: none;
+  }
+  .modal {
+    animation: none;
+  }
+  .progressBarComplete {
+    animation: none;
+  }
+  .progressBarFill {
+    transition: none;
+  }
+  .completing {
+    animation: none;
+  }
+  .checkmark {
+    animation: none;
+  }
+  .celebrationBanner {
+    animation: none;
+  }
+  .taskItem {
+    transition: none;
+  }
+  .chevron {
+    transition: none;
+  }
+}

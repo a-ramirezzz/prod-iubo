@@ -211,7 +211,13 @@
         "title": "What are today's objectives?",
         "placeholder": "Add a new objective...",
         "empty": "No objectives yet. Add one to get started!",
-        "deleteAria": "Delete objective"
+        "deleteAria": "Delete objective",
+        "addAria": "Add objective",
+        "progress": "{completed} of {total} completed",
+        "allCompleted": "All goals completed!",
+        "addFirstGoal": "Add your first goal",
+        "completedHeader": "Completed ({count})",
+        "toggleCompletedAria": "Show or hide completed goals"
       }
     },
     "settings": {
