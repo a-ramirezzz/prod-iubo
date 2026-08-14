@@ -55,6 +55,9 @@ export default function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps
 
   // Determine if the video preview should be played
   const shouldPlayVideo = theme.type === 'animated' && isInView
+  // Only video-based themes need a loading/preview label — basic solid-color
+  // themes render their static preview image instantly with nothing to load
+  const hasVideo = Boolean(theme.backgroundVideo)
 
   return (
     <button
@@ -80,7 +83,9 @@ export default function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={theme.previewImage}
-            alt={t('settings.themes.themePreview').replace('{name}', theme.name)} // More descriptive alt text
+            // Descriptive alt/loading label only makes sense for video themes;
+            // static themes have nothing to preview-load, so keep it decorative
+            alt={hasVideo ? t('settings.themes.themePreview').replace('{name}', theme.name) : ''}
             loading="lazy"
             className={styles.themePreviewImage}
           />
