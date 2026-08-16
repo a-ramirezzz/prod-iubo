@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.png',           // Standard favicon
     shortcut: '/favicon.png',       // Legacy browser support
-    apple: '/favicon.png',          // iOS home screen icon
+    apple: '/icons/icon-192.png',   // iOS home screen icon
   },
 
   // Web App Manifest for PWA installability
@@ -123,7 +123,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="/favicon.png" />
         <link rel="shortcut icon" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       
       {/* Body with context providers and theme wrapper */}

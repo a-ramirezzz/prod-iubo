@@ -116,7 +116,13 @@ const withSerwist = withSerwistInit({
   swDest: "public/sw.js",
   // Only precache the app shell's own static assets, never the large
   // background videos / ambient sounds in public/ (100+ MB combined).
-  globPublicPatterns: ["favicon.png", "manifest.json", "icon-192.png", "icon-512.png"],
+  globPublicPatterns: [
+    "favicon.png",
+    "manifest.json",
+    "icons/icon-192.png",
+    "icons/icon-512.png",
+    "icons/icon-512-maskable.png",
+  ],
   maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
   disable: process.env.NODE_ENV === "development",
 });
