@@ -68,7 +68,7 @@ export default function ThemeWrapper({ children }: { children: React.ReactNode }
     <>
       {/* Conditionally render the video background if the theme is animated */}
       {activeTheme?.type === 'animated' && activeTheme.backgroundVideo && (
-        <VideoBackground src={activeTheme.backgroundVideo} />
+        <VideoBackground src={activeTheme.backgroundVideo} poster={activeTheme.poster} />
       )}
       {children}
     </>
