@@ -9,6 +9,7 @@ export interface Theme {
   type: 'static' | 'animated';
   previewImage: string;
   backgroundVideo?: string;
+  poster?: string;
   styles: {
     // Core theme styles
     '--bg-color': string;
@@ -64,6 +65,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/F9D4A6/3E2F2E?text=Atardecer',
     backgroundVideo: '/atardecer.mp4',
+    poster: '/posters/atardecer-poster.jpg',
     styles: { 
       '--bg-color': '#F9D4A6',
       '--panel-bg': 'rgba(255, 245, 235, 0.8)',
@@ -78,6 +80,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/E47A5A/FFFFFF?text=Atardecer',
     backgroundVideo: '/atardecer.mp4',
+    poster: '/posters/atardecer-poster.jpg',
     styles: {
       '--bg-color': '#E47A5A',
       '--panel-bg': 'rgba(40, 25, 20, 0.75)',
@@ -94,6 +97,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/D1D5DB/1F2937?text=Ciudad',
     backgroundVideo: '/city.mp4',
+    poster: '/posters/city-poster.jpg',
     styles: {
       '--bg-color': '#D1D5DB',
       '--panel-bg': 'rgba(243, 244, 246, 0.8)',
@@ -108,6 +112,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/1E293B/94A3B8?text=Ciudad',
     backgroundVideo: '/city.mp4',
+    poster: '/posters/city-poster.jpg',
     styles: { 
       '--bg-color': '#1E293B',
       '--panel-bg': 'rgba(15, 23, 42, 0.8)',
@@ -125,6 +130,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/FBCFE8/831843?text=Cyber',
     backgroundVideo: '/cyberpunk.mp4',
+    poster: '/posters/cyberpunk-poster.jpg',
     styles: { 
       '--bg-color': '#FBCFE8', // Light pink background to complement the video
       '--panel-bg': 'rgba(15, 15, 25, 0.85)', // Dark panel with high opacity for contrast against pink/yellow/black background
@@ -140,6 +146,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/4C0519/F472B6?text=Cyber',
     backgroundVideo: '/cyberpunk.mp4',
+    poster: '/posters/cyberpunk-poster.jpg',
     styles: { 
       '--bg-color': '#4C0519', // Dark background to complement the video
       '--panel-bg': 'rgba(20, 20, 30, 0.9)', // Very dark panel with high opacity for maximum contrast
@@ -157,6 +164,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/F5D0FE/581C87?text=Disco',
     backgroundVideo: '/disco.mp4',
+    poster: '/posters/disco-poster.jpg',
     styles: { 
       '--bg-color': '#F5D0FE',
       '--panel-bg': 'rgba(245, 222, 254, 0.8)',
@@ -171,6 +179,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/3B0764/D946EF?text=Disco',
     backgroundVideo: '/disco.mp4',
+    poster: '/posters/disco-poster.jpg',
     styles: { 
       '--bg-color': '#3B0764',
       '--panel-bg': 'rgba(40, 10, 70, 0.75)',
@@ -188,6 +197,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/E0F2FE/0369A1?text=Electro',
     backgroundVideo: '/electro.mp4',
+    poster: '/posters/electro-poster.jpg',
     styles: { 
       '--bg-color': '#E0F2FE', // Light blue background to complement the video
       '--panel-bg': 'rgba(10, 10, 15, 0.9)', // Very dark panel for maximum contrast against black/reddish background
@@ -203,6 +213,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/075985/38BDF8?text=Electro',
     backgroundVideo: '/electro.mp4',
+    poster: '/posters/electro-poster.jpg',
     styles: { 
       '--bg-color': '#075985', // Dark blue background to complement the video
       '--panel-bg': 'rgba(5, 5, 10, 0.95)', // Very dark panel for maximum contrast against black/reddish background
@@ -220,6 +231,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/FEF3C7/9A3412?text=Fuego',
     backgroundVideo: '/fuego.mp4',
+    poster: '/posters/fuego-poster.jpg',
     styles: { 
       '--bg-color': '#FEF3C7', // Light background to complement the video
       '--panel-bg': 'rgba(254, 243, 199, 0.8)', // Panel background for contrast
@@ -234,6 +246,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/7F1D1D/FBBF24?text=Fuego',
     backgroundVideo: '/fuego.mp4',
+    poster: '/posters/fuego-poster.jpg',
     styles: { 
       '--bg-color': '#7F1D1D',
       '--panel-bg': 'rgba(70, 20, 20, 0.75)',
@@ -250,6 +263,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/E0E7FF/312E81?text=Galaxia',
     backgroundVideo: '/galaxy.mp4',
+    poster: '/posters/galaxy-poster.jpg',
     styles: { 
       '--bg-color': '#E0E7FF',
       '--panel-bg': 'rgba(224, 231, 255, 0.8)',
@@ -264,6 +278,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/1E1B4B/A5B4FC?text=Galaxia',
     backgroundVideo: '/galaxy.mp4',
+    poster: '/posters/galaxy-poster.jpg',
     styles: { 
       '--bg-color': '#1E1B4B',
       '--panel-bg': 'rgba(30, 27, 75, 0.8)',
@@ -280,6 +295,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/F1F5F9/1E293B?text=Nubes',
     backgroundVideo: '/nubes.mp4',
+    poster: '/posters/nubes-poster.jpg',
     styles: { 
       '--bg-color': '#F1F5F9',
       '--panel-bg': 'rgba(241, 245, 249, 0.8)',
@@ -294,6 +310,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/334155/CBD5E1?text=Nubes',
     backgroundVideo: '/nubes.mp4',
+    poster: '/posters/nubes-poster.jpg',
     styles: {
       '--bg-color': '#334155',
       '--panel-bg': 'rgba(51, 65, 85, 0.8)',
@@ -310,6 +327,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/D8D8FF/0C0A2E?text=Universo',
     backgroundVideo: '/universo.mp4',
+    poster: '/posters/universo-poster.jpg',
     styles: { 
       '--bg-color': '#D8D8FF',
       '--panel-bg': 'rgba(235, 235, 255, 0.8)',
@@ -324,6 +342,7 @@ export const themes: Theme[] = [
     type: 'animated',
     previewImage: 'https://placehold.co/120x90/0C0A2E/EBEBFF?text=Universo',
     backgroundVideo: '/universo.mp4',
+    poster: '/posters/universo-poster.jpg',
     styles: { 
       '--bg-color': '#0C0A2E',
       '--panel-bg': 'rgba(12, 10, 46, 0.75)',
