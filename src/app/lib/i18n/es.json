@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "PROD-UIBO | Temporizador Pomodoro y Gestor de Tareas",
+    "description": "Impulsa tu productividad con sesiones Pomodoro personalizables, gestión de tareas, logros y temas ambientales. Gratis, código abierto, funciona sin conexión.",
+    "ogAlt": "PROD-UIBO — Temporizador Pomodoro y Gestor de Tareas"
+  },
   "common": {
     "appName": "PROD-UIBO",
     "languageSwitch": {
