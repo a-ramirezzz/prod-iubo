@@ -79,7 +79,12 @@
       "staticTheme": "Static Theme",
       "staticThemeAlt": "Screenshot - Static Theme",
       "animatedTheme": "Animated Theme",
-      "videoFallback": "Your browser does not support the video element."
+      "videoFallback": "Your browser does not support the video element.",
+      "regionLabel": "Theme gallery",
+      "prev": "Previous",
+      "next": "Next",
+      "slideLabel": "Slide",
+      "goToSlide": "Go to slide"
     },
     "status": {
       "title": "Current Status",

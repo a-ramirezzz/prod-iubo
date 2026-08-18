@@ -79,7 +79,12 @@
       "staticTheme": "Tema Estático",
       "staticThemeAlt": "Captura de pantalla - Tema Estático",
       "animatedTheme": "Tema Animado",
-      "videoFallback": "Tu navegador no soporta el elemento de video."
+      "videoFallback": "Tu navegador no soporta el elemento de video.",
+      "regionLabel": "Galería de temas",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "slideLabel": "Diapositiva",
+      "goToSlide": "Ir a la diapositiva"
     },
     "status": {
       "title": "Estado Actual",
