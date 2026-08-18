@@ -772,12 +772,98 @@
   text-align: center;
 }
 
-/* Gallery Section */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
+/* Gallery Section — carousel */
+.carouselWrapper {
+  position: relative;
   margin-top: 3rem;
+}
+
+.carouselTrack {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  gap: 16px;
+  padding: 0 24px;
+  scrollbar-width: none; /* Firefox */
+}
+
+.carouselTrack::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.carouselSlide {
+  flex: 0 0 auto;
+  width: min(600px, 90vw);
+  scroll-snap-align: center;
+}
+
+/* Prev/next navigation buttons */
+.carouselNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.carouselNav:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.carouselNavPrev {
+  left: 4px;
+}
+
+.carouselNavNext {
+  right: 4px;
+}
+
+@media (max-width: 767px) {
+  .carouselNav {
+    display: none;
+  }
+}
+
+/* Dot indicators */
+.carouselDots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
+.carouselDot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+}
+
+.carouselDotActive {
+  width: 10px;
+  height: 10px;
+  background: var(--accent-color);
 }
 
 /* Gallery item container */
@@ -1154,11 +1240,10 @@
   }
   
   /* Gallery adjustments */
-  .gallery {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .carouselSlide {
+    width: min(500px, 88vw);
   }
-  
+
   /* Footer adjustments */
   .footerButtons {
     flex-direction: column;
@@ -1245,10 +1330,10 @@
     font-size: 1rem;
   }
   
-  .gallery {
-    grid-template-columns: 1fr;
+  .carouselSlide {
+    width: min(360px, 85vw);
   }
-  
+
   .galleryItem {
     aspect-ratio: 4/3;
   }
