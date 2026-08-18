@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { AuthProvider } from '@/context/AuthContext';
@@ -42,73 +43,117 @@ export const viewport = {
   themeColor: '#111827',
 };
 
-const APP_TITLE = 'PROD-UIBO | Pomodoro Timer & Task Manager';
-const APP_DESCRIPTION = 'Boost your productivity with customizable Pomodoro sessions, task management, achievements, and ambient themes. Free, open source, works offline.';
+const SITE_URL = 'https://prod-iubo.vercel.app';
 
-export const metadata: Metadata = {
-  // metadataBase is required for relative image paths (e.g. og-image.png) to
-  // resolve to absolute URLs that social platforms can actually fetch.
-  metadataBase: new URL('https://prod-iubo.vercel.app'),
+type MetaLocale = 'es' | 'en';
 
-  // Basic page information
-  title: APP_TITLE,
-  description: APP_DESCRIPTION,
-  keywords: 'productividad, pomodoro, temporizador, enfoque, gestión de tiempo, tareas',
-
-  // Author and creator information
-  authors: [{ name: 'Alan Rodrigo Ramírez Luna' }],
-  creator: 'Alan Rodrigo Ramírez Luna',
-  publisher: 'Prod-UIBO',
-
-  // Browser behavior settings
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-
-  // Favicon configuration for different platforms
-  icons: {
-    icon: '/favicon.png',           // Standard favicon
-    shortcut: '/favicon.png',       // Legacy browser support
-    apple: '/icons/icon-192.png',   // iOS home screen icon
-  },
-
-  // Web App Manifest for PWA installability
-  manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'PROD-UIBO',
-  },
-
-  // Open Graph metadata for social media sharing
-  openGraph: {
-    type: 'website',
-    locale: 'es_MX',
+// generateMetadata runs on the server, where the React i18n context (and its
+// JSON message trees) isn't reachable — the language cookie is the only
+// signal available, so metadata strings are kept inline here rather than
+// imported from LocaleContext's message files.
+const META: Record<MetaLocale, {
+  title: string;
+  description: string;
+  ogAlt: string;
+  ogLocale: string;
+  alternateLocale: string;
+}> = {
+  es: {
+    title: 'PROD-UIBO | Temporizador Pomodoro y Gestor de Tareas',
+    description: 'Impulsa tu productividad con sesiones Pomodoro personalizables, gestión de tareas, logros y temas ambientales. Gratis, código abierto, funciona sin conexión.',
+    ogAlt: 'PROD-UIBO — Temporizador Pomodoro y Gestor de Tareas',
+    ogLocale: 'es_MX',
     alternateLocale: 'en_US',
-    url: 'https://prod-iubo.vercel.app',
-    siteName: 'PROD-UIBO',
-    title: APP_TITLE,
-    description: APP_DESCRIPTION,
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'PROD-UIBO — Pomodoro Timer & Task Manager',
-      },
-    ],
   },
-
-  // Twitter Card metadata for Twitter sharing
-  twitter: {
-    card: 'summary_large_image',
-    title: APP_TITLE,
-    description: 'Boost your productivity with customizable Pomodoro sessions, task management, achievements, and ambient themes.',
-    images: ['/og-image.png'],
+  en: {
+    title: 'PROD-UIBO | Pomodoro Timer & Task Manager',
+    description: 'Boost your productivity with customizable Pomodoro sessions, task management, achievements, and ambient themes. Free, open source, works offline.',
+    ogAlt: 'PROD-UIBO — Pomodoro Timer & Task Manager',
+    ogLocale: 'en_US',
+    alternateLocale: 'es_MX',
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const cookieLocale = cookieStore.get('locale')?.value;
+  const lang: MetaLocale = cookieLocale === 'en' ? 'en' : 'es';
+  const meta = META[lang];
+
+  return {
+    // metadataBase is required for relative image paths (e.g. og-image.png) to
+    // resolve to absolute URLs that social platforms can actually fetch.
+    metadataBase: new URL(SITE_URL),
+
+    // Basic page information
+    title: meta.title,
+    description: meta.description,
+    keywords: 'productividad, pomodoro, temporizador, enfoque, gestión de tiempo, tareas',
+
+    // Author and creator information
+    authors: [{ name: 'Alan Rodrigo Ramírez Luna' }],
+    creator: 'Alan Rodrigo Ramírez Luna',
+    publisher: 'Prod-UIBO',
+
+    // Browser behavior settings
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+
+    // Favicon configuration for different platforms
+    icons: {
+      icon: '/favicon.png',           // Standard favicon
+      shortcut: '/favicon.png',       // Legacy browser support
+      apple: '/icons/icon-192.png',   // iOS home screen icon
+    },
+
+    // Web App Manifest for PWA installability
+    manifest: '/manifest.json',
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'default',
+      title: 'PROD-UIBO',
+    },
+
+    // hreflang alternates for search engines — both languages live at the
+    // same URL (locale is picked client-side), so both point at SITE_URL.
+    alternates: {
+      languages: {
+        es: SITE_URL,
+        en: SITE_URL,
+      },
+    },
+
+    // Open Graph metadata for social media sharing
+    openGraph: {
+      type: 'website',
+      locale: meta.ogLocale,
+      alternateLocale: meta.alternateLocale,
+      url: SITE_URL,
+      siteName: 'PROD-UIBO',
+      title: meta.title,
+      description: meta.description,
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: meta.ogAlt,
+        },
+      ],
+    },
+
+    // Twitter Card metadata for Twitter sharing
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.title,
+      description: meta.description,
+      images: ['/og-image.png'],
+    },
+  };
+}
 
 /**
  * Root Layout Component

@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "PROD-UIBO | Pomodoro Timer & Task Manager",
+    "description": "Boost your productivity with customizable Pomodoro sessions, task management, achievements, and ambient themes. Free, open source, works offline.",
+    "ogAlt": "PROD-UIBO — Pomodoro Timer & Task Manager"
+  },
   "common": {
     "appName": "PROD-UIBO",
     "languageSwitch": {

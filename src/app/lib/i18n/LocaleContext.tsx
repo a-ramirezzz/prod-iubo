@@ -72,9 +72,11 @@ export function LocaleProvider({
     // Don't write to localStorage — the app persists via Supabase
   }, []);
 
-  // Sync <html lang>
+  // Sync <html lang> and the `locale` cookie so the server (generateMetadata
+  // in the root layout) can read the language preference on the next request.
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
   }, [locale]);
 
   const t = useCallback(
