@@ -41,7 +41,7 @@ export interface AppSettings {
   language: 'es' | 'en';
   enable_desktop_notifications: boolean;
   notification_sound_enabled: boolean;
-  theme_mode: 'light' | 'dark';
+  theme_mode: 'light' | 'dark' | 'system';
   selected_theme_id: string;
   background_sound: string;
   volume: number;

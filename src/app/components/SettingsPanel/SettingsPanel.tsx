@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
 import { useDataExport } from '@/app/hooks/useDataExport';
+import { useSystemTheme } from '@/app/hooks/useSystemTheme';
 import { useLocale } from '@/app/lib/i18n';
 import Link from 'next/link';
 
@@ -86,6 +87,8 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
   };
   // Access settings and update functions from context
   const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
+  // OS preference, only consulted when theme_mode is 'system'
+  const systemTheme = useSystemTheme();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -162,15 +165,23 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
     router.push('/');
   };
 
-  // Handler for toggling theme mode (light/dark)
-  const handleThemeChange = () => {
-    const newThemeMode = settings.theme_mode === 'light' ? 'dark' : 'light';
-    // When changing mode, also select the first static theme by default
-    const defaultThemeForMode = themes.find(t => t.mode === newThemeMode && t.type === 'static');
-    
-    updateSettings({ 
+  // The effective light/dark mode after resolving 'system' against the OS preference.
+  // Used to decide which static/animated themes to show, since Theme.mode is only 'light' | 'dark'.
+  const effectiveThemeMode = settings.theme_mode === 'system' ? systemTheme : settings.theme_mode;
+
+  // Handler for switching theme mode to 'light', 'dark', or 'system'
+  const handleThemeChange = (newThemeMode: 'light' | 'dark' | 'system') => {
+    if (newThemeMode === settings.theme_mode) return;
+    // When changing to an explicit light/dark mode, also select the first static theme for it.
+    // 'system' keeps the currently selected theme and only changes dark/light resolution.
+    const resolvedMode = newThemeMode === 'system' ? systemTheme : newThemeMode;
+    const defaultThemeForMode = themes.find(t => t.mode === resolvedMode && t.type === 'static');
+
+    updateSettings({
       theme_mode: newThemeMode,
-      selected_theme_id: defaultThemeForMode ? defaultThemeForMode.id : settings.selected_theme_id 
+      selected_theme_id: newThemeMode === 'system'
+        ? settings.selected_theme_id
+        : (defaultThemeForMode ? defaultThemeForMode.id : settings.selected_theme_id)
     });
   };
 
@@ -410,17 +421,19 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                 {/* Theme mode switcher */}
                 <div className={styles.settingItem}>
                   <label>{t('settings.themes.appearance')}</label>
-                  <div className={styles.themeSwitcher}>
-                    <span className={styles.themeSwitcherLabel}>{t('settings.themes.light')}</span>
-                    <label className={styles.toggleSwitch}>
-                      <input
-                        type="checkbox"
-                        checked={settings.theme_mode === 'dark'}
-                        onChange={handleThemeChange}
-                      />
-                      <span className={styles.slider}></span>
-                    </label>
-                    <span className={styles.themeSwitcherLabel}>{t('settings.themes.dark')}</span>
+                  <div className={styles.themeModeGroup} role="radiogroup" aria-label={t('settings.themes.appearance')}>
+                    {(['light', 'system', 'dark'] as const).map(mode => (
+                      <button
+                        key={mode}
+                        type="button"
+                        role="radio"
+                        aria-checked={settings.theme_mode === mode}
+                        className={`${styles.themeModeButton} ${settings.theme_mode === mode ? styles.themeModeButtonActive : ''}`}
+                        onClick={() => handleThemeChange(mode)}
+                      >
+                        {t(`settings.themes.${mode}`)}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -428,7 +441,7 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                 <h3 className={styles.subSectionTitle}>{t('settings.themes.static')}</h3>
                 <div className={styles.themeGrid}>
                   {themes
-                    .filter(theme => theme.mode === settings.theme_mode && theme.type === 'static')
+                    .filter(theme => theme.mode === effectiveThemeMode && theme.type === 'static')
                     .map(theme => (
                       <ThemeCard
                         key={theme.id}
@@ -443,7 +456,7 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                 <h3 className={styles.subSectionTitle}>{t('settings.themes.animated')}</h3>
                 <div className={styles.themeGrid}>
                    {themes
-                    .filter(theme => theme.mode === settings.theme_mode && theme.type === 'animated')
+                    .filter(theme => theme.mode === effectiveThemeMode && theme.type === 'animated')
                     .map(theme => (
                       <ThemeCard
                         key={theme.id}

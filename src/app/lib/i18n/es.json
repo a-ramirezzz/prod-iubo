@@ -441,6 +441,7 @@
       "appearance": "Apariencia",
       "light": "Claro",
       "dark": "Oscuro",
+      "system": "Sistema",
       "static": "Temas Estáticos",
       "animated": "Temas Animados",
       "themePreview": "Vista previa del tema {name}",
