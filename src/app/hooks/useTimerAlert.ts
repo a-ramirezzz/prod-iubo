@@ -13,6 +13,7 @@
 // =================================================================
 
 import { useRef, useCallback, useEffect } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 
 // =================================================================
 // SECTION: Hook Definition
@@ -27,10 +28,13 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
   // -----------------------------------------------------------------
   // State and Refs
   // We use refs to store instances that should persist across renders
-  // without causing re-renders themselves (like audio elements or timers).
+  // without causing re-renders themselves (like timers).
   // -----------------------------------------------------------------
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // No settings are threaded in here (matching the previous unconditional,
+  // full-volume `new Audio(...).play()` behavior) — useAudio's defaults
+  // (enabled: true, volume: 1) reproduce that exactly.
+  const { playSound, stopSound } = useAudio();
   const notificationRef = useRef<Notification | null>(null);
   const soundTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -39,19 +43,16 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
   // Using useCallback to ensure these functions have a stable identity
   // across renders, preventing unnecessary re-renders.
   // -----------------------------------------------------------------
-  
+
   /**
    * Stops all alert activities: pauses the sound and clears any pending playback.
    */
   const stopAlert = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
+    stopSound();
     if (soundTimeoutRef.current) {
       clearTimeout(soundTimeoutRef.current);
     }
-  }, []);
+  }, [stopSound]);
 
   /**
    * Shows a native browser notification.
@@ -82,12 +83,7 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
    * Plays the alert sound a fixed number of times with a delay.
    * This uses chained setTimeouts for a more robust sequence than setInterval.
    */
-  const playSound = useCallback((maxPlays: number = 3) => {
-    // Ensure the audio element exists, creating it on the first play.
-    if (!audioRef.current) {
-      audioRef.current = new Audio('/simple-notification-152054.mp3');
-    }
-
+  const playAlertSound = useCallback((maxPlays: number = 3) => {
     stopAlert(); // Stop any previous alert before starting a new one.
 
     const delay = 2500; // 2.5 seconds between plays
@@ -95,8 +91,8 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
     const playRepeatedly = (playCount: number) => {
       if (playCount <= 0) return;
 
-      audioRef.current?.play().catch(e => console.error("Error playing audio:", e));
-      
+      playSound('timer-alert');
+
       // Schedule the next play.
       soundTimeoutRef.current = setTimeout(() => {
         playRepeatedly(playCount - 1);
@@ -104,14 +100,14 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
     };
 
     playRepeatedly(maxPlays);
-  }, [stopAlert]);
+  }, [playSound, stopAlert]);
 
   /**
    * The main function exposed by the hook. It coordinates playing the
    * sound and showing the notification, handling permissions as needed.
    */
   const triggerAlert = useCallback(async () => {
-    playSound();
+    playAlertSound();
 
     if (!enableDesktopNotifications) return;
 
@@ -124,14 +120,14 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
         showNotification();
       }
     }
-  }, [playSound, showNotification, enableDesktopNotifications]);
+  }, [playAlertSound, showNotification, enableDesktopNotifications]);
 
   /**
    * Alert for completing a full Pomodoro cycle (4 pomodoros).
    * Plays the sound once and shows a dedicated long-break notification.
    */
   const triggerLongBreakAlert = useCallback(async () => {
-    playSound(1);
+    playAlertSound(1);
 
     if (!enableDesktopNotifications) return;
 
@@ -146,7 +142,7 @@ export const useTimerAlert = (enableDesktopNotifications: boolean = false) => {
         showNotification(title, body);
       }
     }
-  }, [playSound, showNotification, enableDesktopNotifications]);
+  }, [playAlertSound, showNotification, enableDesktopNotifications]);
 
   // -----------------------------------------------------------------
   // Lifecycle Management
