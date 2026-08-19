@@ -4,6 +4,7 @@
 
 import styles from '@/app/LandingPage.module.css';
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useLocale } from '@/app/lib/i18n';
 
 export function StatusSection() {
@@ -44,6 +45,9 @@ export function StatusSection() {
             <li data-reveal key={i}><span className={styles.statusIcon}>{icon}</span>{t(`landing.status.items.${i}`)}</li>
           ))}
         </ul>
+        <Link href="/changelog" className={styles.statusChangelogLink}>
+          {t('landing.status.changelogCta')}
+        </Link>
       </div>
     </section>
   );

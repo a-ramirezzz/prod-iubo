@@ -1,0 +1,12 @@
+---
+title: "Mejoras de rendimiento"
+date: "2026-08-18"
+version: "1.4.0"
+tags: ["performance"]
+---
+
+Dividimos el bundle de la landing page en chunks independientes: `GallerySection`, `StatusSection` y `RoadmapSection` ahora se cargan bajo demanda en lugar de venir empaquetados en el bundle inicial. Esto reduce el JavaScript que el navegador tiene que descargar y ejecutar antes de que la página sea interactiva.
+
+Los videos de los temas ambientales también cambiaron de estrategia: en vez de precargar el archivo completo, mostramos un poster frame estático y hacemos crossfade hacia el video una vez que termina de cargar. El resultado es una carga percibida más rápida sin sacrificar la transición visual.
+
+Por último, hicimos una auditoría de dependencias y eliminamos las que ya no se usaban. Menos peso en `node_modules`, menos superficie de ataque y builds ligeramente más rápidos.

@@ -99,7 +99,8 @@
         "Software: Version 1.0 functional and deployed. The web app is fully operational.",
         "Implemented Features: Complete timer system (start, pause, reset, stop), task management, and a robust settings panel with general options, a theme system (static and animated) and background sound control with volume.",
         "Coming Soon: Cloud sync to save your tasks and settings, and a mobile app to access Prod-UIBO from anywhere."
-      ]
+      ],
+      "changelogCta": "See our latest updates"
     },
     "roadmap": {
       "title": "Roadmap",
@@ -148,7 +149,8 @@
       "legal": {
         "privacy": "Privacy Policy",
         "terms": "Terms of Service",
-        "cookies": "Cookie Policy"
+        "cookies": "Cookie Policy",
+        "changelog": "What's New"
       }
     }
   },
@@ -410,6 +412,7 @@
   "settings": {
     "title": "SETTINGS",
     "closeAria": "Close settings",
+    "whatsNew": "What's New",
     "sections": {
       "general": "General",
       "themes": "Themes",
@@ -552,6 +555,11 @@
     "skip": "Skip",
     "next": "Next",
     "finish": "Finish"
+  },
+  "changelog": {
+    "backToHome": "← Home",
+    "title": "Changelog",
+    "subtitle": "History of improvements and updates to PROD-UIBO"
   },
   "legal": {
     "backToHome": "← Back to Home",

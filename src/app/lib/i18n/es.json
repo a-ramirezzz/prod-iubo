@@ -99,7 +99,8 @@
         "Software: Versión 1.0 funcional y desplegada. La aplicación web es completamente operativa.",
         "Características Implementadas: Sistema de temporizador completo (iniciar, pausar, resetear, detener), gestión de tareas, y un panel de configuración robusto con ajustes generales, sistema de temas (estáticos y animados) y control de sonidos de fondo con volumen.",
         "Próximamente: Sincronización en la nube para guardar tus tareas y configuraciones, y aplicación móvil para acceder a Prod-UIBO desde cualquier lugar."
-      ]
+      ],
+      "changelogCta": "Ver nuestras últimas actualizaciones"
     },
     "roadmap": {
       "title": "Roadmap",
@@ -148,7 +149,8 @@
       "legal": {
         "privacy": "Política de Privacidad",
         "terms": "Términos de Servicio",
-        "cookies": "Política de Cookies"
+        "cookies": "Política de Cookies",
+        "changelog": "Novedades"
       }
     }
   },
@@ -410,6 +412,7 @@
   "settings": {
     "title": "CONFIGURACIÓN",
     "closeAria": "Cerrar configuración",
+    "whatsNew": "Novedades",
     "sections": {
       "general": "General",
       "themes": "Temas",
@@ -552,6 +555,11 @@
     "skip": "Omitir",
     "next": "Siguiente",
     "finish": "Finalizar"
+  },
+  "changelog": {
+    "backToHome": "← Inicio",
+    "title": "Registro de cambios",
+    "subtitle": "Historial de mejoras y actualizaciones de PROD-UIBO"
   },
   "legal": {
     "backToHome": "← Volver al inicio",

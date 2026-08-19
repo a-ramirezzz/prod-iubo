@@ -1,0 +1,12 @@
+---
+title: "Seguridad y validación"
+date: "2026-08-17"
+version: "1.3.0"
+tags: ["security"]
+---
+
+Agregamos rate limiting a los endpoints de autenticación: login, signup, forgot-password y reset-password ahora limitan cuántos intentos puede hacer una misma IP en una ventana de 15 minutos. Es una primera barrera contra ataques de fuerza bruta y abuso automatizado, aplicada a nivel de middleware antes de que la petición llegue a la lógica de negocio.
+
+También reforzamos la validación en el servidor: las reglas que antes solo vivían en el cliente ahora se replican como constraints SQL directamente en Supabase, así que un request malformado o manipulado no puede saltarse las validaciones aunque evite el frontend.
+
+Como capa adicional, configuramos Dependabot para que audite automáticamente las dependencias del proyecto y abra pull requests cuando aparezcan vulnerabilidades conocidas.

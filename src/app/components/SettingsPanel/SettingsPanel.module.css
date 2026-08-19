@@ -92,6 +92,24 @@
   margin: 0;
 }
 
+.whatsNewLink {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-top: 1px solid var(--border-color-primary, #333);
+  transition: color 0.2s ease;
+}
+
+.whatsNewLink:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 /* Navigation menu styling */
 .menuButton {
   width: 100%;

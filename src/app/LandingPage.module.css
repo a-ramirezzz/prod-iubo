@@ -970,6 +970,31 @@
   margin-bottom: 0;
 }
 
+.statusChangelogLink {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 1.5rem auto 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: color 0.2s;
+  width: fit-content;
+}
+
+.statusChangelogLink::after {
+  content: '→';
+  transition: transform 0.2s;
+}
+
+.statusChangelogLink:hover {
+  color: var(--accent-color);
+}
+
+.statusChangelogLink:hover::after {
+  transform: translateX(3px);
+}
+
 /* Redesigned Footer */
 .footer {
   background: var(--card-bg);

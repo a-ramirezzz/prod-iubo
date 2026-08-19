@@ -91,6 +91,7 @@ export function FooterSection() {
             {t('landing.footer.copyright')}
           </div>
           <div className={styles.footerLegal}>
+            <Link href="/changelog" className={styles.footerLegalLink}>{t('landing.footer.legal.changelog')}</Link>
             <Link href="/privacy" className={styles.footerLegalLink}>{t('landing.footer.legal.privacy')}</Link>
             <Link href="/terms" className={styles.footerLegalLink}>{t('landing.footer.legal.terms')}</Link>
             <Link href="/cookies" className={styles.footerLegalLink}>{t('landing.footer.legal.cookies')}</Link>
