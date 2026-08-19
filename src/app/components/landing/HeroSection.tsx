@@ -6,11 +6,21 @@ import styles from '@/app/LandingPage.module.css';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from '@/app/lib/i18n';
+import { useAuth } from '@/app/context/AuthContext';
 
 export function HeroSection() {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { t } = useLocale();
+  const { user, loading: authLoading } = useAuth();
+
+  // Prefetch the route the user is most likely to hit next from the landing page,
+  // once auth state has resolved so we don't prefetch /login for a logged-in user.
+  useEffect(() => {
+    if (authLoading) return;
+    router.prefetch(user ? '/app' : '/login');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading]);
 
   const subtitle = t('landing.hero.subtitle');
 
