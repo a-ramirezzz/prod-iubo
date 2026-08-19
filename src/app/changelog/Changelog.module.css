@@ -1,0 +1,154 @@
+/* Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz) — CC BY-NC-ND 4.0 */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.content {
+  max-width: 720px;
+  width: 100%;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 2rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: var(--accent-color);
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+}
+
+.timeline {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.entry {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+}
+
+.entry:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: -1.5rem;
+  top: calc(100% + 4px);
+  width: 1px;
+  height: calc(1.5rem - 8px);
+  background: var(--border-color);
+}
+
+.entryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.version {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.entryTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  font-size: 0.75rem;
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--accent-color);
+  border-radius: 999px;
+  padding: 4px 10px;
+  text-transform: capitalize;
+}
+
+.prose {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.prose :global(p) {
+  margin-bottom: 0.85rem;
+}
+
+.prose :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.prose :global(strong) {
+  color: var(--text-primary);
+}
+
+.prose :global(code) {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.9em;
+}
+
+.prose :global(ul),
+.prose :global(ol) {
+  margin: 0 0 0.85rem 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 2rem 1rem;
+  }
+
+  .entry {
+    padding: 18px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+}

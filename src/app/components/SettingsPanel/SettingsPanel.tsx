@@ -18,6 +18,7 @@ import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 import { useHorizontalPipTimer } from '@/app/hooks/useHorizontalPipTimer';
 import { useDataExport } from '@/app/hooks/useDataExport';
 import { useLocale } from '@/app/lib/i18n';
+import Link from 'next/link';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -200,6 +201,10 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                 ))}
               </ul>
             </nav>
+            <Link href="/changelog" className={styles.whatsNewLink}>
+              <span>{t('settings.whatsNew')}</span>
+              <span aria-hidden="true">↗</span>
+            </Link>
           </aside>
           {/* Main content area */}
           <main className={styles.mainContentArea}>
