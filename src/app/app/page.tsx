@@ -21,6 +21,7 @@ import { useAchievements } from '@/hooks/useAchievements';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
 import { useHorizontalPipTimer } from '@/hooks/useHorizontalPipTimer';
+import { useSystemTheme } from '@/hooks/useSystemTheme';
 import { useAuth } from '@/context/AuthContext';
 import { useLocale } from '@/app/lib/i18n';
 import { useRouter } from 'next/navigation';
@@ -163,13 +164,17 @@ export default function HomePage() {
     onPipModeDisabled: () => updateSettings({ pip_mode_enabled: false }),
   });
 
+  // Resolved OS preference, only consulted when theme_mode is 'system'
+  const systemTheme = useSystemTheme();
+  const effectiveThemeMode = settings.theme_mode === 'system' ? systemTheme : settings.theme_mode;
+
   // Integrate the Document Picture-in-Picture horizontal timer hook (separate, real-HTML floating window)
   const { portal: horizontalPipPortal } = useHorizontalPipTimer(
     settings.horizontal_pip_enabled,
     timeParts,
     isActive,
     currentTaskText,
-    settings.theme_mode,
+    effectiveThemeMode,
     { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
   );
 

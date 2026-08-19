@@ -247,6 +247,37 @@ input:disabled + .slider {
   cursor: not-allowed;
 }
 
+/* Segmented control for light / system / dark theme mode */
+.themeModeGroup {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color-primary);
+  border-radius: 8px;
+}
+
+.themeModeButton {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-color-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.themeModeButton:hover {
+  background-color: var(--button-primary-bg, #444);
+}
+
+.themeModeButtonActive,
+.themeModeButtonActive:hover {
+  background-color: var(--brand-color-uibo);
+  color: #fff;
+}
+
 .select {
   background-color: var(--input-bg);
   color: var(--text-color-primary);

@@ -441,6 +441,7 @@
       "appearance": "Appearance",
       "light": "Light",
       "dark": "Dark",
+      "system": "System",
       "static": "Static Themes",
       "animated": "Animated Themes",
       "themePreview": "Preview of {name} theme",

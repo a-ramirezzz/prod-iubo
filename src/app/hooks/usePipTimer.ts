@@ -1,6 +1,7 @@
 // src/app/hooks/usePipTimer.ts
 import { useRef, useEffect } from 'react';
 import { TimeParts, AppSettings } from '@/types/index';
+import { useSystemTheme } from '@/app/hooks/useSystemTheme';
 
 interface UsePipTimerOptions {
   onPipModeDisabled?: () => void;
@@ -32,6 +33,9 @@ export const usePipTimer = (
   const streamRef = useRef<MediaStream | null>(null);
   // Ref to track the background video element for animated themes
   const backgroundVideoRef = useRef<HTMLVideoElement | null>(null);
+  // Resolved OS preference, only consulted when theme_mode is 'system'
+  const systemTheme = useSystemTheme();
+  const effectiveThemeMode = settings.theme_mode === 'system' ? systemTheme : settings.theme_mode;
 
   // Constants for PiP rendering resolution
   // Use a higher resolution for better quality and larger timer in PiP
@@ -69,7 +73,7 @@ export const usePipTimer = (
     // Determine background and text color based on theme mode
     let backgroundColor = '#000';
     let textColor = '#fff';
-    if (settings.theme_mode === 'light') {
+    if (effectiveThemeMode === 'light') {
       backgroundColor = '#fff';
       textColor = '#111';
     }
@@ -83,7 +87,7 @@ export const usePipTimer = (
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textColor;
     ctx.save();
-    if (settings.theme_mode === 'light') {
+    if (effectiveThemeMode === 'light') {
       ctx.shadowColor = 'rgba(0,0,0,0.18)';
       ctx.shadowBlur = 16;
     } else {
