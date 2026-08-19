@@ -144,6 +144,13 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
     };
   }, [isOpen]);
 
+  // Prefetch the changelog route as soon as the panel opens, since its link is visible in the sidebar.
+  useEffect(() => {
+    if (isOpen) {
+      router.prefetch('/changelog');
+    }
+  }, [isOpen, router]);
+
   // If the panel is not open, render nothing
   if (!isOpen) {
     return null;
