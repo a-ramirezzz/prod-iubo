@@ -10,10 +10,19 @@ export default defineConfig({
   retries: 1,
   workers: 1, // sequential — avoids port conflicts with the dev server
 
+  expect: {
+    toHaveScreenshot: { maxDiffPixelRatio: 0.001 },
+  },
+
   use: {
     baseURL: 'http://localhost:3000',
+    viewport: { width: 1280, height: 720 },
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
+    // Stabilizes text antialiasing across runs for screenshot comparisons.
+    launchOptions: {
+      args: ['--font-render-hinting=none', '--force-color-profile=srgb'],
+    },
   },
 
   projects: [
