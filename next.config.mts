@@ -42,42 +42,15 @@ const nextConfig: NextConfig = {
   /**
    * Security headers applied to every route.
    *
-   * The Content-Security-Policy locks resource loading down to the app's own
-   * origin plus the few external hosts the app genuinely uses:
-   *  - Supabase REST + Realtime (wss) via the *.supabase.co wildcard.
-   *  - placehold.co and images.unsplash.com for theme preview / background images
-   *    (these mirror `images.remotePatterns` above).
-   *
-   * `'unsafe-inline'` is required for Next.js App Router hydration scripts and
-   * its injected inline styles; a nonce-based policy would need custom
-   * middleware and is intentionally out of scope here. Vercel Analytics and
-   * Speed Insights are served from the same origin (`/_vercel/*`) and so are
-   * already covered by `'self'`.
+   * Content-Security-Policy is set per-request by `src/middleware.ts`
+   * instead of here, since it needs a fresh nonce for every response —
+   * something `headers()` can't generate (it only returns static values).
    */
   async headers() {
-    const isDev = process.env.NODE_ENV === 'development';
     return [
       {
         source: '/(.*)',
         headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://placehold.co https://images.unsplash.com",
-              "font-src 'self'",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-              "media-src 'self' blob: data:",
-              "worker-src 'self' blob:",
-              "frame-src 'self'",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'self'",
-            ].join('; '),
-          },
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
