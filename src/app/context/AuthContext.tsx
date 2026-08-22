@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from '@/app/lib/supabase/client';
 import { clearUserData } from '@/app/lib/offlineDb';
 import type { User } from "@supabase/supabase-js";
@@ -47,14 +47,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    * Ends the current session voluntarily. Flags the logout as user-initiated so
    * the SIGNED_OUT event it triggers does not set `sessionExpired`.
    */
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     isVoluntaryLogoutRef.current = true;
     const userId = user?.id;
     await supabase.auth.signOut();
     if (userId) {
       await clearUserData(userId);
     }
-  };
+  }, [user, supabase]);
 
   useEffect(() => {
     // Fast initial hydration from localStorage — no network round-trip
@@ -99,8 +99,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Memoized: this context wraps the entire app (above SettingsProvider), so an
+  // unmemoized value object would re-render every consumer whenever AuthProvider's
+  // parent re-renders, even when auth state itself hasn't changed.
+  const value = useMemo(
+    () => ({ user, loading, sessionExpired, signOut }),
+    [user, loading, sessionExpired, signOut]
+  );
+
   return (
-    <AuthContext.Provider value={{ user, loading, sessionExpired, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

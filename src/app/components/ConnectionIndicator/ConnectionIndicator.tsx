@@ -15,7 +15,7 @@
  * invisible unless it needs the user's attention.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useRealtimeStatus } from '@/hooks/useRealtimeStatus';
 import { useLocale } from '@/app/lib/i18n';
 import { SYNC } from '@/app/lib/constants';
@@ -34,7 +34,7 @@ interface ConnectionIndicatorProps {
   onOpenSyncDetails?: () => void;
 }
 
-export default function ConnectionIndicator({
+function ConnectionIndicator({
   pendingCount = 0,
   isSyncing = false,
   failedCount = 0,
@@ -121,3 +121,7 @@ export default function ConnectionIndicator({
     </div>
   );
 }
+
+// Memoized: page.tsx re-renders every timer tick, but this banner's props
+// (sync/connection counters) only change on actual sync/connection events.
+export default memo(ConnectionIndicator);

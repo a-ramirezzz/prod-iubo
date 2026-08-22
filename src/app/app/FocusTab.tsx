@@ -3,7 +3,7 @@
 // app/FocusTab.tsx
 'use client';
 
-import type { ComponentProps } from 'react';
+import { memo, type ComponentProps } from 'react';
 import FocusSection from '@/components/FocusSection/FocusSection';
 
 /**
@@ -20,6 +20,10 @@ import FocusSection from '@/components/FocusSection/FocusSection';
  */
 type FocusTabProps = ComponentProps<typeof FocusSection>;
 
-export default function FocusTab(props: FocusTabProps) {
+function FocusTab(props: FocusTabProps) {
   return <FocusSection {...props} />;
 }
+
+// Memoized: page.tsx re-renders every timer tick (countdown state lives there),
+// but this tab's stats/session props only change on session completion.
+export default memo(FocusTab);

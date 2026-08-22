@@ -84,6 +84,8 @@ export default function HomePage() {
     syncNow,
   } = useSyncQueue(user?.id ?? null);
   const [showSyncDetails, setShowSyncDetails] = useState(false);
+  // Memoized so the memoized ConnectionIndicator doesn't re-render on every timer tick.
+  const onOpenSyncDetails = useCallback(() => setShowSyncDetails(true), []);
 
   // Name of the first incomplete task, shown as "current task" in the horizontal PiP window.
   const currentTaskText = tasks.find(task => !task.completed)?.text;
@@ -332,15 +334,16 @@ export default function HomePage() {
       ? `${timeParts.minutes}:${timeParts.seconds}`
       : `${timeParts.hours}:${timeParts.minutes}:${timeParts.seconds}`;
 
-  // Focus-tab CTAs also switch back to the timer view.
-  const onFocusStartWork = () => {
+  // Focus-tab CTAs also switch back to the timer view. Memoized (useCallback) so
+  // the memoized FocusTab doesn't re-render on every timer tick from page.tsx.
+  const onFocusStartWork = useCallback(() => {
     handleFocusStartWork();
     setActiveTab('timer');
-  };
-  const onFocusStartBreak = () => {
+  }, [handleFocusStartWork]);
+  const onFocusStartBreak = useCallback(() => {
     handleFocusStartBreak();
     setActiveTab('timer');
-  };
+  }, [handleFocusStartBreak]);
 
   return (
     <>
@@ -515,7 +518,7 @@ export default function HomePage() {
       isSyncing={isSyncing}
       failedCount={syncFailedCount}
       lastSyncedCount={lastSyncResult?.processed ?? 0}
-      onOpenSyncDetails={() => setShowSyncDetails(true)}
+      onOpenSyncDetails={onOpenSyncDetails}
     />
 
     <SettingsButton onClick={() => setIsSettingsPanelOpen(true)} />
