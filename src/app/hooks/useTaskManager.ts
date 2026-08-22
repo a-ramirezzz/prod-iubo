@@ -20,15 +20,11 @@ import { cacheTasks, getCachedTasks } from '@/app/lib/offlineDb';
 import { executeOrQueue } from '@/app/lib/offlineMutation';
 import { hapticFeedback } from '@/app/lib/haptic';
 import type { Task } from '@/app/types';
-
-// Shape of a row in the `tasks` table as delivered by Realtime.
-interface TaskRow {
-  id: string;
-  user_id: string;
-  text: string;
-  completed: boolean;
-  position: number;
-}
+import type {
+  TaskInsertPayload,
+  TaskUpdatePayload,
+  TaskDeletePayload,
+} from '@/app/types/realtime.types';
 
 const sortByPosition = (list: Task[]) =>
   [...list].sort((a, b) => a.position - b.position);
@@ -125,8 +121,8 @@ export const useTaskManager = (userId: string | null, hapticsEnabled: boolean = 
           table: 'tasks',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
-          const row = payload.new as TaskRow;
+        (payload: TaskInsertPayload) => {
+          const row = payload.new;
           setTasks((prev) => {
             if (prev.some((t) => t.id === row.id)) return prev; // already added optimistically
             return sortByPosition([
@@ -144,8 +140,8 @@ export const useTaskManager = (userId: string | null, hapticsEnabled: boolean = 
           table: 'tasks',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
-          const row = payload.new as TaskRow;
+        (payload: TaskUpdatePayload) => {
+          const row = payload.new;
           setTasks((prev) =>
             sortByPosition(
               prev.map((t) =>
@@ -165,8 +161,8 @@ export const useTaskManager = (userId: string | null, hapticsEnabled: boolean = 
           table: 'tasks',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
-          const row = payload.old as Partial<TaskRow>;
+        (payload: TaskDeletePayload) => {
+          const row = payload.old;
           if (!row.id) return;
           setTasks((prev) => prev.filter((t) => t.id !== row.id));
         }
