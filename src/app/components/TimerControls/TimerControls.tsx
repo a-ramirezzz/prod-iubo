@@ -1,8 +1,10 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // app/components/TimerControls/TimerControls.tsx
+import { motion } from 'framer-motion'
 import styles from '@/app/components/TimerControls/TimerControls.module.css'
 import { useLocale } from '@/app/lib/i18n'
+import { useTapScaleProps } from '@/app/lib/motion'
 
 /**
  * Defines the props for the TimerControls component
@@ -28,6 +30,7 @@ export default function TimerControls({
   onStop
 }: TimerControlsProps) {
   const { t } = useLocale()
+  const tapScale = useTapScaleProps()
 
   // Do not render the controls if no initial time has been set
   if (initialTimeSet === 0) {
@@ -41,37 +44,40 @@ export default function TimerControls({
 
   return (
     <div className={styles.controlsContainer}>
-      <button
+      <motion.button
         onClick={onTogglePause}
         className={`button ${styles.btnPause}`}
         disabled={isTimerFinished}
         aria-label={isActive ? t('app.timer.controls.pauseAria') : t('app.timer.controls.resumeAria')}
+        {...tapScale}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
         </svg>
         {pauseResumeText}
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         onClick={onReset}
         className={`button button-reset ${styles.btnReset}`}
         aria-label={t('app.timer.controls.resetAria')}
+        {...tapScale}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
           <path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/>
         </svg>
         {t('app.timer.controls.reset')}
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         onClick={onStop}
         className={`button button-stop ${styles.btnStop}`}
         aria-label={t('app.timer.controls.stopAria')}
+        {...tapScale}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <rect x="4" y="4" width="16" height="16" rx="2"/>
         </svg>
         {t('app.timer.controls.stop')}
-      </button>
+      </motion.button>
     </div>
   )
 }

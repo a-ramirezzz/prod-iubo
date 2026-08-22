@@ -2,10 +2,12 @@
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './TaskModal.module.css';
 import type { Task } from '@/app/types';
 import CelebrationEffect from './CelebrationEffect';
 import { useLocale } from '@/app/lib/i18n';
+import { useBackdropVariants, useScaleFadeVariants } from '@/app/lib/motion';
 import {
   DndContext,
   closestCenter,
@@ -35,10 +37,6 @@ interface TaskModalProps {
   onDeleteTask: (id: string) => void;
   onReorderTasks?: (tasks: Task[]) => void; // Callback for reordering tasks
 }
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 // Custom circular checkbox shared by pending and completed task items
 interface TaskCheckboxProps {
@@ -157,6 +155,9 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
   // list briefly so the flash-pulse animation plays before they move sections.
   const [completingIds, setCompletingIds] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
+  const reducedMotion = useReducedMotion();
+  const backdropVariants = useBackdropVariants();
+  const modalVariants = useScaleFadeVariants();
 
   // Configure drag and drop sensors
   const sensors = useSensors(
@@ -211,7 +212,7 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
   const handleToggle = (task: Task) => {
     if (!task.completed) {
       setCompletingIds(prev => new Set(prev).add(task.id));
-      const delay = prefersReducedMotion() ? 0 : 300;
+      const delay = reducedMotion ? 0 : 300;
       setTimeout(() => {
         setCompletingIds(prev => {
           const next = new Set(prev);
@@ -223,8 +224,6 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
     onToggleTask(task.id);
   };
 
-  if (!isOpen) return null;
-
   const progressText = isAllCompleted
     ? t('app.tasks.modal.allCompleted')
     : t('app.tasks.modal.progress')
@@ -235,11 +234,30 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
   const completedTasks = tasks.filter(task => task.completed && !completingIds.has(task.id));
   const completedHeaderText = t('app.tasks.modal.completedHeader').replace('{count}', String(completedTasks.length));
 
+  // createPortal needs `document`, which doesn't exist during SSR prerender;
+  // AnimatePresence (not `isOpen`) now owns mount/unmount, so this guard
+  // takes over the role the removed `if (!isOpen) return null` used to play.
+  if (typeof document === 'undefined') return null;
+
   return createPortal(
-    <>
-      {/* Modal backdrop, closes modal on click */}
-      <div className={styles.backdrop} onClick={onClose}>
-        <div className={styles.modal} onClick={e => e.stopPropagation()}>
+    <AnimatePresence>
+      {isOpen && (
+      <motion.div
+        className={styles.backdrop}
+        onClick={onClose}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={backdropVariants}
+      >
+        <motion.div
+          className={styles.modal}
+          onClick={e => e.stopPropagation()}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          variants={modalVariants}
+        >
           {/* Celebration effect, scoped to the modal via its containing block (see .modal transform) */}
           <CelebrationEffect
             isActive={showCelebration}
@@ -345,9 +363,10 @@ export default function TaskModal({ isOpen, onClose, tasks, onAddTask, onToggleT
               </>
             )}
           </div>
-        </div>
-      </div>
-    </>,
+        </motion.div>
+      </motion.div>
+      )}
+    </AnimatePresence>,
     document.body
   );
 }

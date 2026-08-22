@@ -4,16 +4,14 @@
   inset: 0;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 1001;
-  animation: fadeIn 0.3s ease-out;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
 
 .settingsPanel {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.95);
+  inset: 0;
+  margin: auto;
   width: 90vw;
   max-width: 800px;
   height: 80vh;
@@ -23,8 +21,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
 
   /* Glassmorphism effect for modern UI */
   background-color: var(--panel-bg-transparent, rgba(36, 37, 38, 0.75));
@@ -32,11 +28,6 @@
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid var(--border-color-translucent, rgba(255, 255, 255, 0.1));
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-.settingsPanel.open {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
 }
 
 .closeButton {
@@ -665,17 +656,6 @@ input:disabled + .slider {
   transition: color 0.2s;
 }
 
-/* --- Section content fade transition --- */
-
-.sectionContent {
-  animation: sectionFadeIn 0.22s ease-out both;
-}
-
-@keyframes sectionFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 /* --- Sidebar icon animation --- */
 
 .sidebarIcon {
@@ -685,11 +665,6 @@ input:disabled + .slider {
 
 .menuButton.active .sidebarIcon {
   transform: scale(1.2) rotate(-5deg);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 /* Responsive design for mobile devices */

@@ -4,8 +4,10 @@
 
 // React and hooks
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 // Styles
 import styles from './SettingsPanel.module.css';
+import { useBackdropVariants, useSlideFromRightVariants, useCrossfadeVariants } from '@/app/lib/motion';
 // Context for global settings
 import { useSettings } from '../../context/SettingsContext';
 import { useAuth } from '../../context/AuthContext';
@@ -92,6 +94,9 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const backdropVariants = useBackdropVariants();
+  const panelVariants = useSlideFromRightVariants();
+  const sectionVariants = useCrossfadeVariants(8);
 
   // Client-side data export (Pomodoro sessions + tasks) for the General section.
   const {
@@ -151,11 +156,6 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
     }
   }, [isOpen, router]);
 
-  // If the panel is not open, render nothing
-  if (!isOpen) {
-    return null;
-  }
-
   // Handler for resetting all settings to default
   const handleResetClick = () => {
     setShowResetConfirm(true);
@@ -194,10 +194,25 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
 
   // Render the settings panel UI
   return (
-    <>
+    <AnimatePresence>
+      {isOpen && (
+      <>
       {/* Backdrop overlay */}
-      <div className={styles.backdrop} onClick={onClose}></div>
-      <div className={`${styles.settingsPanel} ${isOpen ? styles.open : ''}`}>
+      <motion.div
+        className={styles.backdrop}
+        onClick={onClose}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={backdropVariants}
+      ></motion.div>
+      <motion.div
+        className={styles.settingsPanel}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={panelVariants}
+      >
         {/* Close button */}
         <button className={styles.closeButton} onClick={onClose} aria-label={t('settings.closeAria')}>✕</button>
         <div className={styles.panelContent}>
@@ -227,7 +242,14 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
           {/* Main content area */}
           <main className={styles.mainContentArea}>
             <h2 className={styles.sectionTitle}>{t(`settings.sections.${activeSection}`)}</h2>
-            <div key={activeSection} className={styles.sectionContent}>
+            <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSection}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={sectionVariants}
+            >
 
             {/* General Settings Section */}
             {activeSection === 'general' && (
@@ -605,10 +627,11 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                 )}
               </div>
             )}
-            </div>
+            </motion.div>
+            </AnimatePresence>
           </main>
         </div>
-      </div>
+      </motion.div>
       <ConfirmModal
         visible={showResetConfirm}
         message={t('settings.general.resetConfirmMessage')}
@@ -622,6 +645,8 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
         }}
         onCancel={() => setShowResetConfirm(false)}
       />
-    </>
+      </>
+      )}
+    </AnimatePresence>
   );
 }
