@@ -75,7 +75,12 @@ export async function proxy(request: NextRequest) {
 
   const nonce = crypto.randomUUID();
   const isDev = process.env.NODE_ENV === 'development';
-  const csp = buildCsp(nonce, isDev);
+  // Playwright's addStyleTag() injects unnonced inline styles, which the
+  // strict CSP rejects. Visual tests always run against a local dev/build
+  // server (never against the deployed app), so skipping the header when
+  // this flag is set can't relax the CSP that real users see.
+  const skipCsp = process.env.PLAYWRIGHT === 'true';
+  const csp = skipCsp ? null : buildCsp(nonce, isDev);
   const cspHeaderName = isDev ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
 
   // updateSession gets the pristine, unmodified request — it may need to
@@ -88,13 +93,13 @@ export async function proxy(request: NextRequest) {
   // itself, so it doesn't need a nonce — just forward the CSP header and
   // let the redirected request pick up a fresh nonce.
   if (authResponse?.headers.get('location')) {
-    authResponse.headers.set(cspHeaderName, csp);
+    if (csp) authResponse.headers.set(cspHeaderName, csp);
     return authResponse;
   }
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
-  requestHeaders.set(cspHeaderName, csp);
+  if (csp) requestHeaders.set(cspHeaderName, csp);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
@@ -105,7 +110,7 @@ export async function proxy(request: NextRequest) {
     }
   });
 
-  response.headers.set(cspHeaderName, csp);
+  if (csp) response.headers.set(cspHeaderName, csp);
   response.headers.set('x-nonce', nonce);
 
   return response;
