@@ -136,7 +136,7 @@ export default function TimerView({
       {/* Timer Setup Controls (Presets and Custom Input) */}
       {showSetupControls && (
         <>
-          <div className='presetButtons'>
+          <div id="contextual-hint-start" className='presetButtons'>
             <PresetButtons onSetTime={handleStartTimer} disabled={isActive} />
           </div>
           <div className='customInputContainer'>

@@ -555,7 +555,14 @@
     ],
     "skip": "Omitir",
     "next": "Siguiente",
-    "finish": "Finalizar"
+    "finish": "Finalizar",
+    "contextual": {
+      "firstSession": "¡Presiona Iniciar para comenzar tu primera sesión Pomodoro!",
+      "checkStats": "¡Buen trabajo! Revisa tu progreso y estadísticas aquí.",
+      "customizeSettings": "Personaliza tus temas, sonidos y preferencias de enfoque aquí.",
+      "manageTasks": "Agrega tareas para registrar en qué trabajas durante cada sesión.",
+      "dismissAria": "Cerrar sugerencia"
+    }
   },
   "changelog": {
     "backToHome": "← Inicio",
