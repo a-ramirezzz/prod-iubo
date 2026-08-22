@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import esMessages from "./es.json";
 import enMessages from "./en.json";
 
@@ -84,8 +84,16 @@ export function LocaleProvider({
     [locale]
   );
 
+  // Memoized: this context wraps the entire app, so an unmemoized value object
+  // would re-render every consumer whenever LocaleProvider's parent re-renders,
+  // even when locale itself hasn't changed.
+  const value = useMemo(
+    () => ({ locale, setLocale, syncLocale, t }),
+    [locale, setLocale, syncLocale, t]
+  );
+
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, syncLocale, t }}>
+    <LocaleContext.Provider value={value}>
       {children}
     </LocaleContext.Provider>
   );

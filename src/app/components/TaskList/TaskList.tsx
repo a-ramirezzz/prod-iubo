@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // app/components/TaskList/TaskList.tsx
-import { useState, useEffect, useRef } from 'react'
+import { memo, useState, useEffect, useRef } from 'react'
 import type { Task } from '@/app/types'
 import styles from '@/app/components/TaskList/TaskList.module.css'
 import { useLocale } from '@/app/lib/i18n'
@@ -13,7 +13,7 @@ interface TaskListProps {
   inputDisabled: boolean
 }
 
-export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisabled }: TaskListProps) {
+function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisabled }: TaskListProps) {
   const { t } = useLocale()
   const [enteredIds, setEnteredIds] = useState<Set<string>>(new Set())
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set())
@@ -106,3 +106,8 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisab
     </ul>
   )
 }
+
+// Memoized: parent (TimerView) re-renders every timer tick, but tasks and the
+// toggle/delete callbacks (from useTaskManager's useCallback) only change when
+// the task list itself changes.
+export default memo(TaskList)

@@ -14,7 +14,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { ACHIEVEMENTS, type AchievementDefinition } from '@/app/lib/achievements';
 import { hapticFeedback } from '@/app/lib/haptic';
@@ -181,12 +181,20 @@ export function useAchievements({
     setQueue((prev) => prev.slice(1));
   }, []);
 
+  // Memoized: keeps this object referentially stable across renders that don't
+  // change the underlying values, so consumers like AchievementsTab (React.memo)
+  // don't re-render on every unrelated re-render of their caller.
+  const progress = useMemo(
+    () => ({ totalSessions, currentStreak, totalTasksCompleted }),
+    [totalSessions, currentStreak, totalTasksCompleted]
+  );
+
   return {
     unlockedIds,
     allAchievements: ACHIEVEMENTS,
     newlyUnlocked: queue[0] ?? null,
     dismissNotification,
     loading,
-    progress: { totalSessions, currentStreak, totalTasksCompleted },
+    progress,
   };
 }

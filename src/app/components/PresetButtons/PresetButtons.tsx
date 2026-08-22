@@ -1,6 +1,7 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 // app/components/PresetButtons/PresetButtons.tsx
+import { memo } from 'react'
 import type React from 'react'
 import styles from '@/app/components/PresetButtons/PresetButtons.module.css'
 import { useLocale } from '@/app/lib/i18n'
@@ -25,7 +26,7 @@ function addRipple(e: React.MouseEvent<HTMLButtonElement>) {
   setTimeout(() => ripple.remove(), 500)
 }
 
-export default function PresetButtons({ onSetTime, disabled }: PresetButtonsProps) {
+function PresetButtons({ onSetTime, disabled }: PresetButtonsProps) {
   const { t } = useLocale()
   return (
     <div className={styles.presetsContainer}>
@@ -43,3 +44,7 @@ export default function PresetButtons({ onSetTime, disabled }: PresetButtonsProp
     </div>
   )
 }
+
+// Memoized: parent (TimerView) re-renders every timer tick, but onSetTime
+// (useCallback from useTimerController) and disabled only change on start/pause.
+export default memo(PresetButtons)

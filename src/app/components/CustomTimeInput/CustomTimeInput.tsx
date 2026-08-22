@@ -1,4 +1,5 @@
 // app/components/CustomTimeInput/CustomTimeInput.tsx
+import { memo } from 'react'
 import styles from '@/app/components/CustomTimeInput/CustomTimeInput.module.css'
 import { useLocale } from '@/app/lib/i18n'
 
@@ -19,7 +20,7 @@ interface CustomTimeInputProps {
  * A reusable input component for setting a custom time (hours and minutes)
  * It includes validation and accessibility improvements
  */
-export default function CustomTimeInput({
+function CustomTimeInput({
   hours,
   onHoursChange,
   minutes,
@@ -91,3 +92,7 @@ export default function CustomTimeInput({
     </div>
   )
 }
+
+// Memoized: parent (TimerView) re-renders every timer tick, but hours/minutes,
+// the setState callbacks and onStart (useCallback) only change on user input.
+export default memo(CustomTimeInput)

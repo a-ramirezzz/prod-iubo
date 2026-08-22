@@ -3,6 +3,7 @@
 
 'use client';
 
+import { memo } from 'react';
 import styles from './AchievementsTab.module.css';
 import { useLocale } from '@/app/lib/i18n';
 import type { AchievementCategory, AchievementDefinition } from '@/app/lib/achievements';
@@ -45,7 +46,7 @@ function progressFor(category: AchievementCategory, progress: Progress): number 
  * progress toward the next threshold. All evaluation happens in
  * `useAchievements` (page.tsx) — this component never mutates data.
  */
-export default function AchievementsTab({
+function AchievementsTab({
   unlockedIds,
   allAchievements,
   progress,
@@ -140,3 +141,7 @@ export default function AchievementsTab({
     </section>
   );
 }
+
+// Memoized: page.tsx re-renders every timer tick (countdown state lives there),
+// but the achievements catalog, progress and unlocked set change rarely.
+export default memo(AchievementsTab);
