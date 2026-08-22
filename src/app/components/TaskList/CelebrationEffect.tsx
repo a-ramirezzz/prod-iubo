@@ -1,6 +1,7 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './CelebrationEffect.module.css';
 
 const EMOJI_SET = ['🔥','⭐','🎉','✨','💥','🏆','🎊','💫'];
@@ -13,6 +14,7 @@ interface CelebrationEffectProps {
 }
 
 export default function CelebrationEffect({ isActive, onComplete }: CelebrationEffectProps) {
+  const reducedMotion = useReducedMotion();
   const [particles, setParticles] = useState<Array<{
     id: number; emoji: string; x: number; y: number;
     delay: number; scale: number; rotation: number; drift: number;
@@ -20,6 +22,13 @@ export default function CelebrationEffect({ isActive, onComplete }: CelebrationE
 
   useEffect(() => {
     if (isActive) {
+      // Under reduced motion, skip the particle burst entirely — just hold
+      // briefly before signaling completion, same lifecycle without motion.
+      if (reducedMotion) {
+        const timer = setTimeout(() => onComplete?.(), 300);
+        return () => clearTimeout(timer);
+      }
+
       const newParticles = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
         id: i,
         emoji: EMOJI_SET[Math.floor(Math.random() * EMOJI_SET.length)],
@@ -40,31 +49,39 @@ export default function CelebrationEffect({ isActive, onComplete }: CelebrationE
 
       return () => clearTimeout(timer);
     }
-  }, [isActive, onComplete]);
-
-  if (!isActive) return null;
+  }, [isActive, onComplete, reducedMotion]);
 
   return (
-    <div className={styles.celebrationContainer}>
-      <div className={styles.flashOverlay} />
-      <div className={styles.burstRing} />
-      <div className={styles.burstRing2} />
-      {particles.map((p) => (
-        <div
-          key={p.id}
-          className={styles.particle}
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            animationDelay: `${p.delay}s`,
-            '--scale': p.scale,
-            '--rotation': `${p.rotation}deg`,
-            '--drift': `${p.drift}px`,
-          } as React.CSSProperties}
+    <AnimatePresence>
+      {isActive && !reducedMotion && (
+        <motion.div
+          className={styles.celebrationContainer}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
         >
-          {p.emoji}
-        </div>
-      ))}
-    </div>
+          <div className={styles.flashOverlay} />
+          <div className={styles.burstRing} />
+          <div className={styles.burstRing2} />
+          {particles.map((p) => (
+            <div
+              key={p.id}
+              className={styles.particle}
+              style={{
+                left: `${p.x}%`,
+                top: `${p.y}%`,
+                animationDelay: `${p.delay}s`,
+                '--scale': p.scale,
+                '--rotation': `${p.rotation}deg`,
+                '--drift': `${p.drift}px`,
+              } as React.CSSProperties}
+            >
+              {p.emoji}
+            </div>
+          ))}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

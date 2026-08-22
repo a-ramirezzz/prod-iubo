@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Notification.module.css';
 import { useLocale } from '@/app/lib/i18n';
+import { useSlideFromTopVariants } from '@/app/lib/motion';
 
 interface NotificationProps {
   message: string;
@@ -21,28 +23,40 @@ interface NotificationProps {
  */
 const Notification: React.FC<NotificationProps> = ({ message, visible, onClose, duration = 8000, icon }) => {
   const { t } = useLocale();
+  const variants = useSlideFromTopVariants();
   useEffect(() => {
     if (!visible) return;
     const timer = setTimeout(onClose, duration);
     return () => clearTimeout(timer);
   }, [visible, duration, onClose]);
 
-  if (!visible) return null;
-
   return (
-    <div className={styles.notification} role="alert" aria-live="assertive">
-      {icon && <span className={styles.icon}>{icon}</span>}
-      {message}
-      <button
-        className={styles.buttonAccept}
-        onClick={onClose}
-        tabIndex={0}
-        aria-label={t('app.notification.acceptAria')}
-        autoFocus
-      >
-        {t('app.notification.accept')}
-      </button>
-    </div>
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className={styles.notification}
+          role="alert"
+          aria-live="assertive"
+          style={{ x: '-50%' }}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          variants={variants}
+        >
+          {icon && <span className={styles.icon}>{icon}</span>}
+          {message}
+          <button
+            className={styles.buttonAccept}
+            onClick={onClose}
+            tabIndex={0}
+            aria-label={t('app.notification.acceptAria')}
+            autoFocus
+          >
+            {t('app.notification.accept')}
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

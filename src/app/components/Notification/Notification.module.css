@@ -1,21 +1,9 @@
 /* Notification.module.css */
 
-@keyframes notification-fade-in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -60%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
 .notification {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   background: rgba(17, 24, 39, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -31,7 +19,6 @@
   max-width: 90vw;
   pointer-events: auto;
   white-space: pre-line;
-  animation: notification-fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   border-top: 3px solid transparent;
   border-image: linear-gradient(90deg, #EF4444, #3B82F6) 1;
   display: flex;

@@ -3,8 +3,10 @@
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 import React, { useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './ConfirmModal.module.css';
 import { useLocale } from '@/app/lib/i18n';
+import { useBackdropVariants, useScaleFadeVariants } from '@/app/lib/motion';
 
 interface ConfirmModalProps {
   /** Whether the modal is visible */
@@ -46,6 +48,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const resolvedConfirmLabel = confirmLabel ?? t('app.confirmModal.defaultConfirm');
   const resolvedCancelLabel = cancelLabel ?? t('app.confirmModal.defaultCancel');
   const confirmRef = useRef<HTMLButtonElement>(null);
+  const backdropVariants = useBackdropVariants();
+  const modalVariants = useScaleFadeVariants();
 
   // Auto-focus the confirm button when the modal opens
   useEffect(() => {
@@ -70,29 +74,45 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     return () => window.removeEventListener('keydown', handleKey);
   }, [visible, mode, onCancel, onConfirm]);
 
-  if (!visible) return null;
-
   return (
-    <div className={styles.backdrop} onClick={mode === 'confirm' ? onCancel : onConfirm}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        {icon && <span className={styles.icon}>{icon}</span>}
-        <p className={styles.message}>{message}</p>
-        <div className={styles.actions}>
-          {mode === 'confirm' && (
-            <button className={styles.btnCancel} onClick={onCancel}>
-              {resolvedCancelLabel}
-            </button>
-          )}
-          <button
-            ref={confirmRef}
-            className={destructive ? styles.btnDestructive : styles.btnConfirm}
-            onClick={onConfirm}
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className={styles.backdrop}
+          onClick={mode === 'confirm' ? onCancel : onConfirm}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          variants={backdropVariants}
+        >
+          <motion.div
+            className={styles.modal}
+            onClick={(e) => e.stopPropagation()}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={modalVariants}
           >
-            {resolvedConfirmLabel}
-          </button>
-        </div>
-      </div>
-    </div>
+            {icon && <span className={styles.icon}>{icon}</span>}
+            <p className={styles.message}>{message}</p>
+            <div className={styles.actions}>
+              {mode === 'confirm' && (
+                <button className={styles.btnCancel} onClick={onCancel}>
+                  {resolvedCancelLabel}
+                </button>
+              )}
+              <button
+                ref={confirmRef}
+                className={destructive ? styles.btnDestructive : styles.btnConfirm}
+                onClick={onConfirm}
+              >
+                {resolvedConfirmLabel}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

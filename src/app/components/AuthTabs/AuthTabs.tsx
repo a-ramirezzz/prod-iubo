@@ -2,10 +2,12 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import LoginForm from "../../login/LoginForm";
 import SignupForm from "../../signup/SignupForm";
 import LanguageSwitch from "../LanguageSwitch/LanguageSwitch";
 import { useLocale } from "@/app/lib/i18n";
+import { useCrossfadeVariants } from "@/app/lib/motion";
 import styles from "./AuthTabs.module.css";
 
 /**
@@ -18,6 +20,7 @@ const TAB_KEY = "authTabActive";
 
 export default function AuthTabs() {
   const { t } = useLocale();
+  const crossfade = useCrossfadeVariants();
   // 0 = Login, 1 = Signup
   const [activeTab, setActiveTab] = useState(0);
 
@@ -57,7 +60,17 @@ export default function AuthTabs() {
         </button>
       </div>
       <div className={styles.tabContent}>
-        {activeTab === 0 ? <LoginForm hideLinks /> : <SignupForm hideLinks />}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={crossfade}
+          >
+            {activeTab === 0 ? <LoginForm hideLinks /> : <SignupForm hideLinks />}
+          </motion.div>
+        </AnimatePresence>
       </div>
       </div>
     </div>
