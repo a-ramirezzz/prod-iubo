@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { LocaleProvider } from '@/app/lib/i18n';
 import ThemeWrapper from '@/components/ThemeWrapper/ThemeWrapper';
 import { ErrorBoundary, ErrorFallback } from '@/app/components/ErrorBoundary';
+import SkipNavLink from '@/app/components/SkipNavLink/SkipNavLink';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -175,6 +176,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {/* Locale Provider - Manages i18n locale (landing + app) */}
         <LocaleProvider>
+          {/* Skip Nav Link - First focusable element on every page; lets
+              keyboard/screen reader users jump past repeated nav elements */}
+          <SkipNavLink />
           {/* Auth Provider - Manages authentication state globally */}
           <AuthProvider>
             {/* Settings Provider - Manages application-wide settings state */}

@@ -348,7 +348,7 @@ export default function HomePage() {
 
   return (
     <>
-    <main className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
+    <main id="main-content" tabIndex={-1} className={`${styles.mainContainer} ${styles.pageWrapper} ${styles.miniModeTransition} ${isMiniMode ? styles.miniModeActive : ''}`}>
       <LocaleSync />
       {showSetupControls && <ProjectBranding />}
 

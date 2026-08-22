@@ -36,7 +36,7 @@ export default function AuthTabs() {
   }, [activeTab]);
 
   return (
-    <div className={styles.pageWrapper}>
+    <div id="main-content" tabIndex={-1} className={styles.pageWrapper}>
       <div className={styles.orb1} aria-hidden="true" />
       <div className={styles.orb2} aria-hidden="true" />
       <div style={{ position: "absolute", top: "1.25rem", right: "1.25rem", zIndex: 2 }}>
