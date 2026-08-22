@@ -25,7 +25,7 @@ export default function ChangelogPage() {
   const entries = getEntries();
 
   return (
-    <div className={styles.container}>
+    <div id="main-content" tabIndex={-1} className={styles.container}>
       <div className={styles.content}>
         <Link href="/" className={styles.backLink}>
           ← Inicio

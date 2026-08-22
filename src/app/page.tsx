@@ -19,7 +19,7 @@ export default function LandingPage() {
   const { t } = useLocale();
 
   return (
-    <div className={styles.container}>
+    <div id="main-content" tabIndex={-1} className={styles.container}>
       {/* BETA Badge */}
       <div className={styles.betaBadge} title={t('landing.hero.badgeTooltip')}>
         {t('landing.hero.badge')}
