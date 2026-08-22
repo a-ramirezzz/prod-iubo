@@ -52,7 +52,7 @@ function TaskList({ tasks, onToggleTask, onDeleteTask, inputDisabled }: TaskList
 
   if (!tasks.length) {
     return (
-      <div className={styles.emptyState}>
+      <div id="contextual-hint-tasks" className={styles.emptyState}>
         <span className={styles.emptyStateIcon}>📋</span>
         <span>{t('app.tasks.empty')}</span>
       </div>

@@ -34,6 +34,7 @@ import VisualNotification from '@/components/Notification/Notification';
 import TimerTab from './TimerTab';
 import FocusTab from './FocusTab';
 import OnboardingTour from '@/app/components/OnboardingTour/OnboardingTour';
+import ContextualHintsManager from '@/app/components/ContextualTooltip/ContextualHintsManager';
 import LocaleSync from './LocaleSync';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 import { ConnectionIndicator } from '@/app/components/ConnectionIndicator';
@@ -366,6 +367,7 @@ export default function HomePage() {
           <button
             type="button"
             id="onboarding-focus"
+            data-contextual-hint="contextual-hint-stats"
             role="tab"
             aria-selected={activeTab === 'focus'}
             className={`${styles.tabButton} ${activeTab === 'focus' ? styles.tabButtonActive : ''}`}
@@ -579,6 +581,19 @@ export default function HomePage() {
     {/* First-run onboarding tour: only for authenticated users who haven't seen it yet */}
     {!authLoading && user && !settingsLoading && !settings.has_seen_onboarding && (
       <OnboardingTour onComplete={handleOnboardingComplete} />
+    )}
+
+    {/* Independent, context-triggered hints — complements the tour above, never shown at the same time */}
+    {!authLoading && user && !settingsLoading && settings.has_seen_onboarding && (
+      <ContextualHintsManager
+        isActive={isActive}
+        initialTimeSet={initialTimeSet}
+        totalPomodorosToday={pomodoroEngine.totalPomodorosToday}
+        activeTab={activeTab}
+        isSettingsPanelOpen={isSettingsPanelOpen}
+        taskCount={tasks.length}
+        tasksLoading={tasksLoading}
+      />
     )}
     </>
   );

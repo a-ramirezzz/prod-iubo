@@ -69,6 +69,23 @@ export function usePopInVariants(): Variants {
   };
 }
 
+/** Fade + slight translate toward the anchor, for ContextualTooltip. */
+export function useContextualTooltipVariants(position: 'top' | 'bottom' | 'left' | 'right'): Variants {
+  const reduced = useReducedMotion();
+  const offset = reduced ? 0 : 8;
+  const delta: Record<typeof position, { x: number; y: number }> = {
+    top: { x: 0, y: offset },
+    bottom: { x: 0, y: -offset },
+    left: { x: offset, y: 0 },
+    right: { x: -offset, y: 0 },
+  };
+  const { x, y } = delta[position];
+  return {
+    hidden: { opacity: 0, x, y, transition: { duration: reduced ? 0 : 0.15, ease: 'easeIn' } },
+    visible: { opacity: 1, x: 0, y: 0, transition: { duration: reduced ? 0 : 0.2, ease: 'easeOut' } },
+  };
+}
+
 /** whileTap scale-down props for primary action buttons; a no-op under reduced motion. */
 export function useTapScaleProps(): { whileTap?: { scale: number } } {
   const reduced = useReducedMotion();

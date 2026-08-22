@@ -17,6 +17,7 @@ export default function SettingsButton({ onClick }: SettingsButtonProps) {
   const { t } = useLocale()
   return (
     <button
+      id="contextual-hint-settings"
       className={styles.settingsButton}
       onClick={onClick}
       aria-label={t('app.settings.openButton')} // Provides a clear action description for screen readers
