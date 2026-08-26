@@ -4,7 +4,7 @@
 
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useLayoutEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import styles from './ActivityHeatmap.module.css';
 import { useLocale } from '@/app/lib/i18n';
@@ -72,6 +72,15 @@ function ActivityHeatmap({ dailyCounts, loading, loadError }: ActivityHeatmapPro
 
   const weeks = useMemo(() => buildWeeks(dailyCounts), [dailyCounts]);
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Show the current month by default, like GitHub's contribution graph,
+  // instead of scrolling to the oldest (leftmost) data.
+  useLayoutEffect(() => {
+    const el = scrollAreaRef.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, [weeks]);
+
   const monthLabels = useMemo(() => {
     const formatter = new Intl.DateTimeFormat(dateLocale, { month: 'short' });
     return weeks.reduce<{ lastMonth: number; labels: string[] }>(
@@ -117,7 +126,7 @@ function ActivityHeatmap({ dailyCounts, loading, loadError }: ActivityHeatmapPro
         <p className={styles.errorText}>{t('focus.log.error')}</p>
       ) : (
         <>
-          <div className={styles.scrollArea}>
+          <div className={styles.scrollArea} ref={scrollAreaRef}>
             <div className={styles.grid}>
               <div className={styles.dayLabelsCol}>
                 <span className={styles.monthSpacer} aria-hidden="true" />
