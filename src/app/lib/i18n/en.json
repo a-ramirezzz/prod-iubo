@@ -531,6 +531,33 @@
       "days": "days",
       "refreshing": "Refreshing stats"
     },
+    "metrics": {
+      "title": "Advanced metrics",
+      "noData": "—",
+      "sessionsSubtitle": "{count} sessions",
+      "bestDay": {
+        "label": "Best day"
+      },
+      "peakHour": {
+        "label": "Peak hour"
+      },
+      "longestStreak": {
+        "label": "Longest streak",
+        "subtitle": "personal record"
+      },
+      "averageDaily": {
+        "label": "Daily average",
+        "subtitle": "sessions per active day"
+      },
+      "totalSessions": {
+        "label": "Total sessions",
+        "subtitle": "{hours} hours"
+      },
+      "totalFocusTime": {
+        "label": "Total focus time",
+        "subtitle": "total focus time"
+      }
+    },
     "history": {
       "title": "Session History",
       "filter7d": "7 days",

@@ -531,6 +531,33 @@
       "days": "días",
       "refreshing": "Actualizando estadísticas"
     },
+    "metrics": {
+      "title": "Métricas avanzadas",
+      "noData": "—",
+      "sessionsSubtitle": "{count} sesiones",
+      "bestDay": {
+        "label": "Mejor día"
+      },
+      "peakHour": {
+        "label": "Hora pico"
+      },
+      "longestStreak": {
+        "label": "Racha más larga",
+        "subtitle": "récord personal"
+      },
+      "averageDaily": {
+        "label": "Promedio diario",
+        "subtitle": "sesiones por día activo"
+      },
+      "totalSessions": {
+        "label": "Sesiones totales",
+        "subtitle": "{hours} horas"
+      },
+      "totalFocusTime": {
+        "label": "Tiempo total de enfoque",
+        "subtitle": "tiempo total de enfoque"
+      }
+    },
     "history": {
       "title": "Historial de Sesiones",
       "filter7d": "7 días",

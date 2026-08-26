@@ -16,6 +16,7 @@ import styles from './FocusSection.module.css';
 import { useLocale } from '@/app/lib/i18n';
 import SessionHistory from '@/app/components/SessionHistory/SessionHistory';
 import ActivityHeatmap from '@/app/components/ActivityHeatmap/ActivityHeatmap';
+import StatsMetricsGrid from '@/app/components/StatsMetricsGrid/StatsMetricsGrid';
 
 interface FocusSectionProps {
   userId: string | null;
@@ -29,6 +30,12 @@ interface FocusSectionProps {
   streak: number;
   taskBreakdown: TaskBreakdown[];
   dailyCounts?: Record<string, number>;
+  bestDayOfWeek?: { day: number; count: number };
+  peakHour?: { hour: number; count: number };
+  longestStreak?: number;
+  averageDaily?: number;
+  totalSessions?: number;
+  totalMinutes?: number;
   statsLoading: boolean;
   statsRevalidating?: boolean;
   statsError: boolean;
@@ -48,6 +55,12 @@ export default function FocusSection({
   streak,
   taskBreakdown,
   dailyCounts = {},
+  bestDayOfWeek = { day: 0, count: 0 },
+  peakHour = { hour: 0, count: 0 },
+  longestStreak = 0,
+  averageDaily = 0,
+  totalSessions = 0,
+  totalMinutes = 0,
   statsLoading,
   statsRevalidating = false,
   statsError,
@@ -301,6 +314,18 @@ export default function FocusSection({
           </div>
         )}
       </section>
+
+      {/* BLOCK: advanced metrics grid */}
+      <StatsMetricsGrid
+        bestDayOfWeek={bestDayOfWeek}
+        peakHour={peakHour}
+        longestStreak={longestStreak}
+        averageDaily={averageDaily}
+        totalSessions={totalSessions}
+        totalMinutes={totalMinutes}
+        loading={loading}
+        loadError={loadError}
+      />
 
       <hr className={styles.sectionDivider} />
 

@@ -42,6 +42,12 @@ export interface PomodoroStats {
   streak: number;
   taskBreakdown: TaskBreakdown[];
   dailyCounts: Record<string, number>;
+  bestDayOfWeek: { day: number; count: number };
+  peakHour: { hour: number; count: number };
+  longestStreak: number;
+  averageDaily: number;
+  totalSessions: number;
+  totalMinutes: number;
   loading: boolean;
   isRevalidating: boolean;
   loadError: boolean;
@@ -220,6 +226,67 @@ export function usePomodoroStats(
     return counts;
   }, [sessions]);
 
+  // Historical best day-of-week (0=Sun..6=Sat, matches Date#getDay()), across the full fetch window.
+  const bestDayOfWeek = useMemo(() => {
+    const counts = [0, 0, 0, 0, 0, 0, 0];
+    sessions.forEach((r) => {
+      counts[new Date(r.completed_at).getDay()] += 1;
+    });
+    let bestDay = 0;
+    for (let d = 1; d < 7; d++) {
+      if (counts[d] > counts[bestDay]) bestDay = d;
+    }
+    return { day: bestDay, count: counts[bestDay] };
+  }, [sessions]);
+
+  // Hour of day (0-23) with the most completed sessions historically.
+  const peakHour = useMemo(() => {
+    const counts = new Array(24).fill(0);
+    sessions.forEach((r) => {
+      counts[new Date(r.completed_at).getHours()] += 1;
+    });
+    let bestHour = 0;
+    for (let h = 1; h < 24; h++) {
+      if (counts[h] > counts[bestHour]) bestHour = h;
+    }
+    return { hour: bestHour, count: counts[bestHour] };
+  }, [sessions]);
+
+  // Longest-ever run of consecutive days with >= 1 session (not just the current streak).
+  const longestStreak = useMemo(() => {
+    if (sessions.length === 0) return 0;
+    const uniqueDays = [
+      ...new Set(sessions.map((r) => localDateStr(new Date(r.completed_at)))),
+    ].sort();
+    let longest = 1;
+    let current = 1;
+    for (let i = 1; i < uniqueDays.length; i++) {
+      // Date-only strings parse as UTC midnight, so this diff is DST-safe.
+      const diffDays =
+        (new Date(uniqueDays[i]).getTime() - new Date(uniqueDays[i - 1]).getTime()) /
+        (24 * 60 * 60 * 1000);
+      current = diffDays === 1 ? current + 1 : 1;
+      longest = Math.max(longest, current);
+    }
+    return longest;
+  }, [sessions]);
+
+  // Average sessions per day that had at least one session (not per calendar day).
+  const averageDaily = useMemo(() => {
+    const uniqueDayCount = new Set(
+      sessions.map((r) => localDateStr(new Date(r.completed_at)))
+    ).size;
+    if (uniqueDayCount === 0) return 0;
+    return Math.round((sessions.length / uniqueDayCount) * 10) / 10;
+  }, [sessions]);
+
+  const totalSessions = useMemo(() => sessions.length, [sessions]);
+
+  const totalMinutes = useMemo(
+    () => sessions.reduce((sum, r) => sum + r.duration_minutes, 0),
+    [sessions]
+  );
+
   return {
     todaySessions,
     weekTotal,
@@ -227,6 +294,12 @@ export function usePomodoroStats(
     streak,
     taskBreakdown,
     dailyCounts,
+    bestDayOfWeek,
+    peakHour,
+    longestStreak,
+    averageDaily,
+    totalSessions,
+    totalMinutes,
     loading,
     isRevalidating,
     loadError,

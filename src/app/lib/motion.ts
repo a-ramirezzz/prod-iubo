@@ -86,6 +86,15 @@ export function useContextualTooltipVariants(position: 'top' | 'bottom' | 'left'
   };
 }
 
+/** Stagger container for a grid/list of cards animating in one after another. */
+export function useStaggerContainerVariants(staggerDelay = 0.05): Variants {
+  const reduced = useReducedMotion();
+  return {
+    hidden: {},
+    visible: { transition: { staggerChildren: reduced ? 0 : staggerDelay } },
+  };
+}
+
 /** whileTap scale-down props for primary action buttons; a no-op under reduced motion. */
 export function useTapScaleProps(): { whileTap?: { scale: number } } {
   const reduced = useReducedMotion();

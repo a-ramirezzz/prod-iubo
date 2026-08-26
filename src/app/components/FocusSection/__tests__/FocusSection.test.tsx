@@ -134,7 +134,9 @@ describe('FocusSection', () => {
       });
       expect(screen.getByText('focus.log.empty')).toBeTruthy();
       expect(screen.getByText('focus.taskBreakdown.empty')).toBeTruthy();
-      expect(screen.getByText('0 focus.stats.days')).toBeTruthy();
+      // Both the current-streak stat row and the StatsMetricsGrid's longest-streak
+      // card render "0 focus.stats.days" at their zero defaults.
+      expect(screen.getAllByText('0 focus.stats.days').length).toBeGreaterThan(0);
     });
   });
 
