@@ -2,10 +2,11 @@
  * =================================================================
  * src/app/hooks/usePomodoroStats.ts
  * -----------------------------------------------------------------
- * Shared hook that fetches the last 30 days of `pomodoro_sessions`
+ * Shared hook that fetches the last 365 days of `pomodoro_sessions`
  * and derives productivity statistics (today's log, week total,
- * streak and the 7-day chart data). Used by both FocusSection and
- * the SettingsPanel (via page.tsx) so both display real stats.
+ * streak, the 7-day chart data and the yearly activity heatmap).
+ * Used by both FocusSection and the SettingsPanel (via page.tsx) so
+ * both display real stats.
  *
  * Stale-while-revalidate: cached sessions (IndexedDB) are shown
  * immediately when present, while a fresh Supabase fetch runs in the
@@ -40,6 +41,7 @@ export interface PomodoroStats {
   weeklyData: { label: string; count: number; isToday: boolean }[];
   streak: number;
   taskBreakdown: TaskBreakdown[];
+  dailyCounts: Record<string, number>;
   loading: boolean;
   isRevalidating: boolean;
   loadError: boolean;
@@ -47,7 +49,8 @@ export interface PomodoroStats {
 
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
-const localDateStr = (d: Date) =>
+/** Local-time `YYYY-MM-DD` key, also used by ActivityHeatmap to align on the same day boundaries. */
+export const localDateStr = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 export function usePomodoroStats(
@@ -88,9 +91,9 @@ export function usePomodoroStats(
       }
 
       try {
-        const monthAgo = new Date();
-        monthAgo.setUTCDate(monthAgo.getUTCDate() - 30);
-        monthAgo.setUTCHours(0, 0, 0, 0);
+        const yearAgo = new Date();
+        yearAgo.setUTCDate(yearAgo.getUTCDate() - 365);
+        yearAgo.setUTCHours(0, 0, 0, 0);
 
         const { data, error } = await createClient()
           .from('pomodoro_sessions')
@@ -98,7 +101,7 @@ export function usePomodoroStats(
           .eq('user_id', userId)
           .eq('session_type', 'work')
           .eq('completed', true)
-          .gte('completed_at', monthAgo.toISOString())
+          .gte('completed_at', yearAgo.toISOString())
           .order('completed_at', { ascending: false });
 
         if (cancelled) return;
@@ -206,12 +209,24 @@ export function usePomodoroStats(
     return weekly;
   }, [sessions]);
 
+  // Full-range daily counts (up to 365 days), keyed by local YYYY-MM-DD —
+  // feeds the ActivityHeatmap.
+  const dailyCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    sessions.forEach((r) => {
+      const key = localDateStr(new Date(r.completed_at));
+      counts[key] = (counts[key] ?? 0) + 1;
+    });
+    return counts;
+  }, [sessions]);
+
   return {
     todaySessions,
     weekTotal,
     weeklyData,
     streak,
     taskBreakdown,
+    dailyCounts,
     loading,
     isRevalidating,
     loadError,

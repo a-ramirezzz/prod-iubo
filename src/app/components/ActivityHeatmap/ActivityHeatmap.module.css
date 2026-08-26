@@ -1,0 +1,198 @@
+/* app/components/ActivityHeatmap/ActivityHeatmap.module.css */
+
+.block {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color-primary);
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+
+.blockTitle {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color, inherit);
+}
+
+.skeleton {
+  height: 90px;
+  border-radius: 4px;
+  background-color: var(--border-color-primary);
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+
+.errorText {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.92rem;
+}
+
+/* --- Scroll area (mobile: horizontal scroll instead of truncation) --- */
+
+.scrollArea {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  /* Subtle scrollbar so the "scroll for more" affordance stays visible. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color-primary) transparent;
+}
+
+.scrollArea::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollArea::-webkit-scrollbar-thumb {
+  background-color: var(--border-color-primary);
+  border-radius: 3px;
+}
+
+.grid {
+  display: flex;
+  gap: 4px;
+  width: max-content;
+}
+
+/* --- Day-of-week labels (Mon / Wed / Fri) --- */
+
+.dayLabelsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.monthSpacer {
+  height: 14px;
+}
+
+.dayLabel {
+  height: 12px;
+  line-height: 12px;
+  font-size: 0.65rem;
+  opacity: 0.6;
+  text-transform: capitalize;
+}
+
+/* --- Weeks (columns) --- */
+
+.weeksArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.monthRow {
+  display: flex;
+  gap: 3px;
+  height: 14px;
+  margin-bottom: 2px;
+}
+
+.monthLabel {
+  width: 12px;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  opacity: 0.6;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.weeksRow {
+  display: flex;
+  gap: 3px;
+}
+
+.weekCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cell,
+.cellPad {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.cellPad {
+  background: transparent;
+}
+
+.cell {
+  cursor: default;
+  transition: transform 0.1s ease;
+}
+
+.cell:hover {
+  transform: scale(1.2);
+}
+
+.level0 {
+  background-color: var(--heatmap-empty, var(--input-bg, var(--border-color-primary)));
+  opacity: 0.5;
+}
+
+.level1 {
+  background-color: var(--heatmap-l1, rgba(var(--accent-rgb, 59, 130, 246), 0.25));
+}
+
+.level2 {
+  background-color: var(--heatmap-l2, rgba(var(--accent-rgb, 59, 130, 246), 0.5));
+}
+
+.level3 {
+  background-color: var(--heatmap-l3, rgba(var(--accent-rgb, 59, 130, 246), 0.75));
+}
+
+.level4 {
+  background-color: var(--heatmap-l4, rgba(var(--accent-rgb, 59, 130, 246), 1));
+}
+
+/* --- Legend --- */
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.legendLabel {
+  margin: 0 2px;
+}
+
+.legendCell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* --- Mobile: smaller cells, still horizontally scrollable --- */
+
+@media (max-width: 640px) {
+  .cell,
+  .cellPad,
+  .monthLabel {
+    width: 9px;
+  }
+
+  .cell,
+  .cellPad {
+    height: 9px;
+  }
+
+  .dayLabel {
+    height: 9px;
+    line-height: 9px;
+  }
+}

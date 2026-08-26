@@ -509,6 +509,13 @@
     "chart": {
       "title": "Last 7 days"
     },
+    "heatmap": {
+      "title": "Activity",
+      "tooltipOne": "{count} session on {date}",
+      "tooltipMany": "{count} sessions on {date}",
+      "legendLess": "Less",
+      "legendMore": "More"
+    },
     "taskBreakdown": {
       "title": "Focus by task",
       "subtitle": "Last 7 days",

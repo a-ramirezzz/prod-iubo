@@ -93,9 +93,11 @@ describe('FocusSection', () => {
         streak: 5,
         taskBreakdown: [{ taskName: 'Study', count: 5, totalMinutes: 125 }],
       });
+      // Higher timeout: the 365-day ActivityHeatmap grid adds enough DOM nodes
+      // that axe's full scan can exceed the default 5s in CI.
       const results = await axe(container);
       expect(results).toHaveNoViolations();
-    });
+    }, 20000);
 
     it("renders today's session log entries", () => {
       renderFocusSection({

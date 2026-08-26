@@ -402,6 +402,7 @@ export default function HomePage() {
           weeklyData={pomodoroStats.weeklyData}
           streak={pomodoroStats.streak}
           taskBreakdown={pomodoroStats.taskBreakdown}
+          dailyCounts={pomodoroStats.dailyCounts}
           statsLoading={pomodoroStats.loading}
           statsRevalidating={pomodoroStats.isRevalidating}
           statsError={pomodoroStats.loadError}

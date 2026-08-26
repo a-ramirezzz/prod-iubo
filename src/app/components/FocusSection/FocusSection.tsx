@@ -15,6 +15,7 @@ import type { SessionRow, TaskBreakdown } from '@/app/hooks/usePomodoroStats';
 import styles from './FocusSection.module.css';
 import { useLocale } from '@/app/lib/i18n';
 import SessionHistory from '@/app/components/SessionHistory/SessionHistory';
+import ActivityHeatmap from '@/app/components/ActivityHeatmap/ActivityHeatmap';
 
 interface FocusSectionProps {
   userId: string | null;
@@ -27,6 +28,7 @@ interface FocusSectionProps {
   weeklyData: { label: string; count: number; isToday: boolean }[];
   streak: number;
   taskBreakdown: TaskBreakdown[];
+  dailyCounts?: Record<string, number>;
   statsLoading: boolean;
   statsRevalidating?: boolean;
   statsError: boolean;
@@ -45,6 +47,7 @@ export default function FocusSection({
   weeklyData,
   streak,
   taskBreakdown,
+  dailyCounts = {},
   statsLoading,
   statsRevalidating = false,
   statsError,
@@ -209,6 +212,9 @@ export default function FocusSection({
           </div>
         )}
       </section>
+
+      {/* BLOCK: yearly activity heatmap */}
+      <ActivityHeatmap dailyCounts={dailyCounts} loading={loading} loadError={loadError} />
 
       {/* BLOCK: task breakdown (last 7 days) */}
       <section className={styles.block}>
