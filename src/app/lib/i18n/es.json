@@ -516,9 +516,26 @@
       "legendLess": "Menos",
       "legendMore": "Más"
     },
+    "periodFilter": {
+      "label": "Período",
+      "7d": "7D",
+      "30d": "30D",
+      "90d": "90D",
+      "1y": "1Y",
+      "all": "Todo"
+    },
+    "export": {
+      "download": "Descargar CSV",
+      "done": "Descargado",
+      "columnDate": "Fecha",
+      "columnStartTime": "Hora inicio",
+      "columnDuration": "Duración (min)",
+      "columnType": "Tipo",
+      "columnTask": "Tarea"
+    },
     "taskBreakdown": {
       "title": "Enfoque por tarea",
-      "subtitle": "Últimos 7 días",
+      "subtitle": "Período: {period}",
       "empty": "Completa pomodoros con tareas asignadas para ver tu enfoque semanal."
     },
     "stats": {

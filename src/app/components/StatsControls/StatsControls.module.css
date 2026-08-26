@@ -1,0 +1,73 @@
+/* app/components/StatsControls/StatsControls.module.css */
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filterPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pill {
+  appearance: none;
+  border: 1px solid var(--border-color-primary);
+  background-color: var(--button-primary-bg);
+  color: var(--text-color-secondary, inherit);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pill:hover {
+  background-color: var(--button-primary-bg-hover);
+}
+
+.pill.pillActive {
+  background-color: var(--accent-color, var(--brand-color-uibo));
+  border-color: var(--accent-color, var(--brand-color-uibo));
+  color: #fff;
+}
+
+.exportButton {
+  appearance: none;
+  border: 1px solid var(--button-border-color, var(--border-color-primary));
+  background-color: var(--button-primary-bg);
+  color: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.exportButton:hover {
+  background-color: var(--button-primary-bg-hover);
+}
+
+.exportButtonSuccess {
+  background-color: var(--accent-color, var(--brand-color-uibo));
+  border-color: var(--accent-color, var(--brand-color-uibo));
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .exportButton {
+    width: 100%;
+  }
+}

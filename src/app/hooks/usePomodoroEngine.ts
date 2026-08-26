@@ -192,7 +192,7 @@ export const usePomodoroEngine = (
         started_at: (sessionStartedAtRef.current ?? new Date()).toISOString(),
         completed_at: new Date().toISOString(),
         duration_minutes: Math.round(initialTimeSetRef.current / 60),
-        session_type: 'work',
+        session_type: 'work' as const,
         task_text: taskText,
         completed: true,
       };
@@ -207,8 +207,10 @@ export const usePomodoroEngine = (
           await cacheSessions(userId, [
             {
               completed_at: payload.completed_at,
+              started_at: payload.started_at,
               task_text: payload.task_text,
               duration_minutes: payload.duration_minutes,
+              session_type: payload.session_type,
             },
             ...cached,
           ]);

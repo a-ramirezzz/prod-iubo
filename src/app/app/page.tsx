@@ -14,7 +14,7 @@ import tabTransitionStyles from '@/app/components/TabTransition/TabTransition.mo
 // Custom Hooks for Core Logic
 import { useTimerController } from '@/hooks/useTimerController';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { usePomodoroStats } from '@/hooks/usePomodoroStats';
+import { usePomodoroStats, type StatsPeriod } from '@/hooks/usePomodoroStats';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSyncQueue } from '@/hooks/useSyncQueue';
 import { useAchievements } from '@/hooks/useAchievements';
@@ -125,10 +125,15 @@ export default function HomePage() {
     volume: settings.volume,
   });
 
+  // Selected window for the task breakdown and StatsMetricsGrid (client-side filter
+  // over the hook's already-fetched 365-day session list — not persisted).
+  const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>('30d');
+
   // Productivity statistics shared between the Focus tab and Settings panel.
   const pomodoroStats = usePomodoroStats(
     user?.id ?? null,
-    pomodoroEngine.totalPomodorosToday
+    pomodoroEngine.totalPomodorosToday,
+    statsPeriod
   );
 
   // Gamification: evaluates progress against achievement thresholds and
@@ -409,6 +414,9 @@ export default function HomePage() {
           averageDaily={pomodoroStats.averageDaily}
           totalSessions={pomodoroStats.totalSessions}
           totalMinutes={pomodoroStats.totalMinutes}
+          periodSessions={pomodoroStats.periodSessions}
+          statsPeriod={statsPeriod}
+          onStatsPeriodChange={setStatsPeriod}
           statsLoading={pomodoroStats.loading}
           statsRevalidating={pomodoroStats.isRevalidating}
           statsError={pomodoroStats.loadError}

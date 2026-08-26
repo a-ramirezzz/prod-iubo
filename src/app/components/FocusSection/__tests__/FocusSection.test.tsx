@@ -24,8 +24,10 @@ import FocusSection from '../FocusSection';
 function makeSession(overrides: Partial<SessionRow> = {}): SessionRow {
   return {
     completed_at: '2026-08-06T10:25:00Z',
+    started_at: '2026-08-06T10:00:00Z',
     task_text: 'Study React',
     duration_minutes: 25,
+    session_type: 'work',
     ...overrides,
   };
 }

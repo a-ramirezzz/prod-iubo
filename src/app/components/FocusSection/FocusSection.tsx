@@ -11,12 +11,21 @@
 'use client';
 
 import type { PomodoroPhase } from '@/app/hooks/usePomodoroEngine';
-import type { SessionRow, TaskBreakdown } from '@/app/hooks/usePomodoroStats';
+import type { SessionRow, TaskBreakdown, StatsPeriod } from '@/app/hooks/usePomodoroStats';
 import styles from './FocusSection.module.css';
 import { useLocale } from '@/app/lib/i18n';
 import SessionHistory from '@/app/components/SessionHistory/SessionHistory';
 import ActivityHeatmap from '@/app/components/ActivityHeatmap/ActivityHeatmap';
 import StatsMetricsGrid from '@/app/components/StatsMetricsGrid/StatsMetricsGrid';
+import StatsControls from '@/app/components/StatsControls/StatsControls';
+
+const PERIOD_LABEL_KEYS: Record<StatsPeriod, string> = {
+  '7d': 'focus.periodFilter.7d',
+  '30d': 'focus.periodFilter.30d',
+  '90d': 'focus.periodFilter.90d',
+  '1y': 'focus.periodFilter.1y',
+  all: 'focus.periodFilter.all',
+};
 
 interface FocusSectionProps {
   userId: string | null;
@@ -36,6 +45,9 @@ interface FocusSectionProps {
   averageDaily?: number;
   totalSessions?: number;
   totalMinutes?: number;
+  periodSessions?: SessionRow[];
+  statsPeriod?: StatsPeriod;
+  onStatsPeriodChange?: (period: StatsPeriod) => void;
   statsLoading: boolean;
   statsRevalidating?: boolean;
   statsError: boolean;
@@ -61,6 +73,9 @@ export default function FocusSection({
   averageDaily = 0,
   totalSessions = 0,
   totalMinutes = 0,
+  periodSessions = [],
+  statsPeriod = '30d',
+  onStatsPeriodChange = () => {},
   statsLoading,
   statsRevalidating = false,
   statsError,
@@ -70,6 +85,10 @@ export default function FocusSection({
   const { t } = useLocale();
   const loading = statsLoading;
   const loadError = statsError;
+  const taskBreakdownSubtitle = t('focus.taskBreakdown.subtitle').replace(
+    '{period}',
+    t(PERIOD_LABEL_KEYS[statsPeriod])
+  );
 
   const PHASE_LABELS: Record<PomodoroPhase, string> = {
     work: t('focus.cycle.phases.work'),
@@ -177,6 +196,14 @@ export default function FocusSection({
         )}
       </section>
 
+      {/* Stats period filter + CSV export — affects task breakdown and the metrics grid below;
+          the 7-day chart and the 365-day heatmap always keep their own fixed windows. */}
+      <StatsControls
+        period={statsPeriod}
+        onPeriodChange={onStatsPeriodChange}
+        sessions={periodSessions}
+      />
+
       {/* BLOCK: last 7 days bar chart */}
       <section className={styles.block}>
         <h2 className={styles.blockTitle}>{t('focus.chart.title')}</h2>
@@ -232,7 +259,7 @@ export default function FocusSection({
       {/* BLOCK: task breakdown (last 7 days) */}
       <section className={styles.block}>
         <h2 className={styles.blockTitle}>{t('focus.taskBreakdown.title')}</h2>
-        <p className={styles.taskBreakdownSubtitle}>{t('focus.taskBreakdown.subtitle')}</p>
+        <p className={styles.taskBreakdownSubtitle}>{taskBreakdownSubtitle}</p>
         {loading ? (
           <>
             <div className={styles.skeleton} />
@@ -323,6 +350,7 @@ export default function FocusSection({
         averageDaily={averageDaily}
         totalSessions={totalSessions}
         totalMinutes={totalMinutes}
+        period={statsPeriod}
         loading={loading}
         loadError={loadError}
       />

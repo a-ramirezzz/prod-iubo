@@ -24,7 +24,7 @@ const DB_VERSION = 2;
 /** Shape of the `pomodoro_sessions` rows as selected by usePomodoroStats. */
 export type CachedSessionRow = Pick<
   SessionRow,
-  'completed_at' | 'task_text' | 'duration_minutes'
+  'completed_at' | 'started_at' | 'task_text' | 'duration_minutes' | 'session_type'
 >;
 
 interface StoredSessionRow extends CachedSessionRow {
@@ -174,10 +174,12 @@ export async function getCachedSessions(userId: string): Promise<CachedSessionRo
     const db = await getDb();
     const rows = await db.getAllFromIndex('sessions', 'by-user', userId);
     return rows
-      .map(({ completed_at, task_text, duration_minutes }) => ({
+      .map(({ completed_at, started_at, task_text, duration_minutes, session_type }) => ({
         completed_at,
+        started_at,
         task_text,
         duration_minutes,
+        session_type,
       }))
       .sort((a, b) => (a.completed_at < b.completed_at ? 1 : -1));
   } catch (err) {

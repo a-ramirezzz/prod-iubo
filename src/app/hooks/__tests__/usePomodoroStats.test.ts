@@ -46,7 +46,7 @@ vi.mock('@/app/lib/offlineDb', () => ({
   getCachedSessions: (...args: unknown[]) => getCachedSessionsMock(...args),
 }));
 
-import { usePomodoroStats } from '@/app/hooks/usePomodoroStats';
+import { usePomodoroStats, type StatsPeriod } from '@/app/hooks/usePomodoroStats';
 
 const USER = 'mock-user-id';
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -91,14 +91,22 @@ const setData = (rows: unknown[]) => {
   mockResponse = { data: rows, error: null };
 };
 
-const render = (userId: string | null = USER, total = 0) =>
-  renderHook(({ id, t }) => usePomodoroStats(id, t), {
-    initialProps: { id: userId, t: total },
+const render = (
+  userId: string | null = USER,
+  total = 0,
+  period: StatsPeriod = '30d'
+) =>
+  renderHook(({ id, t, p }) => usePomodoroStats(id, t, p), {
+    initialProps: { id: userId, t: total, p: period },
   });
 
 /** Render and wait for the initial fetch/derivation to settle. */
-async function renderSettled(userId: string | null = USER, total = 0) {
-  const view = render(userId, total);
+async function renderSettled(
+  userId: string | null = USER,
+  total = 0,
+  period: StatsPeriod = '30d'
+) {
+  const view = render(userId, total, period);
   await waitFor(() => expect(view.result.current.loading).toBe(false));
   return view;
 }
@@ -131,7 +139,7 @@ describe('usePomodoroStats', () => {
 
     expect(fromMock).toHaveBeenCalledWith('pomodoro_sessions');
     expect(builder.select).toHaveBeenCalledWith(
-      'completed_at, task_text, duration_minutes'
+      'completed_at, started_at, task_text, duration_minutes, session_type'
     );
     expect(builder.eq).toHaveBeenCalledWith('user_id', USER);
     expect(builder.eq).toHaveBeenCalledWith('session_type', 'work');
@@ -399,14 +407,27 @@ describe('usePomodoroStats', () => {
     expect(result.current.taskBreakdown).toHaveLength(5);
   });
 
-  it('should build the breakdown only from the last 7 days', async () => {
+  it('should build the breakdown only from the selected period (7d)', async () => {
     setData([
       createMockSession({ task_text: 'Recent', completed_at: daysAgoAt(1) }),
       createMockSession({ task_text: 'Old', completed_at: daysAgoAt(10) }),
     ]);
-    const { result } = await renderSettled();
+    const { result } = await renderSettled(USER, 0, '7d');
 
     expect(result.current.taskBreakdown.map((t) => t.taskName)).toEqual([
+      'Recent',
+    ]);
+  });
+
+  it('should widen the breakdown window when a longer period is selected (30d)', async () => {
+    setData([
+      createMockSession({ task_text: 'Recent', completed_at: daysAgoAt(1) }),
+      createMockSession({ task_text: 'Old', completed_at: daysAgoAt(10) }),
+    ]);
+    const { result } = await renderSettled(USER, 0, '30d');
+
+    expect(result.current.taskBreakdown.map((t) => t.taskName).sort()).toEqual([
+      'Old',
       'Recent',
     ]);
   });
@@ -472,7 +493,7 @@ describe('usePomodoroStats', () => {
       createMockSession({ completed_at: daysAgoAt(0) }),
     ]);
     await act(async () => {
-      view.rerender({ id: USER, t: 1 });
+      view.rerender({ id: USER, t: 1, p: '30d' });
     });
 
     await waitFor(() =>

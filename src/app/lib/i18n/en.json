@@ -516,9 +516,26 @@
       "legendLess": "Less",
       "legendMore": "More"
     },
+    "periodFilter": {
+      "label": "Period",
+      "7d": "7D",
+      "30d": "30D",
+      "90d": "90D",
+      "1y": "1Y",
+      "all": "All"
+    },
+    "export": {
+      "download": "Download CSV",
+      "done": "Downloaded",
+      "columnDate": "Date",
+      "columnStartTime": "Start Time",
+      "columnDuration": "Duration (min)",
+      "columnType": "Type",
+      "columnTask": "Task"
+    },
     "taskBreakdown": {
       "title": "Focus by task",
-      "subtitle": "Last 7 days",
+      "subtitle": "Period: {period}",
       "empty": "Complete pomodoros with assigned tasks to see your weekly focus."
     },
     "stats": {

@@ -5,8 +5,11 @@
  * Shared hook that fetches the last 365 days of `pomodoro_sessions`
  * and derives productivity statistics (today's log, week total,
  * streak, the 7-day chart data and the yearly activity heatmap).
- * Used by both FocusSection and the SettingsPanel (via page.tsx) so
- * both display real stats.
+ * `period` filters a subset of the metrics (task breakdown, best
+ * day/hour, streak, averages, totals) client-side, without a
+ * refetch — the heatmap, 7-day chart, week total and current streak
+ * always use the full 365-day window. Used by both FocusSection and
+ * the SettingsPanel (via page.tsx) so both display real stats.
  *
  * Stale-while-revalidate: cached sessions (IndexedDB) are shown
  * immediately when present, while a fresh Supabase fetch runs in the
@@ -26,13 +29,33 @@ import type { SessionRow as FullSessionRow } from '@/app/types/session';
 
 export type SessionRow = Pick<
   FullSessionRow,
-  'completed_at' | 'task_text' | 'duration_minutes'
+  'completed_at' | 'started_at' | 'task_text' | 'duration_minutes' | 'session_type'
 >;
+
+export type StatsPeriod = '7d' | '30d' | '90d' | '1y' | 'all';
 
 export interface TaskBreakdown {
   taskName: string;
   count: number;
   totalMinutes: number;
+}
+
+/** Client-side filter over an already-fetched session list — no refetch involved. */
+export function filterSessionsByPeriod(
+  sessions: SessionRow[],
+  period: StatsPeriod
+): SessionRow[] {
+  if (period === 'all') return sessions;
+  const PERIOD_DAYS: Record<Exclude<StatsPeriod, 'all'>, number> = {
+    '7d': 7,
+    '30d': 30,
+    '90d': 90,
+    '1y': 365,
+  };
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - PERIOD_DAYS[period]);
+  cutoff.setHours(0, 0, 0, 0);
+  return sessions.filter((r) => new Date(r.completed_at) >= cutoff);
 }
 
 export interface PomodoroStats {
@@ -48,6 +71,8 @@ export interface PomodoroStats {
   averageDaily: number;
   totalSessions: number;
   totalMinutes: number;
+  /** Sessions within the selected `period`, used for CSV export. */
+  periodSessions: SessionRow[];
   loading: boolean;
   isRevalidating: boolean;
   loadError: boolean;
@@ -61,7 +86,8 @@ export const localDateStr = (d: Date) =>
 
 export function usePomodoroStats(
   userId: string | null,
-  totalPomodorosToday: number
+  totalPomodorosToday: number,
+  period: StatsPeriod = '30d'
 ): PomodoroStats {
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +129,7 @@ export function usePomodoroStats(
 
         const { data, error } = await createClient()
           .from('pomodoro_sessions')
-          .select('completed_at, task_text, duration_minutes')
+          .select('completed_at, started_at, task_text, duration_minutes, session_type')
           .eq('user_id', userId)
           .eq('session_type', 'work')
           .eq('completed', true)
@@ -151,10 +177,17 @@ export function usePomodoroStats(
 
   const weekTotal = weekRows.length;
 
-  // Task breakdown (last 7 days): top 5 tasks by pomodoro count.
+  // Sessions within the selected period — feeds the task breakdown, the
+  // StatsMetricsGrid metrics below, and CSV export.
+  const periodSessions = useMemo(
+    () => filterSessionsByPeriod(sessions, period),
+    [sessions, period]
+  );
+
+  // Task breakdown (selected period): top 5 tasks by pomodoro count.
   const taskBreakdown = useMemo(() => {
     const byTask = new Map<string, TaskBreakdown>();
-    weekRows.forEach((r) => {
+    periodSessions.forEach((r) => {
       const taskName = r.task_text ?? 'Sin tarea';
       const entry = byTask.get(taskName);
       if (entry) {
@@ -169,7 +202,7 @@ export function usePomodoroStats(
       }
     });
     return [...byTask.values()].sort((a, b) => b.count - a.count).slice(0, 5);
-  }, [weekRows]);
+  }, [periodSessions]);
 
   // Streak: consecutive days (backwards from today) with >= 1 pomodoro.
   const streak = useMemo(() => {
@@ -226,10 +259,10 @@ export function usePomodoroStats(
     return counts;
   }, [sessions]);
 
-  // Historical best day-of-week (0=Sun..6=Sat, matches Date#getDay()), across the full fetch window.
+  // Best day-of-week (0=Sun..6=Sat, matches Date#getDay()) within the selected period.
   const bestDayOfWeek = useMemo(() => {
     const counts = [0, 0, 0, 0, 0, 0, 0];
-    sessions.forEach((r) => {
+    periodSessions.forEach((r) => {
       counts[new Date(r.completed_at).getDay()] += 1;
     });
     let bestDay = 0;
@@ -237,12 +270,12 @@ export function usePomodoroStats(
       if (counts[d] > counts[bestDay]) bestDay = d;
     }
     return { day: bestDay, count: counts[bestDay] };
-  }, [sessions]);
+  }, [periodSessions]);
 
-  // Hour of day (0-23) with the most completed sessions historically.
+  // Hour of day (0-23) with the most completed sessions within the selected period.
   const peakHour = useMemo(() => {
     const counts = new Array(24).fill(0);
-    sessions.forEach((r) => {
+    periodSessions.forEach((r) => {
       counts[new Date(r.completed_at).getHours()] += 1;
     });
     let bestHour = 0;
@@ -250,13 +283,13 @@ export function usePomodoroStats(
       if (counts[h] > counts[bestHour]) bestHour = h;
     }
     return { hour: bestHour, count: counts[bestHour] };
-  }, [sessions]);
+  }, [periodSessions]);
 
-  // Longest-ever run of consecutive days with >= 1 session (not just the current streak).
+  // Longest run of consecutive days with >= 1 session within the selected period.
   const longestStreak = useMemo(() => {
-    if (sessions.length === 0) return 0;
+    if (periodSessions.length === 0) return 0;
     const uniqueDays = [
-      ...new Set(sessions.map((r) => localDateStr(new Date(r.completed_at)))),
+      ...new Set(periodSessions.map((r) => localDateStr(new Date(r.completed_at)))),
     ].sort();
     let longest = 1;
     let current = 1;
@@ -269,22 +302,22 @@ export function usePomodoroStats(
       longest = Math.max(longest, current);
     }
     return longest;
-  }, [sessions]);
+  }, [periodSessions]);
 
-  // Average sessions per day that had at least one session (not per calendar day).
+  // Average sessions per day that had at least one session, within the selected period.
   const averageDaily = useMemo(() => {
     const uniqueDayCount = new Set(
-      sessions.map((r) => localDateStr(new Date(r.completed_at)))
+      periodSessions.map((r) => localDateStr(new Date(r.completed_at)))
     ).size;
     if (uniqueDayCount === 0) return 0;
-    return Math.round((sessions.length / uniqueDayCount) * 10) / 10;
-  }, [sessions]);
+    return Math.round((periodSessions.length / uniqueDayCount) * 10) / 10;
+  }, [periodSessions]);
 
-  const totalSessions = useMemo(() => sessions.length, [sessions]);
+  const totalSessions = useMemo(() => periodSessions.length, [periodSessions]);
 
   const totalMinutes = useMemo(
-    () => sessions.reduce((sum, r) => sum + r.duration_minutes, 0),
-    [sessions]
+    () => periodSessions.reduce((sum, r) => sum + r.duration_minutes, 0),
+    [periodSessions]
   );
 
   return {
@@ -300,6 +333,7 @@ export function usePomodoroStats(
     averageDaily,
     totalSessions,
     totalMinutes,
+    periodSessions,
     loading,
     isRevalidating,
     loadError,

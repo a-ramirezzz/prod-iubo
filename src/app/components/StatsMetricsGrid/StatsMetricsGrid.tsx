@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import styles from './StatsMetricsGrid.module.css';
 import { useLocale } from '@/app/lib/i18n';
 import { useCrossfadeVariants, useStaggerContainerVariants } from '@/app/lib/motion';
+import type { StatsPeriod } from '@/app/hooks/usePomodoroStats';
 
 interface StatsMetricsGridProps {
   bestDayOfWeek: { day: number; count: number };
@@ -17,6 +18,8 @@ interface StatsMetricsGridProps {
   averageDaily: number;
   totalSessions: number;
   totalMinutes: number;
+  /** Keys the animated grid so switching periods retriggers the crossfade. */
+  period: StatsPeriod;
   loading: boolean;
   loadError: boolean;
 }
@@ -34,6 +37,7 @@ function StatsMetricsGrid({
   averageDaily,
   totalSessions,
   totalMinutes,
+  period,
   loading,
   loadError,
 }: StatsMetricsGridProps) {
@@ -119,6 +123,7 @@ function StatsMetricsGrid({
         <p className={styles.errorText}>{t('focus.log.error')}</p>
       ) : (
         <motion.div
+          key={period}
           className={styles.grid}
           initial="hidden"
           animate="visible"
