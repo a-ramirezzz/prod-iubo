@@ -1,7 +1,7 @@
 # PROD-UIBO
 
 ![CI](https://github.com/a-ramirezzz/prod-uibo/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/tests-138%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-265%20passing-brightgreen)
 ![Status](https://img.shields.io/badge/status-BETA-blue)
 
 PROD-UIBO is a web-based Pomodoro productivity app with task management, statistics, and full visual and audio customization. It stands out with 20+ themes (including animated video backgrounds), ambient sounds, dual Picture-in-Picture support (classic + Document PiP), full offline support with a sync queue, and a bilingual (ES/EN) interface. Built with Next.js 15, React 19, and TypeScript on top of Supabase, and deployed on Vercel.
