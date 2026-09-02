@@ -9,6 +9,23 @@ export default defineConfig({
     globals: true,
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     setupFiles: ['./src/test-setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'text-summary', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/**/*.spec.{ts,tsx}',
+        'src/**/*.stories.{ts,tsx}',
+        'src/**/index.ts',
+        'src/**/*.d.ts',
+        'src/app/types/**',
+        'src/app/lib/i18n/**',
+        'src/database/**',
+        'src/test-setup.ts',
+      ],
+    },
   },
   resolve: {
     alias: {

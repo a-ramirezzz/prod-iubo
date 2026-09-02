@@ -76,6 +76,9 @@ public/worker-*.js
 /blob-report/
 /playwright/.cache/
 
+# Vitest coverage
+/coverage/
+
 
 *storybook.log
 storybook-static
