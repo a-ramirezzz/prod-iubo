@@ -7,11 +7,9 @@
  * -----------------------------------------------------------------
  * Typed shapes for Supabase Realtime `postgres_changes` payloads.
  *
- * There is no generated `database.types.ts` in this project, so the
- * row shape below mirrors the hand-written table interface already
- * used in `useTaskManager.ts`. If a generated Supabase types file is
- * ever added, `TaskRow` should be replaced with the equivalent
- * `Database['public']['Tables']['tasks']['Row']`.
+ * `TaskRow` is derived from the generated `database.types.ts`
+ * (`Database['public']['Tables']['tasks']['Row']`) so it stays in sync
+ * with the actual `tasks` table schema.
  *
  * The payload aliases wrap `@supabase/supabase-js`'s own
  * `RealtimePostgresInsertPayload` / `UpdatePayload` / `DeletePayload`
@@ -26,15 +24,9 @@ import type {
   RealtimePostgresUpdatePayload,
   RealtimePostgresDeletePayload,
 } from '@supabase/supabase-js';
+import type { TaskRow } from './tables';
 
-/** Shape of a row in the `tasks` table as delivered by Realtime. */
-export interface TaskRow {
-  id: string;
-  user_id: string;
-  text: string;
-  completed: boolean;
-  position: number;
-}
+export type { TaskRow };
 
 /** Map of table name -> row shape, for tables with Realtime subscriptions. */
 export interface RealtimeTables {

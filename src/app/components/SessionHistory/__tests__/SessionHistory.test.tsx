@@ -27,6 +27,7 @@ const USER = 'user-1';
 function makeSession(overrides: Partial<SessionRow> = {}): SessionRow {
   return {
     id: '1',
+    user_id: USER,
     started_at: '2026-08-05T10:00:00Z',
     completed_at: '2026-08-05T10:25:00Z',
     duration_minutes: 25,

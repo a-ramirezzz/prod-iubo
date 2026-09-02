@@ -25,7 +25,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@/app/lib/supabase/client';
 import { cacheSessions, getCachedSessions } from '@/app/lib/offlineDb';
-import type { SessionRow as FullSessionRow } from '@/app/types/session';
+import type { SessionRow as FullSessionRow } from '@/app/types/tables';
 
 export type SessionRow = Pick<
   FullSessionRow,
