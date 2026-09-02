@@ -276,3 +276,14 @@
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
+
+/* --- Lazy tab loading placeholder (Focus / Achievements) --- */
+
+.tabLoadingPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  color: var(--text-color-secondary);
+  font-size: 0.95rem;
+}

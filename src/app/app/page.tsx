@@ -8,6 +8,7 @@
 // =================================================================
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import styles from '@/app/Page.module.css';
 import tabTransitionStyles from '@/app/components/TabTransition/TabTransition.module.css';
 
@@ -32,7 +33,6 @@ import SettingsButton from '@/components/SettingsButton/SettingsButton';
 import SettingsPanel from '@/components/SettingsPanel/SettingsPanel';
 import VisualNotification from '@/components/Notification/Notification';
 import TimerTab from './TimerTab';
-import FocusTab from './FocusTab';
 import OnboardingTour from '@/app/components/OnboardingTour/OnboardingTour';
 import ContextualHintsManager from '@/app/components/ContextualTooltip/ContextualHintsManager';
 import LocaleSync from './LocaleSync';
@@ -42,7 +42,16 @@ import { ShortcutsModal } from '@/app/components/ShortcutsModal';
 import { SyncDetailsPanel } from '@/app/components/SyncDetailsPanel';
 import FocusMode from '@/app/components/FocusMode/FocusMode';
 import AchievementNotification from '@/app/components/AchievementNotification/AchievementNotification';
-import AchievementsTab from '@/app/components/AchievementsTab/AchievementsTab';
+
+// Lazily loaded: only the visible tab's component needs to be on the wire.
+// The hooks that feed these tabs stay mounted in this page unconditionally —
+// only the presentational component is deferred.
+const FocusTab = dynamic(() => import('./FocusTab'), {
+  loading: () => <div className={styles.tabLoadingPlaceholder}>Loading…</div>,
+});
+const AchievementsTab = dynamic(() => import('@/app/components/AchievementsTab/AchievementsTab'), {
+  loading: () => <div className={styles.tabLoadingPlaceholder}>Loading…</div>,
+});
 
 /**
  * HomePage is the main component of the application, serving as the central hub
