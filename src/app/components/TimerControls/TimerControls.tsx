@@ -16,6 +16,8 @@ interface TimerControlsProps {
   onTogglePause: () => void
   onReset: () => void
   onStop: () => void
+  /** 'stopwatch' skips the countdown's "finished at 0" disabled state and swaps the Stop label for "Complete". Defaults to 'pomodoro'. */
+  mode?: 'pomodoro' | 'stopwatch'
 }
 
 /**
@@ -27,7 +29,8 @@ export default function TimerControls({
   totalSeconds,
   onTogglePause,
   onReset,
-  onStop
+  onStop,
+  mode = 'pomodoro'
 }: TimerControlsProps) {
   const { t } = useLocale()
   const tapScale = useTapScaleProps()
@@ -37,10 +40,13 @@ export default function TimerControls({
     return null
   }
 
-  // Determine if the timer has finished to disable the pause/resume button
-  const isTimerFinished = totalSeconds === 0 && !isActive
+  // Determine if the timer has finished to disable the pause/resume button.
+  // A Stopwatch never "finishes" on its own — it's always resumable until stopped.
+  const isTimerFinished = mode === 'stopwatch' ? false : totalSeconds === 0 && !isActive
   // Dynamically set the text for the main action button
   const pauseResumeText = isActive ? t('app.timer.controls.pause') : t('app.timer.controls.resume')
+  const stopText = mode === 'stopwatch' ? t('app.timer.stopwatch.complete') : t('app.timer.controls.stop')
+  const stopAriaText = mode === 'stopwatch' ? t('app.timer.stopwatch.completeAria') : t('app.timer.controls.stopAria')
 
   return (
     <div className={styles.controlsContainer}>
@@ -70,13 +76,13 @@ export default function TimerControls({
       <motion.button
         onClick={onStop}
         className={`button button-stop ${styles.btnStop}`}
-        aria-label={t('app.timer.controls.stopAria')}
+        aria-label={stopAriaText}
         {...tapScale}
       >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <rect x="4" y="4" width="16" height="16" rx="2"/>
         </svg>
-        {t('app.timer.controls.stop')}
+        {stopText}
       </motion.button>
     </div>
   )

@@ -173,6 +173,47 @@ export const usePomodoroEngine = (
   }, []);
 
   /**
+   * Persists a completed work session to Supabase (best-effort,
+   * fire-and-forget), mirroring it into the offline cache when the
+   * mutation is queued instead of sent immediately. Shared by the
+   * Pomodoro cycle's natural completion and the Stopwatch's manual one.
+   */
+  const persistWorkSession = useCallback((startedAt: Date, durationSeconds: number, taskText: string | null) => {
+    if (!userId) return;
+    const payload = {
+      user_id: userId,
+      started_at: startedAt.toISOString(),
+      completed_at: new Date().toISOString(),
+      duration_minutes: Math.round(durationSeconds / 60),
+      session_type: 'work' as const,
+      task_text: taskText,
+      completed: true,
+    };
+    executeOrQueue(
+      () => supabase.from('pomodoro_sessions').insert(payload),
+      { table: 'pomodoro_sessions', operation: 'insert', data: payload, userId }
+    ).then(async ({ queued, error }) => {
+      if (queued) {
+        // Not reflected by Supabase yet — mirror it into the local cache
+        // so it shows up immediately in the offline stats view.
+        const cached = (await getCachedSessions(userId)) ?? [];
+        await cacheSessions(userId, [
+          {
+            completed_at: payload.completed_at,
+            started_at: payload.started_at,
+            task_text: payload.task_text,
+            duration_minutes: payload.duration_minutes,
+            session_type: payload.session_type,
+          },
+          ...cached,
+        ]);
+        return;
+      }
+      if (error) console.error('[usePomodoroEngine] Error saving session:', error);
+    });
+  }, [userId, supabase]);
+
+  /**
    * Called when the timer reaches zero naturally (via useTimer's
    * onComplete). Validates and persists the pomodoro, then advances
    * the cycle state machine.
@@ -185,40 +226,7 @@ export const usePomodoroEngine = (
       return; // Not a valid pomodoro — no state change.
     }
 
-    // Persist the session (best-effort, fire-and-forget).
-    if (userId) {
-      const payload = {
-        user_id: userId,
-        started_at: (sessionStartedAtRef.current ?? new Date()).toISOString(),
-        completed_at: new Date().toISOString(),
-        duration_minutes: Math.round(initialTimeSetRef.current / 60),
-        session_type: 'work' as const,
-        task_text: taskText,
-        completed: true,
-      };
-      executeOrQueue(
-        () => supabase.from('pomodoro_sessions').insert(payload),
-        { table: 'pomodoro_sessions', operation: 'insert', data: payload, userId }
-      ).then(async ({ queued, error }) => {
-        if (queued) {
-          // Not reflected by Supabase yet — mirror it into the local cache
-          // so it shows up immediately in the offline stats view.
-          const cached = (await getCachedSessions(userId)) ?? [];
-          await cacheSessions(userId, [
-            {
-              completed_at: payload.completed_at,
-              started_at: payload.started_at,
-              task_text: payload.task_text,
-              duration_minutes: payload.duration_minutes,
-              session_type: payload.session_type,
-            },
-            ...cached,
-          ]);
-          return;
-        }
-        if (error) console.error('[usePomodoroEngine] Error saving session:', error);
-      });
-    }
+    persistWorkSession(sessionStartedAtRef.current ?? new Date(), initialTimeSetRef.current, taskText);
 
     setTotalPomodorosToday((prev) => prev + 1);
 
@@ -244,7 +252,21 @@ export const usePomodoroEngine = (
         : null,
       initialTimeSet: initialTimeSetRef.current,
     });
-  }, [userId, supabase]);
+  }, [persistWorkSession]);
+
+  /**
+   * Saves a Stopwatch session directly to the `pomodoro_sessions` table as
+   * a 'work' session — same validation and persistence as a Pomodoro, but
+   * deliberately does NOT touch the cycle/phase state machine (breaks and
+   * cycle counting don't apply to the Stopwatch's single continuous session).
+   */
+  const saveStopwatchSession = useCallback((durationSeconds: number, startedAt: Date, taskText: string | null) => {
+    if (durationSeconds < POMODORO.MIN_VALID_SECONDS) {
+      return; // Not a valid session — no state change.
+    }
+    persistWorkSession(startedAt, durationSeconds, taskText);
+    setTotalPomodorosToday((prev) => prev + 1);
+  }, [persistWorkSession]);
 
   /**
    * Starts the break the user has earned. Breaks are not persisted —
@@ -297,6 +319,7 @@ export const usePomodoroEngine = (
     sessionStartedAt,
     startWorkSession,
     completeSession,
+    saveStopwatchSession,
     startBreak,
     completeBreak,
     resetCycle,

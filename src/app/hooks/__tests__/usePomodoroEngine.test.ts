@@ -178,4 +178,51 @@ describe('usePomodoroEngine', () => {
       expect(insertMock).not.toHaveBeenCalled();
     });
   });
+
+  describe('saveStopwatchSession', () => {
+    it('ignores sessions shorter than MIN_VALID_SECONDS', async () => {
+      const { result } = renderHook(() => usePomodoroEngine(USER));
+      act(() => {
+        result.current.saveStopwatchSession(600, new Date(), 'Too short');
+      });
+      expect(result.current.totalPomodorosToday).toBe(0);
+      await waitFor(() => {
+        expect(insertMock).not.toHaveBeenCalled();
+      });
+    });
+
+    it('saves valid sessions (>= 20 min) and increments totalPomodorosToday', async () => {
+      const { result } = renderHook(() => usePomodoroEngine(USER));
+      const startedAt = new Date();
+      act(() => {
+        result.current.saveStopwatchSession(1500, startedAt, 'Deep work');
+      });
+      expect(result.current.totalPomodorosToday).toBe(1);
+      await waitFor(() => {
+        expect(insertMock).toHaveBeenCalledTimes(1);
+      });
+      expect(mockSupabase.from).toHaveBeenCalledWith('pomodoro_sessions');
+    });
+
+    it('does not touch the Pomodoro cycle/phase state machine', () => {
+      const { result } = renderHook(() => usePomodoroEngine(USER));
+      expect(result.current.currentPhase).toBe('idle');
+      expect(result.current.cycleCount).toBe(0);
+      act(() => {
+        result.current.saveStopwatchSession(1800, new Date(), null);
+      });
+      expect(result.current.currentPhase).toBe('idle');
+      expect(result.current.cycleCount).toBe(0);
+    });
+
+    it('does not save to Supabase when userId is null', async () => {
+      const { result } = renderHook(() => usePomodoroEngine(null));
+      act(() => {
+        result.current.saveStopwatchSession(1500, new Date(), null);
+      });
+      await waitFor(() => {
+        expect(insertMock).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

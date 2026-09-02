@@ -1,0 +1,46 @@
+/* app/components/TimerModeToggle/TimerModeToggle.module.css */
+
+.toggleContainer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--border-color-primary, rgba(255, 255, 255, 0.12));
+}
+
+.toggleOption {
+  border: none;
+  background: transparent;
+  color: var(--text-color-secondary, rgba(255, 255, 255, 0.7));
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.toggleOption:hover:not(:disabled):not(.toggleOptionActive) {
+  color: var(--text-color-primary, #fff);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.toggleOption:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.toggleOptionActive {
+  background: var(--btn-pause-bg, rgba(59, 130, 246, 0.35));
+  color: var(--text-color-primary, #fff);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggleOption {
+    transition: none;
+  }
+}

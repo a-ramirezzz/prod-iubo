@@ -13,13 +13,15 @@ interface TimerDisplayProps {
   timeParts: TimeParts
   isActive?: boolean
   remainingSeconds?: number
+  /** True for a count-up (Stopwatch) display — skips the low-time warning/critical color thresholds, which only make sense for a countdown. */
+  countUp?: boolean
 }
 
 /**
  * A component that displays the remaining time in HH:MM:SS format
  * It is semantically structured and accessible for screen readers
  */
-export default function TimerDisplay({ timeParts, isActive = false, remainingSeconds = 0 }: TimerDisplayProps) {
+export default function TimerDisplay({ timeParts, isActive = false, remainingSeconds = 0, countUp = false }: TimerDisplayProps) {
   // Format the time into an ISO 8601 duration string for the datetime attribute
   // This provides a machine-readable format for assistive technologies
   const dateTimeString = `PT${timeParts.hours}H${timeParts.minutes}M${timeParts.seconds}S`
@@ -30,20 +32,23 @@ export default function TimerDisplay({ timeParts, isActive = false, remainingSec
   const { t } = useLocale()
 
   useEffect(() => {
+    if (countUp) return // Count-up has no "running out" thresholds to announce.
     const totalSeconds = (Number(timeParts.hours) * 3600) + (Number(timeParts.minutes) * 60) + Number(timeParts.seconds)
     if (totalSeconds === 60) setLiveText(t('app.timer.display.oneMinute'))
     else if (totalSeconds === 10) setLiveText(t('app.timer.display.tenSeconds'))
     else if (totalSeconds === 0) setLiveText(t('app.timer.display.timeUp'))
-  }, [timeParts, t])
+  }, [timeParts, t, countUp])
 
   const timerStateClass =
-    isActive && remainingSeconds <= 10
-      ? styles.timerCritical
-      : isActive && remainingSeconds <= 60
-        ? styles.timerWarning
-        : isActive
-          ? styles.timerActive
-          : ''
+    countUp
+      ? (isActive ? styles.timerActive : '')
+      : isActive && remainingSeconds <= 10
+        ? styles.timerCritical
+        : isActive && remainingSeconds <= 60
+          ? styles.timerWarning
+          : isActive
+            ? styles.timerActive
+            : ''
 
   return (
     <>

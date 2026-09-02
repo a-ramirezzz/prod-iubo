@@ -9,10 +9,14 @@ import TimerDisplay from '@/components/TimerDisplay/TimerDisplay';
 import PresetButtons from '@/components/PresetButtons/PresetButtons';
 import CustomTimeInput from '@/components/CustomTimeInput/CustomTimeInput';
 import TimerControls from '@/components/TimerControls/TimerControls';
+import TimerModeToggle from '@/components/TimerModeToggle/TimerModeToggle';
 import TaskList from '@/components/TaskList/TaskList';
 import TaskModal from '@/components/TaskList/TaskModal';
 import ConfirmModal from '@/app/components/ConfirmModal/ConfirmModal';
 import { useLocale } from '@/app/lib/i18n';
+import { useTapScaleProps } from '@/app/lib/motion';
+import { motion } from 'framer-motion';
+import type { TimerMode } from '@/hooks/useTimerController';
 
 import type { Task } from '@/app/types';
 
@@ -34,6 +38,12 @@ interface TimerViewProps {
   handleStartTimer: (minutes: number) => void;
   handleCustomStart: () => void;
   handleStopWithConfirmation: () => void;
+  // Timer mode (Pomodoro countdown vs. Stopwatch count-up)
+  timerMode?: TimerMode;
+  canSwitchTimerMode?: boolean;
+  onSetTimerMode?: (mode: TimerMode) => void;
+  handleStartStopwatch?: () => void;
+  handleCompleteStopwatch?: () => void;
   // Custom input
   customHoursInput: string;
   setCustomHoursInput: (value: string) => void;
@@ -76,6 +86,11 @@ export default function TimerView({
   handleStartTimer,
   handleCustomStart,
   handleStopWithConfirmation,
+  timerMode = 'pomodoro',
+  canSwitchTimerMode = true,
+  onSetTimerMode = () => {},
+  handleStartStopwatch = () => {},
+  handleCompleteStopwatch = () => {},
   customHoursInput,
   setCustomHoursInput,
   customMinutesInput,
@@ -97,13 +112,17 @@ export default function TimerView({
   setShowStopConfirm,
 }: TimerViewProps) {
   const { t } = useLocale();
+  const tapScale = useTapScaleProps();
 
   // Boolean to determine if the timer setup controls should be shown.
   const showSetupControls = !isMiniMode;
 
-  // Boolean to determine if the initial instruction text should be shown.
+  const isStopwatchMode = timerMode === 'stopwatch';
+
+  // Boolean to determine if the initial instruction text should be shown
+  // (Pomodoro only — the Stopwatch has its own "start" CTA instead).
   const showInstructionText =
-    !isMiniMode && totalSeconds === 0 && !isActive && initialTimeSet === 0;
+    !isMiniMode && !isStopwatchMode && totalSeconds === 0 && !isActive && initialTimeSet === 0;
 
   return (
     <>
@@ -122,19 +141,28 @@ export default function TimerView({
         confirmLabel={t('app.timer.confirmStop.confirm')}
         destructive={true}
         onConfirm={() => {
-          stopTimer();
+          if (isStopwatchMode) {
+            handleCompleteStopwatch();
+          } else {
+            stopTimer();
+          }
           setShowStopConfirm(false);
         }}
         onCancel={() => setShowStopConfirm(false)}
       />
 
+      {/* Mode toggle: quick-switch between Pomodoro (countdown) and Stopwatch (count-up). */}
+      {showSetupControls && (
+        <TimerModeToggle mode={timerMode} onChange={onSetTimerMode} disabled={!canSwitchTimerMode} />
+      )}
+
       {/* Main Timer Display */}
       <div id="onboarding-timer" className='timerDisplay'>
-        <TimerDisplay timeParts={timeParts} isActive={isActive} remainingSeconds={totalSeconds} />
+        <TimerDisplay timeParts={timeParts} isActive={isActive} remainingSeconds={totalSeconds} countUp={isStopwatchMode} />
       </div>
 
-      {/* Timer Setup Controls (Presets and Custom Input) */}
-      {showSetupControls && (
+      {/* Timer Setup Controls (Presets and Custom Input) — Pomodoro only */}
+      {showSetupControls && !isStopwatchMode && (
         <>
           <div id="contextual-hint-start" className='presetButtons'>
             <PresetButtons onSetTime={handleStartTimer} disabled={isActive} />
@@ -153,6 +181,17 @@ export default function TimerView({
         </>
       )}
 
+      {/* Stopwatch start CTA — shown until the session begins, in place of presets. */}
+      {showSetupControls && isStopwatchMode && initialTimeSet === 0 && (
+        <motion.button
+          onClick={handleStartStopwatch}
+          className="button"
+          {...tapScale}
+        >
+          {t('app.timer.stopwatch.start')}
+        </motion.button>
+      )}
+
       {/* Core Timer Controls (Start, Pause, Stop) */}
       <TimerControls
         isActive={isActive}
@@ -161,6 +200,7 @@ export default function TimerView({
         onTogglePause={togglePause}
         onReset={resetTimer}
         onStop={handleStopWithConfirmation}
+        mode={timerMode}
       />
 
       {/* UI Mode Toggles */}

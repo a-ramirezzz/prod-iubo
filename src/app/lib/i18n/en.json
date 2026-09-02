@@ -202,7 +202,20 @@
       },
       "miniMode": "Mini Mode",
       "fullView": "Full View",
-      "instruction": "Select a preset time or enter a custom time to begin."
+      "instruction": "Select a preset time or enter a custom time to begin.",
+      "modeToggle": {
+        "label": "Timer mode",
+        "pomodoro": "Pomodoro",
+        "stopwatch": "Stopwatch"
+      },
+      "stopwatch": {
+        "label": "Stopwatch",
+        "start": "Start Stopwatch",
+        "startAria": "Start stopwatch",
+        "complete": "Complete",
+        "completeAria": "Complete and save session",
+        "elapsedTime": "Elapsed time"
+      }
     },
     "focusMode": {
       "title": "Focus Mode",

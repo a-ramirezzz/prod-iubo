@@ -102,12 +102,6 @@ export default function HomePage() {
 
   // Timer + Pomodoro engine orchestration.
   const {
-    timeParts,
-    isActive,
-    totalSeconds,
-    initialTimeSet,
-    togglePause,
-    resetTimer,
     stopTimer,
     customHoursInput,
     setCustomHoursInput,
@@ -117,6 +111,7 @@ export default function HomePage() {
     handleStartTimer,
     handleCustomStart,
     handleStopWithConfirmation,
+    handleConfirmStop,
     handleFocusStartWork,
     handleFocusStartBreak,
     showInvalidTimeModal,
@@ -125,6 +120,19 @@ export default function HomePage() {
     setShowStopConfirm,
     showVisualNotification,
     setShowVisualNotification,
+    // Stopwatch mode
+    timerMode,
+    canSwitchTimerMode,
+    handleSetTimerMode,
+    handleStartStopwatch,
+    handleCompleteStopwatch,
+    // Mode-aware display values (whichever of Pomodoro/Stopwatch is active)
+    displayTimeParts: timeParts,
+    displayIsActive: isActive,
+    displayTotalSeconds: totalSeconds,
+    displayInitialTimeSet: initialTimeSet,
+    displayTogglePause: togglePause,
+    displayResetTimer: resetTimer,
   } = useTimerController({
     enableDesktopNotifications: !!settings.enable_desktop_notifications,
     confirmOnStop: settings.confirm_on_stop,
@@ -195,10 +203,17 @@ export default function HomePage() {
     { onPipModeDisabled: () => updateSettings({ horizontal_pip_enabled: false }) }
   );
 
+  // useKeyboardShortcuts' SPACE handler requires `totalSeconds > 0` to resume
+  // a paused-but-started session — true for a countdown (it starts high), but
+  // a Stopwatch paused within its first second still reads 0. Fudge a floor
+  // of 1 only for this hook, only in that state, so keyboard resume still works.
+  const keyboardTotalSeconds =
+    timerMode === 'stopwatch' && initialTimeSet > 0 ? Math.max(totalSeconds, 1) : totalSeconds;
+
   // Global keyboard shortcuts for power-user productivity.
   useKeyboardShortcuts({
     isActive,
-    totalSeconds,
+    totalSeconds: keyboardTotalSeconds,
     initialTimeSet,
     togglePause,
     resetTimer,
@@ -302,12 +317,16 @@ export default function HomePage() {
    */
   useEffect(() => {
     if (!focusModeActive) return;
+    // The Stopwatch never touches `currentPhase` (it stays 'idle' the whole
+    // session), so its own end condition is "no session in progress" instead.
     const sessionEnded =
-      pomodoroEngine.currentPhase === 'idle' || (totalSeconds === 0 && !isActive);
+      timerMode === 'stopwatch'
+        ? initialTimeSet === 0
+        : pomodoroEngine.currentPhase === 'idle' || (totalSeconds === 0 && !isActive);
     if (sessionEnded) {
       setFocusModeActive(false);
     }
-  }, [focusModeActive, pomodoroEngine.currentPhase, totalSeconds, isActive]);
+  }, [focusModeActive, timerMode, pomodoroEngine.currentPhase, totalSeconds, isActive, initialTimeSet]);
 
   /**
    * Effect to request notification permissions from the user upon
@@ -464,6 +483,11 @@ export default function HomePage() {
           handleStartTimer={handleStartTimer}
           handleCustomStart={handleCustomStart}
           handleStopWithConfirmation={handleStopWithConfirmation}
+          timerMode={timerMode}
+          canSwitchTimerMode={canSwitchTimerMode}
+          onSetTimerMode={handleSetTimerMode}
+          handleStartStopwatch={handleStartStopwatch}
+          handleCompleteStopwatch={handleCompleteStopwatch}
           customHoursInput={customHoursInput}
           setCustomHoursInput={setCustomHoursInput}
           customMinutesInput={customMinutesInput}
@@ -585,7 +609,7 @@ export default function HomePage() {
       <FocusMode
         timeDisplay={focusModeTimeDisplay}
         isRunning={isActive}
-        currentPhase={pomodoroEngine.currentPhase}
+        currentPhase={timerMode === 'stopwatch' ? 'stopwatch' : pomodoroEngine.currentPhase}
         taskText={currentTaskText ?? null}
         onToggleTimer={togglePause}
         onExit={() => setFocusModeActive(false)}

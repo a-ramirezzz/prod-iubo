@@ -202,7 +202,20 @@
       },
       "miniMode": "Modo Mini",
       "fullView": "Vista Completa",
-      "instruction": "Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar."
+      "instruction": "Selecciona un tiempo predefinido o ingresa un tiempo personalizado para comenzar.",
+      "modeToggle": {
+        "label": "Modo del temporizador",
+        "pomodoro": "Pomodoro",
+        "stopwatch": "Cronómetro"
+      },
+      "stopwatch": {
+        "label": "Cronómetro",
+        "start": "Iniciar Cronómetro",
+        "startAria": "Iniciar cronómetro",
+        "complete": "Finalizar",
+        "completeAria": "Finalizar y guardar sesión",
+        "elapsedTime": "Tiempo transcurrido"
+      }
     },
     "focusMode": {
       "title": "Modo Foco",

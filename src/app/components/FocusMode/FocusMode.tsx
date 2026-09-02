@@ -20,6 +20,7 @@ const PHASE_KEYS: Record<string, string> = {
   work: 'app.focusMode.work',
   short_break: 'app.focusMode.shortBreak',
   long_break: 'app.focusMode.longBreak',
+  stopwatch: 'app.timer.stopwatch.label',
 };
 
 /**
