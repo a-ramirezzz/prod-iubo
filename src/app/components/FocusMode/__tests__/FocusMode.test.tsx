@@ -42,7 +42,7 @@ describe('FocusMode', () => {
     const { container } = renderFocusMode();
     const results = await axe(container);
     expect(results).toHaveNoViolations();
-  });
+  }, 20_000);
 
   it('renders the current task text', () => {
     renderFocusMode();

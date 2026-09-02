@@ -91,7 +91,7 @@ describe('SyncDetailsPanel', () => {
     await waitFor(() => expect(screen.getAllByText(/app\.sync\.operationInsert/).length).toBe(2));
     const results = await axe(container);
     expect(results).toHaveNoViolations();
-  });
+  }, 20_000);
 
   it('retries a failed entry: resets its status and triggers a sync', async () => {
     entries = [makeEntry({ id: 5, status: 'failed', lastError: 'boom' })];

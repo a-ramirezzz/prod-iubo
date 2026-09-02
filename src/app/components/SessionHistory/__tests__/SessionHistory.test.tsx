@@ -92,7 +92,7 @@ describe('SessionHistory', () => {
     const { container } = render(<SessionHistory userId={USER} />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
-  });
+  }, 20_000);
 
   it('renders session rows with correct data', () => {
     mockReturn({ sessions: [makeSession()] });

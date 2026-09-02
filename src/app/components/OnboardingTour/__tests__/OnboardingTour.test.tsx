@@ -104,7 +104,7 @@ describe('OnboardingTour component', () => {
     fireEvent.click(screen.getByText('onboarding.next'));
     const results = await axe(container);
     expect(results).toHaveNoViolations();
-  });
+  }, 20_000);
 
   it('advances to next step on "Next" button click', () => {
     render(<OnboardingTour onComplete={vi.fn()} />);

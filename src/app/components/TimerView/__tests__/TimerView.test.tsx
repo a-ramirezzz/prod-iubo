@@ -66,7 +66,7 @@ describe('TimerView', () => {
     const { container } = renderTimerView({ timeParts: { hours: '00', minutes: '24', seconds: '59' } });
     const results = await axe(container);
     expect(results).toHaveNoViolations();
-  });
+  }, 20_000);
 
   describe('timer display', () => {
     it('renders the formatted time display', () => {

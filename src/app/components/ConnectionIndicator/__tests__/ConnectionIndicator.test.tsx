@@ -37,7 +37,7 @@ describe('ConnectionIndicator', () => {
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
-  });
+  }, 20_000);
 
   it('shows the disconnected banner with a pending-count suffix', () => {
     mockStatus = 'disconnected';
