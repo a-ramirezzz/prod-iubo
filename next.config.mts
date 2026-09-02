@@ -18,6 +18,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   /**
+   * Automatically memoizes components and hooks at build time,
+   * replacing the need for manual useMemo/useCallback/React.memo.
+   */
+  reactCompiler: true,
+  /**
    * Configuration for the Next.js Image component (`<Image />`).
    * It allows specifying which external domains are permitted for image optimization.
    */
