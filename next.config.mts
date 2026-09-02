@@ -13,8 +13,13 @@ import { fileURLToPath } from "url";
 import type { NextConfig } from "next";
 import withSerwistInit from "@serwist/next";
 import { withSentryConfig } from "@sentry/nextjs";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const analyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
   /**
@@ -22,6 +27,15 @@ const nextConfig: NextConfig = {
    * replacing the need for manual useMemo/useCallback/React.memo.
    */
   reactCompiler: true,
+  experimental: {
+    // Load only the modules actually used from these packages instead of
+    // the whole barrel, so tree-shaking doesn't pull in unused code.
+    optimizePackageImports: [
+      '@dnd-kit/core',
+      '@dnd-kit/sortable',
+      'framer-motion',
+    ],
+  },
   /**
    * Configuration for the Next.js Image component (`<Image />`).
    * It allows specifying which external domains are permitted for image optimization.
@@ -106,10 +120,11 @@ const withSerwist = withSerwistInit({
 });
 
 const configWithSerwist = withSerwist(nextConfig);
+const configWithAnalyzer = analyzer(configWithSerwist);
 
 // Sentry must be the outermost wrapper so its build-time source map upload
 // sees the final webpack config produced by every other plugin.
-export default withSentryConfig(configWithSerwist, {
+export default withSentryConfig(configWithAnalyzer, {
   org: "a-ramirezzz",
   project: "prod-uibo",
 
