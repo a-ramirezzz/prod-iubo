@@ -13,12 +13,12 @@ import styles from '@/app/Page.module.css';
 import tabTransitionStyles from '@/app/components/TabTransition/TabTransition.module.css';
 
 // Custom Hooks for Core Logic
-import { useTimerController } from '@/hooks/useTimerController';
+import { useTimerFeature } from '@/hooks/useTimerFeature';
+import { useProductivityFeature } from '@/hooks/useProductivityFeature';
+import { useGamificationFeature } from '@/hooks/useGamificationFeature';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { usePomodoroStats, type StatsPeriod } from '@/hooks/usePomodoroStats';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useSyncQueue } from '@/hooks/useSyncQueue';
-import { useAchievements } from '@/hooks/useAchievements';
 import { useSettings } from '@/context/SettingsContext';
 import { usePipTimer } from '@/hooks/usePipTimer';
 import { useHorizontalPipTimer } from '@/hooks/useHorizontalPipTimer';
@@ -100,7 +100,7 @@ export default function HomePage() {
   // Name of the first incomplete task, shown as "current task" in the horizontal PiP window.
   const currentTaskText = tasks.find(task => !task.completed)?.text;
 
-  // Timer + Pomodoro engine orchestration.
+  // Timer + Pomodoro engine orchestration (countdown, Pomodoro cycle and stopwatch mode).
   const {
     stopTimer,
     customHoursInput,
@@ -133,7 +133,7 @@ export default function HomePage() {
     displayInitialTimeSet: initialTimeSet,
     displayTogglePause: togglePause,
     displayResetTimer: resetTimer,
-  } = useTimerController({
+  } = useTimerFeature({
     enableDesktopNotifications: !!settings.enable_desktop_notifications,
     confirmOnStop: settings.confirm_on_stop,
     currentTaskText,
@@ -142,20 +142,16 @@ export default function HomePage() {
     volume: settings.volume,
   });
 
-  // Selected window for the task breakdown and StatsMetricsGrid (client-side filter
-  // over the hook's already-fetched 365-day session list — not persisted).
-  const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>('30d');
-
-  // Productivity statistics shared between the Focus tab and Settings panel.
-  const pomodoroStats = usePomodoroStats(
-    user?.id ?? null,
-    pomodoroEngine.totalPomodorosToday,
-    statsPeriod
-  );
+  // Productivity statistics (365-day stats + selected period filter) shared
+  // between the Focus tab and Settings panel.
+  const { statsPeriod, setStatsPeriod, ...pomodoroStats } = useProductivityFeature({
+    userId: user?.id ?? null,
+    totalPomodorosToday: pomodoroEngine.totalPomodorosToday,
+  });
 
   // Gamification: evaluates progress against achievement thresholds and
   // surfaces newly unlocked ones as a toast notification.
-  const achievements = useAchievements({
+  const achievements = useGamificationFeature({
     userId: user?.id ?? null,
     currentStreak: pomodoroStats.streak,
     totalPomodorosToday: pomodoroEngine.totalPomodorosToday,

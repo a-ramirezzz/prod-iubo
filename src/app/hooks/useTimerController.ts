@@ -15,7 +15,7 @@ import { POMODORO } from '@/app/lib/constants';
 
 export type TimerMode = 'pomodoro' | 'stopwatch';
 
-interface UseTimerControllerParams {
+export interface UseTimerControllerParams {
   enableDesktopNotifications: boolean;
   confirmOnStop: boolean;
   currentTaskText: string | undefined;

@@ -25,7 +25,7 @@ interface Progress {
   totalTasksCompleted: number;
 }
 
-interface UseAchievementsReturn {
+export interface UseAchievementsReturn {
   unlockedIds: Set<string>;
   allAchievements: AchievementDefinition[];
   newlyUnlocked: AchievementDefinition | null;
