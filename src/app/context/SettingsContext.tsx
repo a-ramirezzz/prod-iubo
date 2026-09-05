@@ -23,6 +23,7 @@ import { fetchWithOfflineFallback } from '@/app/lib/offlineSync';
 import { cacheSettings, getCachedSettings } from '@/app/lib/offlineDb';
 import { executeOrQueue } from '@/app/lib/offlineMutation';
 import { POMODORO } from '@/app/lib/constants';
+import { DEFAULT_SHORTCUTS } from '@/app/lib/keyboardShortcuts';
 
 // =================================================================
 // SECTION: Constants
@@ -47,7 +48,27 @@ const DEFAULT_SETTINGS: AppSettings = {
   volume: 0.5,
   daily_pomodoro_goal: POMODORO.DEFAULT_DAILY_GOAL,
   has_seen_onboarding: false,
+  // In-memory/UI representation always holds the *effective* (fully resolved)
+  // map — see `keyboard_shortcuts` field docs on load/persist below.
+  keyboard_shortcuts: { ...DEFAULT_SHORTCUTS },
 };
+
+/**
+ * The `keyboard_shortcuts` JSONB column only ever stores overrides that
+ * differ from DEFAULT_SHORTCUTS (empty object = all defaults). Everywhere
+ * else in the app (context state, hooks, UI) we work with the fully
+ * resolved/effective map instead, so this strips back down to overrides
+ * right before a write.
+ */
+function toShortcutOverrides(effective: Record<string, string>): Record<string, string> {
+  const overrides: Record<string, string> = {};
+  for (const [action, key] of Object.entries(effective)) {
+    if (DEFAULT_SHORTCUTS[action as keyof typeof DEFAULT_SHORTCUTS] !== key) {
+      overrides[action] = key;
+    }
+  }
+  return overrides;
+}
 
 // =================================================================
 // SECTION: Context Definition
@@ -127,7 +148,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       });
 
       if (result.data) {
-        setSettings({ ...DEFAULT_SETTINGS, ...result.data });
+        setSettings({
+          ...DEFAULT_SETTINGS,
+          ...result.data,
+          // Merge saved overrides on top of the defaults so any shortcut added
+          // later automatically gets its default key without a migration.
+          keyboard_shortcuts: { ...DEFAULT_SHORTCUTS, ...(result.data.keyboard_shortcuts ?? {}) },
+        });
         console.log(`[SettingsContext] Loaded settings from ${result.source}:`, result.data);
       } else {
         setSettings(DEFAULT_SETTINGS);
@@ -161,19 +188,26 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     setError(null);
 
-    // 1. Optimistic local update — merge the full object for the UI.
+    // 1. Optimistic local update — merge the full object for the UI. Local
+    // state always holds the *effective* (fully resolved) shortcuts map.
     const previous = settings;
     const updated: AppSettings = { ...settings, ...newSettings };
     setSettings(updated);
     console.log('[SettingsContext] updateSettings called:', newSettings, 'Full object:', updated);
 
-    // 2. Persist ONLY the changed fields to Supabase.
+    // 2. Persist ONLY the changed fields to Supabase. keyboard_shortcuts is
+    // special-cased: the column stores only overrides that differ from
+    // DEFAULT_SHORTCUTS, not the fully resolved map.
+    const payload: Record<string, unknown> = { ...newSettings };
+    if (newSettings.keyboard_shortcuts) {
+      payload.keyboard_shortcuts = toShortcutOverrides(newSettings.keyboard_shortcuts);
+    }
     const { queued, error } = await executeOrQueue(
-      () => supabase.from('user_settings').update(newSettings).eq('id', user.id),
+      () => supabase.from('user_settings').update(payload).eq('id', user.id),
       {
         table: 'user_settings',
         operation: 'update',
-        data: newSettings as Record<string, unknown>,
+        data: payload,
         filters: { id: user.id },
         userId: user.id,
       }
@@ -208,7 +242,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings(resetValues);
     console.log('[SettingsContext] resetSettings called');
 
-    const upsertPayload = { id: user.id, ...resetValues };
+    // Persist keyboard_shortcuts as an empty overrides object, not the resolved defaults.
+    const upsertPayload = { id: user.id, ...resetValues, keyboard_shortcuts: {} };
     const { queued, error } = await executeOrQueue(
       () => supabase.from('user_settings').upsert([upsertPayload], { onConflict: 'id' }),
       {

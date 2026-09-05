@@ -434,8 +434,15 @@
       "themes": "Themes",
       "sounds": "Sounds",
       "focus": "Focus",
+      "keyboardShortcuts": "Keyboard Shortcuts",
       "privacy": "Data & Privacy"
     },
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "changeShortcut": "Change",
+    "pressKey": "Press a key...",
+    "restoreDefaults": "Restore defaults",
+    "duplicateKey": "This key is already assigned to another action",
+    "shortcutUpdated": "Shortcut updated",
     "dataPrivacy": "Data & Privacy",
     "exportData": "Export my data",
     "exportDataDesc": "Download all your sessions, tasks and achievements as JSON",
@@ -512,6 +519,16 @@
       "saveFailed": "Could not save your settings. Check your connection.",
       "resetFailed": "Could not reset your settings. Check your connection."
     }
+  },
+  "shortcuts": {
+    "toggleFocusMode": "Focus mode",
+    "toggleWidgetMode": "Widget mode",
+    "startPauseTimer": "Start/Pause timer",
+    "resetTimer": "Reset timer",
+    "stopTimer": "Stop timer",
+    "switchTimerTab": "Go to the Timer tab",
+    "switchFocusTab": "Go to the Focus tab",
+    "switchAchievementsTab": "Go to the Achievements tab"
   },
   "focus": {
     "cycle": {

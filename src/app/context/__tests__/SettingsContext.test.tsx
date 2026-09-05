@@ -5,6 +5,7 @@ import { render, waitFor, act } from '@testing-library/react';
 
 import type { AppSettings } from '@/app/types';
 import { POMODORO } from '@/app/lib/constants';
+import { DEFAULT_SHORTCUTS } from '@/app/lib/keyboardShortcuts';
 
 // -----------------------------------------------------------------------------
 // A local mirror of SettingsContext's internal DEFAULT_SETTINGS. It isn't
@@ -26,6 +27,9 @@ const DEFAULT_SETTINGS: AppSettings = {
   volume: 0.5,
   daily_pomodoro_goal: POMODORO.DEFAULT_DAILY_GOAL,
   has_seen_onboarding: false,
+  // In-memory settings always hold the fully resolved shortcuts map (see
+  // SettingsContext's DEFAULT_SETTINGS docs); only the persisted row stores overrides.
+  keyboard_shortcuts: { ...DEFAULT_SHORTCUTS },
 };
 
 // =============================================================================
@@ -212,6 +216,26 @@ describe('SettingsContext', () => {
     expect(updateMock).toHaveBeenCalledWith({ volume: 0.9 });
   });
 
+  it('persists keyboard_shortcuts as overrides-only, but keeps the resolved map locally', async () => {
+    authenticated({});
+    renderWithSettings();
+
+    await waitFor(() => {
+      expect(latestCtx?.loading).toBe(false);
+    });
+
+    await act(async () => {
+      await latestCtx?.updateSettings({
+        keyboard_shortcuts: { ...DEFAULT_SHORTCUTS, resetTimer: 'x' },
+      });
+    });
+
+    // Local state holds the fully resolved map (all actions present).
+    expect(latestCtx?.settings.keyboard_shortcuts).toEqual({ ...DEFAULT_SHORTCUTS, resetTimer: 'x' });
+    // Only the diff from the defaults is sent to Supabase.
+    expect(updateMock).toHaveBeenCalledWith({ keyboard_shortcuts: { resetTimer: 'x' } });
+  });
+
   it('resets settings to defaults', async () => {
     authenticated({ language: 'en', volume: 0.9, theme_mode: 'light', selected_theme_id: 'light-default' });
     renderWithSettings();
@@ -225,8 +249,10 @@ describe('SettingsContext', () => {
     });
 
     expect(latestCtx?.settings).toEqual(DEFAULT_SETTINGS);
+    // The persisted row stores keyboard_shortcuts as overrides-only (empty = all defaults),
+    // not the fully resolved map held in local state.
     expect(upsertMock).toHaveBeenCalledWith(
-      [{ id: AUTH_USER.id, ...DEFAULT_SETTINGS }],
+      [{ id: AUTH_USER.id, ...DEFAULT_SETTINGS, keyboard_shortcuts: {} }],
       { onConflict: 'id' }
     );
   });

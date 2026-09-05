@@ -4,22 +4,17 @@
 'use client';
 
 import { useEffect } from 'react';
+import { DEFAULT_SHORTCUTS, ShortcutId } from '@/app/lib/keyboardShortcuts';
 
 /**
  * useKeyboardShortcuts registers global keyboard listeners for power-user
  * productivity. It is purely side-effect-based: no state, no return value.
  * Call it once from the main app page.
  *
- * Shortcuts:
- *   SPACE — Toggle play/pause (only when the timer has been started or is active).
- *   ESC   — Close the topmost open modal/panel (Focus Mode first, then settings, then tasks).
- *   R     — Reset the timer (only when started, no modal open, not typing).
- *   S     — Stop the timer with confirmation (only when active, no modal open, not typing).
- *   M     — Toggle mini mode (no modal open, not typing).
- *   1     — Switch to the Timer tab (not in mini mode, no modal open, not typing).
- *   2     — Switch to the Focus tab (not in mini mode, no modal open, not typing).
- *   3     — Switch to the Achievements tab (not in mini mode, no modal open, not typing).
- *   F     — Toggle Focus Mode (distraction-free overlay), not typing.
+ * The action → key mapping is customizable (see Settings > Keyboard Shortcuts)
+ * and is passed in via `shortcuts`; any action missing from it falls back to
+ * DEFAULT_SHORTCUTS. ESCAPE is not customizable — it always closes the
+ * topmost open modal/panel (Focus Mode first, then settings, then tasks).
  *
  * All shortcuts are ignored while the user is typing in an <input>, <textarea>,
  * <select>, or a contentEditable element.
@@ -45,6 +40,8 @@ interface UseKeyboardShortcutsParams {
   // Focus mode
   isFocusModeActive: boolean;
   onToggleFocusMode: () => void;
+  // Customizable action → key mapping. Defaults to DEFAULT_SHORTCUTS when omitted.
+  shortcuts?: Record<string, string>;
 }
 
 export function useKeyboardShortcuts({
@@ -64,8 +61,11 @@ export function useKeyboardShortcuts({
   setIsMiniMode,
   isFocusModeActive,
   onToggleFocusMode,
+  shortcuts = DEFAULT_SHORTCUTS,
 }: UseKeyboardShortcutsParams) {
   useEffect(() => {
+    const keyFor = (action: ShortcutId) => (shortcuts[action] ?? DEFAULT_SHORTCUTS[action]).toLowerCase();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       // Guard: ignore shortcuts while the user is typing in a form field.
       const target = document.activeElement as HTMLElement | null;
@@ -79,86 +79,81 @@ export function useKeyboardShortcuts({
       const anyModalOpen = isSettingsPanelOpen || isTaskModalOpen;
       const key = e.key.toLowerCase();
 
-      switch (key) {
-        // SPACE — Toggle play/pause.
-        case ' ': {
-          if (isTyping) return;
-          const timerStarted = initialTimeSet > 0 && totalSeconds > 0;
-          if (timerStarted || isActive) {
-            e.preventDefault(); // Prevent page scroll only when handled.
-            togglePause();
-          }
-          return;
-        }
-
-        // ESCAPE — Close the topmost open modal/panel (Focus Mode first).
-        case 'escape': {
-          if (isFocusModeActive) {
-            onToggleFocusMode();
-          } else if (isSettingsPanelOpen) {
-            setIsSettingsPanelOpen(false);
-          } else if (isTaskModalOpen) {
-            setIsTaskModalOpen(false);
-          }
-          return;
-        }
-
-        // R — Reset the timer.
-        case 'r': {
-          if (isTyping || anyModalOpen) return;
-          if (initialTimeSet > 0) {
-            resetTimer();
-          }
-          return;
-        }
-
-        // S — Stop the timer with confirmation.
-        case 's': {
-          if (isTyping || anyModalOpen) return;
-          if (isActive) {
-            handleStopWithConfirmation();
-          }
-          return;
-        }
-
-        // M — Toggle mini mode.
-        case 'm': {
-          if (isTyping || anyModalOpen) return;
-          setIsMiniMode(!isMiniMode);
-          return;
-        }
-
-        // 1 — Switch to the Timer tab.
-        case '1': {
-          if (isTyping || anyModalOpen || isMiniMode) return;
-          setActiveTab('timer');
-          return;
-        }
-
-        // 2 — Switch to the Focus tab.
-        case '2': {
-          if (isTyping || anyModalOpen || isMiniMode) return;
-          setActiveTab('focus');
-          return;
-        }
-
-        // 3 — Switch to the Achievements tab.
-        case '3': {
-          if (isTyping || anyModalOpen || isMiniMode) return;
-          setActiveTab('achievements');
-          return;
-        }
-
-        // F — Toggle Focus Mode (distraction-free overlay).
-        case 'f': {
-          if (isTyping || anyModalOpen) return;
-          e.preventDefault();
+      // ESCAPE — Close the topmost open modal/panel (Focus Mode first). Not customizable.
+      if (key === 'escape') {
+        if (isFocusModeActive) {
           onToggleFocusMode();
-          return;
+        } else if (isSettingsPanelOpen) {
+          setIsSettingsPanelOpen(false);
+        } else if (isTaskModalOpen) {
+          setIsTaskModalOpen(false);
         }
+        return;
+      }
 
-        default:
-          return;
+      // Toggle play/pause.
+      if (key === keyFor('startPauseTimer')) {
+        if (isTyping) return;
+        const timerStarted = initialTimeSet > 0 && totalSeconds > 0;
+        if (timerStarted || isActive) {
+          e.preventDefault(); // Prevent page scroll only when handled.
+          togglePause();
+        }
+        return;
+      }
+
+      // Reset the timer.
+      if (key === keyFor('resetTimer')) {
+        if (isTyping || anyModalOpen) return;
+        if (initialTimeSet > 0) {
+          resetTimer();
+        }
+        return;
+      }
+
+      // Stop the timer with confirmation.
+      if (key === keyFor('stopTimer')) {
+        if (isTyping || anyModalOpen) return;
+        if (isActive) {
+          handleStopWithConfirmation();
+        }
+        return;
+      }
+
+      // Toggle mini/widget mode.
+      if (key === keyFor('toggleWidgetMode')) {
+        if (isTyping || anyModalOpen) return;
+        setIsMiniMode(!isMiniMode);
+        return;
+      }
+
+      // Switch to the Timer tab.
+      if (key === keyFor('switchTimerTab')) {
+        if (isTyping || anyModalOpen || isMiniMode) return;
+        setActiveTab('timer');
+        return;
+      }
+
+      // Switch to the Focus tab.
+      if (key === keyFor('switchFocusTab')) {
+        if (isTyping || anyModalOpen || isMiniMode) return;
+        setActiveTab('focus');
+        return;
+      }
+
+      // Switch to the Achievements tab.
+      if (key === keyFor('switchAchievementsTab')) {
+        if (isTyping || anyModalOpen || isMiniMode) return;
+        setActiveTab('achievements');
+        return;
+      }
+
+      // Toggle Focus Mode (distraction-free overlay).
+      if (key === keyFor('toggleFocusMode')) {
+        if (isTyping || anyModalOpen) return;
+        e.preventDefault();
+        onToggleFocusMode();
+        return;
       }
     };
 
@@ -181,5 +176,6 @@ export function useKeyboardShortcuts({
     setIsMiniMode,
     isFocusModeActive,
     onToggleFocusMode,
+    shortcuts,
   ]);
 }

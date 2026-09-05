@@ -6,6 +6,8 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './ShortcutsModal.module.css';
 import { useLocale } from '@/app/lib/i18n';
+import { useSettings } from '@/app/context/SettingsContext';
+import { resolveShortcuts, formatKeyLabel, ShortcutId } from '@/app/lib/keyboardShortcuts';
 
 interface ShortcutsModalProps {
   /** Whether the modal is visible */
@@ -14,9 +16,11 @@ interface ShortcutsModalProps {
   onClose: () => void;
 }
 
-// A single shortcut: one or more key labels plus a description i18n key.
+// A single shortcut: the shortcut id (resolved to its current key at render time)
+// plus a description i18n key.
 interface Shortcut {
-  keys: string[];
+  id?: ShortcutId;
+  keys?: string[];
   descKey: string;
 }
 
@@ -27,28 +31,28 @@ interface Category {
 }
 
 /**
- * Static description of every keyboard shortcut the app currently implements.
- * Mirrors `useKeyboardShortcuts` (Space/R/S/M/F/1/2/Escape) plus the global `?`
- * that opens this modal. This is documentation only — it does not register any
- * behavior, so it must be kept in sync with the hook.
+ * Description of every keyboard shortcut the app currently implements.
+ * Entries with an `id` are customizable and resolve their displayed key from
+ * the user's current settings; entries with a static `keys` array (Escape,
+ * the `?` help toggle) are not customizable. Mirrors `useKeyboardShortcuts`.
  */
 const CATEGORIES: Category[] = [
   {
     titleKey: 'app.shortcuts.categoryTimer',
     shortcuts: [
-      { keys: ['Space'], descKey: 'app.shortcuts.shortcutStartPause' },
-      { keys: ['S'], descKey: 'app.shortcuts.shortcutStop' },
-      { keys: ['R'], descKey: 'app.shortcuts.shortcutReset' },
-      { keys: ['M'], descKey: 'app.shortcuts.shortcutMiniMode' },
-      { keys: ['F'], descKey: 'app.focusMode.shortcut' },
+      { id: 'startPauseTimer', descKey: 'app.shortcuts.shortcutStartPause' },
+      { id: 'stopTimer', descKey: 'app.shortcuts.shortcutStop' },
+      { id: 'resetTimer', descKey: 'app.shortcuts.shortcutReset' },
+      { id: 'toggleWidgetMode', descKey: 'app.shortcuts.shortcutMiniMode' },
+      { id: 'toggleFocusMode', descKey: 'app.focusMode.shortcut' },
     ],
   },
   {
     titleKey: 'app.shortcuts.categoryNavigation',
     shortcuts: [
-      { keys: ['1'], descKey: 'app.shortcuts.shortcutTimerTab' },
-      { keys: ['2'], descKey: 'app.shortcuts.shortcutFocusTab' },
-      { keys: ['3'], descKey: 'app.shortcuts.shortcutAchievementsTab' },
+      { id: 'switchTimerTab', descKey: 'app.shortcuts.shortcutTimerTab' },
+      { id: 'switchFocusTab', descKey: 'app.shortcuts.shortcutFocusTab' },
+      { id: 'switchAchievementsTab', descKey: 'app.shortcuts.shortcutAchievementsTab' },
     ],
   },
   {
@@ -67,6 +71,8 @@ const CATEGORIES: Category[] = [
  */
 const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ isOpen, onClose }) => {
   const { t } = useLocale();
+  const { settings } = useSettings();
+  const shortcuts = resolveShortcuts(settings.keyboard_shortcuts);
   const closeRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   // Remember the element focused before opening, to restore it on close.
@@ -142,18 +148,21 @@ const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ isOpen, onClose }) => {
         {CATEGORIES.map((category) => (
           <div key={category.titleKey} className={styles.category}>
             <h3 className={styles.categoryTitle}>{t(category.titleKey)}</h3>
-            {category.shortcuts.map((shortcut) => (
-              <div key={shortcut.descKey} className={styles.shortcutRow}>
-                <span className={styles.description}>{t(shortcut.descKey)}</span>
-                <span className={styles.keys}>
-                  {shortcut.keys.map((key, i) => (
-                    <kbd key={i} className={styles.kbd}>
-                      {key}
-                    </kbd>
-                  ))}
-                </span>
-              </div>
-            ))}
+            {category.shortcuts.map((shortcut) => {
+              const keys = shortcut.id ? [formatKeyLabel(shortcuts[shortcut.id])] : shortcut.keys ?? [];
+              return (
+                <div key={shortcut.descKey} className={styles.shortcutRow}>
+                  <span className={styles.description}>{t(shortcut.descKey)}</span>
+                  <span className={styles.keys}>
+                    {keys.map((key, i) => (
+                      <kbd key={i} className={styles.kbd}>
+                        {key}
+                      </kbd>
+                    ))}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

@@ -269,6 +269,7 @@ describe.skipIf(!canRunContractTests)('Supabase Contract Tests', () => {
             volume: originalSettings.volume,
             language: originalSettings.language,
             daily_pomodoro_goal: originalSettings.daily_pomodoro_goal,
+            keyboard_shortcuts: originalSettings.keyboard_shortcuts,
           })
           .eq('id', userId);
       }
@@ -283,12 +284,22 @@ describe.skipIf(!canRunContractTests)('Supabase Contract Tests', () => {
       expect(data).toHaveProperty('volume');
       expect(data).toHaveProperty('theme_mode');
       expect(data).toHaveProperty('selected_theme_id');
+      expect(data).toHaveProperty('keyboard_shortcuts');
     });
 
     it('can update settings with valid values', async () => {
       const { error } = await supabase
         .from('user_settings')
         .update({ daily_pomodoro_goal: 8 })
+        .eq('id', userId);
+
+      expect(error).toBeNull();
+    });
+
+    it('can update keyboard_shortcuts overrides', async () => {
+      const { error } = await supabase
+        .from('user_settings')
+        .update({ keyboard_shortcuts: { resetTimer: 'x' } })
         .eq('id', userId);
 
       expect(error).toBeNull();

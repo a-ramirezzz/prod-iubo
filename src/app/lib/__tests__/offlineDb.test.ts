@@ -20,6 +20,7 @@ const SETTINGS: AppSettings = {
   volume: 0.5,
   daily_pomodoro_goal: 8,
   has_seen_onboarding: true,
+  keyboard_shortcuts: {},
 };
 
 function makeSession(overrides: Partial<CachedSessionRow> = {}): CachedSessionRow {

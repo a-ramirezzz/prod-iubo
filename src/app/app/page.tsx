@@ -224,6 +224,7 @@ export default function HomePage() {
     setIsMiniMode,
     isFocusModeActive: focusModeActive,
     onToggleFocusMode: toggleFocusMode,
+    shortcuts: settings.keyboard_shortcuts,
   });
 
   const router = useRouter();

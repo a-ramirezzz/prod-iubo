@@ -434,8 +434,15 @@
       "themes": "Temas",
       "sounds": "Sonidos",
       "focus": "Focus",
+      "keyboardShortcuts": "Atajos de teclado",
       "privacy": "Datos y Privacidad"
     },
+    "keyboardShortcuts": "Atajos de teclado",
+    "changeShortcut": "Cambiar",
+    "pressKey": "Presiona una tecla...",
+    "restoreDefaults": "Restaurar defaults",
+    "duplicateKey": "Esta tecla ya está asignada a otra acción",
+    "shortcutUpdated": "Atajo actualizado",
     "dataPrivacy": "Datos y Privacidad",
     "exportData": "Exportar mis datos",
     "exportDataDesc": "Descarga todas tus sesiones, tareas y logros en formato JSON",
@@ -512,6 +519,16 @@
       "saveFailed": "No se pudieron guardar los ajustes. Verifica tu conexión.",
       "resetFailed": "No se pudieron restablecer los ajustes. Verifica tu conexión."
     }
+  },
+  "shortcuts": {
+    "toggleFocusMode": "Modo foco",
+    "toggleWidgetMode": "Modo widget",
+    "startPauseTimer": "Iniciar/Pausar timer",
+    "resetTimer": "Reiniciar timer",
+    "stopTimer": "Detener timer",
+    "switchTimerTab": "Ir a la pestaña Temporizador",
+    "switchFocusTab": "Ir a la pestaña Enfoque",
+    "switchAchievementsTab": "Ir a la pestaña Logros"
   },
   "focus": {
     "cycle": {

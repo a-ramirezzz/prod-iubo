@@ -145,6 +145,7 @@ export type Database = {
           volume: number;
           daily_pomodoro_goal: number;
           has_seen_onboarding: boolean;
+          keyboard_shortcuts: Json;
         };
         Insert: {
           id: string;
@@ -162,6 +163,7 @@ export type Database = {
           volume?: number;
           daily_pomodoro_goal?: number;
           has_seen_onboarding?: boolean;
+          keyboard_shortcuts?: Json;
         };
         Update: {
           id?: string;
@@ -179,6 +181,7 @@ export type Database = {
           volume?: number;
           daily_pomodoro_goal?: number;
           has_seen_onboarding?: boolean;
+          keyboard_shortcuts?: Json;
         };
         Relationships: [
           {

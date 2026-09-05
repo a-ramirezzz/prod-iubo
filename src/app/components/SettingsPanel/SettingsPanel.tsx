@@ -27,6 +27,14 @@ import { createClient } from '@/app/lib/supabase/client';
 import { clearUserData } from '@/app/lib/offlineDb';
 import { logError } from '@/app/lib/logger';
 import { deleteAccount } from '@/app/app/actions/deleteAccount';
+import {
+  DEFAULT_SHORTCUTS,
+  SHORTCUT_ORDER,
+  SHORTCUT_LABEL_KEYS,
+  formatKeyLabel,
+  isModifierKey,
+  ShortcutId,
+} from '@/app/lib/keyboardShortcuts';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -54,7 +62,7 @@ const PHASE_COLORS: Record<string, string> = {
 };
 
 // Type for the active section — English keys used as logic identifiers
-type SectionKey = 'general' | 'themes' | 'sounds' | 'focus' | 'privacy';
+type SectionKey = 'general' | 'themes' | 'sounds' | 'focus' | 'keyboardShortcuts' | 'privacy';
 
 // Icon definitions for each section, keyed by SectionKey
 const ICONS: Record<SectionKey, React.ReactNode> = {
@@ -70,13 +78,16 @@ const ICONS: Record<SectionKey, React.ReactNode> = {
   focus: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
   ),
+  keyboardShortcuts: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10" /></svg>
+  ),
   privacy: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /></svg>
   ),
 };
 
 // Menu items for the sidebar
-const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus', 'privacy'];
+const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus', 'keyboardShortcuts', 'privacy'];
 
 /**
  * SettingsPanel component
@@ -107,6 +118,10 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
   const [isDeletingData, setIsDeletingData] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [privacyNotification, setPrivacyNotification] = useState<{ visible: boolean; message: string }>({ visible: false, message: '' });
+  // Keyboard shortcut re-binding: which action (if any) is currently waiting
+  // for the user's next keypress, plus an inline validation error keyed by action.
+  const [capturingAction, setCapturingAction] = useState<ShortcutId | null>(null);
+  const [shortcutError, setShortcutError] = useState<{ action: ShortcutId; message: string } | null>(null);
   const backdropVariants = useBackdropVariants();
   const panelVariants = useSlideFromRightVariants();
   const sectionVariants = useCrossfadeVariants(8);
@@ -232,6 +247,52 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
       setPrivacyNotification({ visible: true, message: t('settings.deleteAccountError') });
       setIsDeletingAccount(false);
     }
+  };
+
+  // Captures the next keypress while a shortcut is being re-bound. Escape
+  // cancels the capture instead of being assignable (it's reserved globally
+  // for closing modals/panels).
+  useEffect(() => {
+    if (!capturingAction) return;
+    const action = capturingAction;
+    const handleCapture = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.key === 'Escape') {
+        setCapturingAction(null);
+        return;
+      }
+      if (isModifierKey(e.key)) {
+        // A bare modifier isn't a usable shortcut on its own — keep listening
+        // for a real key instead of surfacing an error.
+        return;
+      }
+
+      const current = settings.keyboard_shortcuts ?? DEFAULT_SHORTCUTS;
+      const newKey = e.key.toLowerCase();
+      const conflict = Object.entries(current).find(
+        ([otherAction, key]) => otherAction !== action && key.toLowerCase() === newKey
+      );
+      if (conflict) {
+        setShortcutError({ action, message: t('settings.duplicateKey') });
+        setCapturingAction(null);
+        return;
+      }
+
+      updateSettings({ keyboard_shortcuts: { ...current, [action]: e.key } });
+      setShortcutError(null);
+      setCapturingAction(null);
+      setPrivacyNotification({ visible: true, message: t('settings.shortcutUpdated') });
+    };
+    window.addEventListener('keydown', handleCapture, true);
+    return () => window.removeEventListener('keydown', handleCapture, true);
+  }, [capturingAction, settings.keyboard_shortcuts, updateSettings, t]);
+
+  const handleRestoreDefaultShortcuts = () => {
+    setCapturingAction(null);
+    setShortcutError(null);
+    updateSettings({ keyboard_shortcuts: { ...DEFAULT_SHORTCUTS } });
   };
 
   // The effective light/dark mode after resolving 'system' against the OS preference.
@@ -687,6 +748,46 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                     </p>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Keyboard Shortcuts Section */}
+            {activeSection === 'keyboardShortcuts' && (
+              <div className={styles.settingsContainer}>
+                {SHORTCUT_ORDER.map((action) => {
+                  const currentKey = (settings.keyboard_shortcuts ?? DEFAULT_SHORTCUTS)[action] ?? DEFAULT_SHORTCUTS[action];
+                  const isCapturing = capturingAction === action;
+                  return (
+                    <div key={action} className={styles.settingItem}>
+                      <label>{t(SHORTCUT_LABEL_KEYS[action])}</label>
+                      <div className={styles.shortcutControl}>
+                        {shortcutError?.action === action && (
+                          <span className={styles.shortcutErrorText} role="alert">
+                            {shortcutError.message}
+                          </span>
+                        )}
+                        <kbd className={styles.keyBadge}>{formatKeyLabel(currentKey)}</kbd>
+                        <button
+                          type="button"
+                          className={styles.select}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            setShortcutError(null);
+                            setCapturingAction(isCapturing ? null : action);
+                          }}
+                          aria-label={`${t('settings.changeShortcut')}: ${t(SHORTCUT_LABEL_KEYS[action])}`}
+                        >
+                          {isCapturing ? t('settings.pressKey') : t('settings.changeShortcut')}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className={styles.resetSection}>
+                  <button onClick={handleRestoreDefaultShortcuts} className={`${styles.resetButton} button button-stop`}>
+                    {t('settings.restoreDefaults')}
+                  </button>
+                </div>
               </div>
             )}
 
