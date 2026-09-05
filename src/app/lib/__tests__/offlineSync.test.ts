@@ -113,4 +113,62 @@ describe('fetchWithOfflineFallback', () => {
     expect(result.error).toBeInstanceOf(Error);
     expect(result.error?.message).toBe('boom');
   });
+
+  it('tries the network before ever reading the cache (network-first, not cache-first)', async () => {
+    const order: string[] = [];
+    const getCacheFn = vi.fn(async () => {
+      order.push('cache');
+      return ['cached'];
+    });
+
+    await fetchWithOfflineFallback({
+      fetchFn: async () => {
+        order.push('network');
+        return ['fresh'];
+      },
+      cacheFn: vi.fn().mockResolvedValue(undefined),
+      getCacheFn,
+      operationName: 'test',
+    });
+
+    expect(order).toEqual(['network']);
+    expect(getCacheFn).not.toHaveBeenCalled();
+  });
+
+  it('replaces the cache with the latest network result on each successful fetch', async () => {
+    const cacheFn = vi.fn().mockResolvedValue(undefined);
+
+    await fetchWithOfflineFallback({
+      fetchFn: async () => ({ value: 1 }),
+      cacheFn,
+      getCacheFn: vi.fn(),
+      operationName: 'test',
+    });
+    await fetchWithOfflineFallback({
+      fetchFn: async () => ({ value: 2 }),
+      cacheFn,
+      getCacheFn: vi.fn(),
+      operationName: 'test',
+    });
+    await Promise.resolve();
+
+    expect(cacheFn).toHaveBeenNthCalledWith(1, { value: 1 });
+    expect(cacheFn).toHaveBeenNthCalledWith(2, { value: 2 });
+  });
+
+  it('only reads the cache once the network fetch has actually failed', async () => {
+    const getCacheFn = vi.fn(async () => ['cached']);
+
+    const result = await fetchWithOfflineFallback({
+      fetchFn: async () => {
+        throw new TypeError('Failed to fetch');
+      },
+      cacheFn: vi.fn(),
+      getCacheFn,
+      operationName: 'test',
+    });
+
+    expect(getCacheFn).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ data: ['cached'], source: 'cache', error: null });
+  });
 });

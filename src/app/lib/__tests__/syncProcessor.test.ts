@@ -178,4 +178,72 @@ describe('processSyncQueue', () => {
     expect(result).toEqual({ processed: 0, failed: 0, remaining: 0 });
     expect(insertMock).not.toHaveBeenCalled();
   });
+
+  it('processes every item in a multi-entry queue when all succeed', async () => {
+    queue.push(makeEntry({ id: 1, data: { id: 't1' } }));
+    queue.push(makeEntry({ id: 2, operation: 'update', filters: { id: 't1' }, data: { completed: true } }));
+    queue.push(makeEntry({ id: 3, operation: 'delete', filters: { id: 't2' }, data: {} }));
+
+    const result = await processSyncQueue(USER);
+
+    expect(result).toEqual({ processed: 3, failed: 0, remaining: 0 });
+    expect(queue).toHaveLength(0);
+  });
+
+  it('keeps a failing item pending (for retry) but still processes the rest of the queue', async () => {
+    // processSyncQueue has no early-exit on failure: each entry is handled
+    // independently via its own try/catch, so one failure never blocks
+    // entries queued after it.
+    let call = 0;
+    fromMock.mockImplementation(() => {
+      call++;
+      const builder = makeBuilder();
+      if (call === 1) {
+        builder.insert = () => Promise.resolve({ error: { message: 'network error: failed to fetch' } });
+      }
+      return builder;
+    });
+    queue.push(makeEntry({ id: 1, data: { id: 'first' } }));
+    queue.push(makeEntry({ id: 2, data: { id: 'second' } }));
+
+    const result = await processSyncQueue(USER);
+
+    expect(result).toEqual({ processed: 1, failed: 0, remaining: 1 });
+    expect(queue.find((e) => e.id === 1)).toMatchObject({ status: 'pending', retryCount: 1 });
+    expect(queue.find((e) => e.id === 2)).toBeUndefined(); // removed: succeeded
+  });
+
+  it('discards an entry once it has failed MAX_RETRIES times across repeated sync attempts', async () => {
+    mutationError = { message: 'still failing' };
+    queue.push(makeEntry({ id: 1, retryCount: 0 }));
+
+    let result = await processSyncQueue(USER);
+    expect(result).toEqual({ processed: 0, failed: 0, remaining: 1 });
+    expect(queue[0].retryCount).toBe(1);
+
+    result = await processSyncQueue(USER);
+    expect(queue[0].retryCount).toBe(2);
+
+    result = await processSyncQueue(USER);
+    expect(result).toEqual({ processed: 0, failed: 1, remaining: 0 });
+    expect(queue[0].status).toBe('failed');
+    expect(queue[0].retryCount).toBe(3);
+  });
+
+  it('retries a non-network (data) error the same way as any other failure — syncProcessor does not special-case error type', async () => {
+    // Unlike offlineMutation's isNetworkError check (which decides whether to
+    // queue in the first place), syncProcessor treats every thrown error
+    // identically once an entry is already queued: retry until MAX_RETRIES.
+    mutationError = { message: 'duplicate key value violates unique constraint' };
+    queue.push(makeEntry({ id: 1, retryCount: 2 }));
+
+    const result = await processSyncQueue(USER);
+
+    expect(result).toEqual({ processed: 0, failed: 1, remaining: 0 });
+    expect(queue[0].status).toBe('failed');
+    // Thrown Postgrest-style error objects aren't `instanceof Error`, so the
+    // processor's `error instanceof Error ? error.message : String(error)`
+    // falls through to String(error) rather than extracting `.message`.
+    expect(queue[0].lastError).toBe('[object Object]');
+  });
 });

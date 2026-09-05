@@ -81,4 +81,80 @@ describe('executeOrQueue', () => {
     expect(result).toEqual({ queued: true, error: null });
     expect(addToSyncQueueMock).toHaveBeenCalledWith(BASE_OPTIONS);
   });
+
+  it('while online, calls Supabase directly and succeeds without touching the queue', async () => {
+    Object.defineProperty(navigator, 'onLine', { value: true, writable: true });
+    const supabaseFn = vi.fn().mockResolvedValue({ error: null });
+
+    const result = await executeOrQueue(supabaseFn, BASE_OPTIONS);
+
+    expect(supabaseFn).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ queued: false, error: null });
+    expect(addToSyncQueueMock).not.toHaveBeenCalled();
+  });
+
+  it('while online, queues the mutation when Supabase reports a network error', async () => {
+    Object.defineProperty(navigator, 'onLine', { value: true, writable: true });
+    const networkError = { message: 'Failed to fetch' };
+    const supabaseFn = vi.fn().mockResolvedValue({ error: networkError });
+
+    const result = await executeOrQueue(supabaseFn, BASE_OPTIONS);
+
+    expect(supabaseFn).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ queued: true, error: null });
+    expect(addToSyncQueueMock).toHaveBeenCalledWith(BASE_OPTIONS);
+  });
+
+  it('while offline, still attempts the call but queues on the resulting exception', async () => {
+    // executeOrQueue has no separate offline branch — offline mutations are
+    // queued because the underlying fetch() rejects, same as any other
+    // network-level failure. This documents that navigator.onLine alone
+    // doesn't short-circuit the call.
+    Object.defineProperty(navigator, 'onLine', { value: false, writable: true });
+    const supabaseFn = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
+
+    const result = await executeOrQueue(supabaseFn, BASE_OPTIONS);
+
+    expect(supabaseFn).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ queued: true, error: null });
+    expect(addToSyncQueueMock).toHaveBeenCalledWith(BASE_OPTIONS);
+  });
+
+  it('queued mutations carry the correct table, operation, payload, and userId metadata', async () => {
+    const options = {
+      table: 'pomodoro_sessions' as const,
+      operation: 'upsert' as const,
+      data: { id: 's1', duration_minutes: 25 },
+      filters: { id: 's1' },
+      userId: 'user-42',
+    };
+
+    await executeOrQueue(
+      async () => {
+        throw new TypeError('Failed to fetch');
+      },
+      options
+    );
+
+    expect(addToSyncQueueMock).toHaveBeenCalledWith(options);
+  });
+
+  it('preserves FIFO order when multiple mutations are queued in sequence', async () => {
+    const calls: unknown[] = [];
+    addToSyncQueueMock.mockImplementation((entry: unknown) => {
+      calls.push(entry);
+      return Promise.resolve();
+    });
+
+    for (const id of ['a', 'b', 'c']) {
+      await executeOrQueue(
+        async () => {
+          throw new TypeError('Failed to fetch');
+        },
+        { ...BASE_OPTIONS, data: { id } }
+      );
+    }
+
+    expect(calls.map((c) => (c as { data: { id: string } }).data.id)).toEqual(['a', 'b', 'c']);
+  });
 });
