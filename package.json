@@ -15,6 +15,7 @@
     "test:e2e:ui": "PLAYWRIGHT=true npx playwright test e2e/functional/ --ui",
     "test:visual": "PLAYWRIGHT=true npx playwright test e2e/visual",
     "test:visual:update": "PLAYWRIGHT=true npx playwright test e2e/visual --update-snapshots",
+    "test:perf": "PLAYWRIGHT=true npx playwright test --project=performance",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "types:generate": "supabase gen types typescript --project-id axxbcsqgqszvgozgaczt > src/app/types/database.types.ts"

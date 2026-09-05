@@ -30,6 +30,11 @@ export default defineConfig({
       name: 'chromium',
       use: { browserName: 'chromium' },
     },
+    {
+      name: 'performance',
+      testDir: './e2e/performance',
+      use: { browserName: 'chromium' },
+    },
   ],
 
   webServer: {

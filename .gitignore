@@ -75,6 +75,7 @@ public/worker-*.js
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+performance-results.json
 
 # Vitest coverage
 /coverage/
