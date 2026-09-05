@@ -35,6 +35,11 @@ export default defineConfig({
       testDir: './e2e/performance',
       use: { browserName: 'chromium' },
     },
+    {
+      name: 'security',
+      testDir: './e2e/security',
+      use: { browserName: 'chromium' },
+    },
   ],
 
   webServer: {

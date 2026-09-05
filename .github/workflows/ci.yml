@@ -66,6 +66,18 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: "placeholder-service-role-key"
           RESEND_API_KEY: "placeholder-resend-key"
 
+      - name: Security Tests
+        # Reuses the production server already started for the performance
+        # benchmarks above, so CSP is fully enforced (not the Report-Only
+        # header used in dev) — no PLAYWRIGHT=true here on purpose.
+        run: npm run test:security
+        env:
+          CI: true
+          NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-anon-key"
+          SUPABASE_SERVICE_ROLE_KEY: "placeholder-service-role-key"
+          RESEND_API_KEY: "placeholder-resend-key"
+
       - name: Upload performance results
         if: always()
         uses: actions/upload-artifact@v4
