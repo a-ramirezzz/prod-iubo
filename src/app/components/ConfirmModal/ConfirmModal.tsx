@@ -2,7 +2,7 @@
 // Copyright (c) 2025 Alan Rodrigo Ramírez Luna (@a-ramirezzz)
 // Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './ConfirmModal.module.css';
 import { useLocale } from '@/app/lib/i18n';
@@ -27,6 +27,8 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   /** Called when the user cancels (only used in 'confirm' mode) */
   onCancel?: () => void;
+  /** When set, the confirm button stays disabled until the user types this exact word */
+  requireTypedConfirmation?: string;
 }
 
 /**
@@ -43,6 +45,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   destructive = false,
   onConfirm,
   onCancel,
+  requireTypedConfirmation,
 }) => {
   const { t } = useLocale();
   const resolvedConfirmLabel = confirmLabel ?? t('app.confirmModal.defaultConfirm');
@@ -50,13 +53,21 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const confirmRef = useRef<HTMLButtonElement>(null);
   const backdropVariants = useBackdropVariants();
   const modalVariants = useScaleFadeVariants();
+  const [typedValue, setTypedValue] = useState('');
+  const isConfirmDisabled = !!requireTypedConfirmation && typedValue !== requireTypedConfirmation;
 
-  // Auto-focus the confirm button when the modal opens
+  // Reset the typed value whenever the modal opens/closes
   useEffect(() => {
-    if (visible && confirmRef.current) {
+    if (!visible) setTypedValue('');
+  }, [visible]);
+
+  // Auto-focus the confirm button when the modal opens (skipped when a typed
+  // confirmation is required, since the input should get focus instead)
+  useEffect(() => {
+    if (visible && confirmRef.current && !requireTypedConfirmation) {
       confirmRef.current.focus();
     }
-  }, [visible]);
+  }, [visible, requireTypedConfirmation]);
 
   // Close on Escape key
   useEffect(() => {
@@ -95,6 +106,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           >
             {icon && <span className={styles.icon}>{icon}</span>}
             <p className={styles.message}>{message}</p>
+            {requireTypedConfirmation && (
+              <input
+                type="text"
+                className={styles.confirmInput}
+                value={typedValue}
+                onChange={(e) => setTypedValue(e.target.value)}
+                autoFocus
+                aria-label={requireTypedConfirmation}
+                placeholder={requireTypedConfirmation}
+              />
+            )}
             <div className={styles.actions}>
               {mode === 'confirm' && (
                 <button className={styles.btnCancel} onClick={onCancel}>
@@ -105,6 +127,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 ref={confirmRef}
                 className={destructive ? styles.btnDestructive : styles.btnConfirm}
                 onClick={onConfirm}
+                disabled={isConfirmDisabled}
               >
                 {resolvedConfirmLabel}
               </button>

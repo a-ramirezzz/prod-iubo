@@ -22,6 +22,11 @@ import { useDataExport } from '@/app/hooks/useDataExport';
 import { useSystemTheme } from '@/app/hooks/useSystemTheme';
 import { useLocale } from '@/app/lib/i18n';
 import Link from 'next/link';
+import Notification from '@/app/components/Notification/Notification';
+import { createClient } from '@/app/lib/supabase/client';
+import { clearUserData } from '@/app/lib/offlineDb';
+import { logError } from '@/app/lib/logger';
+import { deleteAccount } from '@/app/app/actions/deleteAccount';
 
 // Props for the SettingsPanel component
 interface SettingsPanelProps {
@@ -49,7 +54,7 @@ const PHASE_COLORS: Record<string, string> = {
 };
 
 // Type for the active section — English keys used as logic identifiers
-type SectionKey = 'general' | 'themes' | 'sounds' | 'focus';
+type SectionKey = 'general' | 'themes' | 'sounds' | 'focus' | 'privacy';
 
 // Icon definitions for each section, keyed by SectionKey
 const ICONS: Record<SectionKey, React.ReactNode> = {
@@ -65,10 +70,13 @@ const ICONS: Record<SectionKey, React.ReactNode> = {
   focus: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
   ),
+  privacy: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /></svg>
+  ),
 };
 
 // Menu items for the sidebar
-const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus'];
+const MENU_ITEMS: SectionKey[] = ['general', 'themes', 'sounds', 'focus', 'privacy'];
 
 /**
  * SettingsPanel component
@@ -94,6 +102,11 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showDeleteDataConfirm, setShowDeleteDataConfirm] = useState(false);
+  const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false);
+  const [isDeletingData, setIsDeletingData] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [privacyNotification, setPrivacyNotification] = useState<{ visible: boolean; message: string }>({ visible: false, message: '' });
   const backdropVariants = useBackdropVariants();
   const panelVariants = useSlideFromRightVariants();
   const sectionVariants = useCrossfadeVariants(8);
@@ -170,6 +183,55 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
     await resetSettings(); // Optionally reset settings state
     setLoggingOut(false);
     router.push('/');
+  };
+
+  // Deletes all of the user's sessions, tasks and achievements, then resets
+  // settings to defaults. The user stays logged in with a clean slate.
+  const handleDeleteAllData = async () => {
+    if (!user) return;
+    setIsDeletingData(true);
+    try {
+      const supabase = createClient();
+      const [achievementsResult, sessionsResult, tasksResult] = await Promise.all([
+        supabase.from('user_achievements').delete().eq('user_id', user.id),
+        supabase.from('pomodoro_sessions').delete().eq('user_id', user.id),
+        supabase.from('tasks').delete().eq('user_id', user.id),
+      ]);
+      const firstError = achievementsResult.error ?? sessionsResult.error ?? tasksResult.error;
+      if (firstError) throw firstError;
+
+      await resetSettings();
+      await clearUserData(user.id);
+
+      setShowDeleteDataConfirm(false);
+      setPrivacyNotification({ visible: true, message: t('settings.dataDeleted') });
+      // Force a full refresh so every in-memory cache (stats, tasks, achievements) reloads clean.
+      window.location.reload();
+    } catch (err) {
+      logError(err, { operation: 'deleteAllMyData', userId: user.id });
+      setPrivacyNotification({ visible: true, message: t('settings.deleteDataError') });
+    } finally {
+      setIsDeletingData(false);
+    }
+  };
+
+  // Permanently deletes the user's account via the deleteAccount Server Action,
+  // then signs out and redirects to the landing page.
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      const result = await deleteAccount();
+      if (!result.success) {
+        throw new Error(result.error ?? 'Unknown error');
+      }
+      setShowDeleteAccountConfirm(false);
+      await signOut();
+      router.push('/');
+    } catch (err) {
+      logError(err, { operation: 'deleteAccount', userId: user?.id });
+      setPrivacyNotification({ visible: true, message: t('settings.deleteAccountError') });
+      setIsDeletingAccount(false);
+    }
   };
 
   // The effective light/dark mode after resolving 'system' against the OS preference.
@@ -627,6 +689,62 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
                 )}
               </div>
             )}
+
+            {/* Data & Privacy Section */}
+            {activeSection === 'privacy' && (
+              <div className={styles.settingsContainer}>
+                <div className={styles.privacyAction}>
+                  <div>
+                    <h3 className={styles.subSectionTitle} style={{ marginTop: 0 }}>{t('settings.exportData')}</h3>
+                    <p className={styles.settingsFocusHelperText} style={{ maxWidth: 'none' }}>
+                      {t('settings.exportDataDesc')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.exportButton}
+                    onClick={exportJson}
+                    disabled={isExporting}
+                  >
+                    {isExporting ? t('app.settings.exportExporting') : t('settings.exportData')}
+                  </button>
+                </div>
+
+                <div className={styles.privacyAction}>
+                  <div>
+                    <h3 className={styles.subSectionTitle} style={{ marginTop: 0 }}>{t('settings.deleteData')}</h3>
+                    <p className={styles.settingsFocusHelperText} style={{ maxWidth: 'none' }}>
+                      {t('settings.deleteDataDesc')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.dangerButton}
+                    onClick={() => setShowDeleteDataConfirm(true)}
+                    disabled={isDeletingData}
+                  >
+                    {t('settings.deleteData')}
+                  </button>
+                </div>
+
+                <div className={styles.privacyAction}>
+                  <div>
+                    <h3 className={styles.subSectionTitle} style={{ marginTop: 0 }}>{t('settings.deleteAccount')}</h3>
+                    <p className={styles.settingsFocusHelperText} style={{ maxWidth: 'none' }}>
+                      {t('settings.deleteAccountDesc')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.dangerButtonStrong}
+                    onClick={() => setShowDeleteAccountConfirm(true)}
+                    disabled={isDeletingAccount}
+                  >
+                    {t('settings.deleteAccount')}
+                  </button>
+                </div>
+              </div>
+            )}
             </motion.div>
             </AnimatePresence>
           </main>
@@ -644,6 +762,33 @@ export default function SettingsPanel({ isOpen, onClose, onOpenShortcuts, pomodo
           setShowResetConfirm(false);
         }}
         onCancel={() => setShowResetConfirm(false)}
+      />
+      <ConfirmModal
+        visible={showDeleteDataConfirm}
+        message={t('settings.deleteDataConfirm')}
+        icon="⚠️"
+        mode="confirm"
+        confirmLabel={t('settings.deleteDataConfirmLabel')}
+        destructive={true}
+        onConfirm={handleDeleteAllData}
+        onCancel={() => setShowDeleteDataConfirm(false)}
+      />
+      <ConfirmModal
+        visible={showDeleteAccountConfirm}
+        message={t('settings.deleteAccountConfirm')}
+        icon="🛑"
+        mode="confirm"
+        confirmLabel={t('settings.deleteAccountConfirmLabel')}
+        destructive={true}
+        requireTypedConfirmation={t('settings.deleteAccountConfirmWord')}
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setShowDeleteAccountConfirm(false)}
+      />
+      <Notification
+        message={privacyNotification.message}
+        visible={privacyNotification.visible}
+        onClose={() => setPrivacyNotification({ visible: false, message: '' })}
+        duration={4000}
       />
       </>
       )}

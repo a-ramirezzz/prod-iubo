@@ -349,6 +349,70 @@ input:disabled + .slider {
   margin-top: 0.5rem;
 }
 
+/* --- Data & Privacy section --- */
+
+.privacyAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color-primary, #333);
+}
+
+.privacyAction:last-child {
+  border-bottom: none;
+}
+
+.dangerButton {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #f5b942;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background-color: rgba(245, 158, 11, 0.22);
+  border-color: #f5b942;
+}
+
+.dangerButtonStrong {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dangerButtonStrong:hover:not(:disabled) {
+  background-color: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+}
+
+.dangerButton:disabled,
+.dangerButtonStrong:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .privacyAction {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .comingSoon {
   font-size: 2.5rem;
   font-weight: bold;

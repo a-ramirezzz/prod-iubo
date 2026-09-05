@@ -134,13 +134,28 @@ describe.skipIf(!canRunContractTests)('Supabase Contract Tests', () => {
     it('cannot update sessions (immutable)', async () => {
       if (!testSessionId) return;
 
-      const { error } = await supabase
+      // No UPDATE policy exists on pomodoro_sessions — RLS silently blocks
+      // the write (0 rows affected) rather than returning an error, so we
+      // verify immutability by checking the value didn't change.
+      const { data: before } = await supabase
+        .from('pomodoro_sessions')
+        .select('duration_minutes')
+        .eq('id', testSessionId)
+        .single();
+
+      await supabase
         .from('pomodoro_sessions')
         .update({ duration_minutes: 99 })
         .eq('id', testSessionId);
 
-      // No UPDATE policy exists on pomodoro_sessions — RLS blocks the write.
-      expect(error).not.toBeNull();
+      const { data: after } = await supabase
+        .from('pomodoro_sessions')
+        .select('duration_minutes')
+        .eq('id', testSessionId)
+        .single();
+
+      expect(after!.duration_minutes).toBe(before!.duration_minutes);
+      expect(after!.duration_minutes).not.toBe(99);
     });
   });
 
